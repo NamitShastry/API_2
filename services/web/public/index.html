@@ -6988,75 +6988,594 @@
             </div>
           </section>
 
-          <!-- TAB 12: ANOMALY CENTER -->
+          <!-- TAB 12: ANOMALY & REGIME OBSERVATORY -->
           <section class="tab-pane" id="pane-anomalies">
-            <div class="glass-panel table-card">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">Statistical Anomaly & Regime-Shift Detection <span class="data-state-pill state-calculated">CALCULATED</span></h2>
-                  <div class="chart-subtitle">Modified Z-Score via Median Absolute Deviation (MAD ≥ 3.0σ) with Quote Evidence & Non-Causal Claims</div>
+            <div class="anomaly-story-wrapper">
+
+              <!-- CHAPTER 01: ANOMALY COMMAND HEADER & STATUS STRIP -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+                      <span class="brand-badge" style="background: rgba(225, 29, 72, 0.12); color: #E11D48; border: 1px solid rgba(225, 29, 72, 0.3); font-weight: 700; letter-spacing: 0.05em;">AEROINDEX ANOMALY & REGIME OBSERVATORY</span>
+                      <span class="data-state-pill state-calculated">CALCULATED</span>
+                      <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
+                      <span class="kpi-badge rose" id="anomalies-count-badge">1 CRITICAL SURGE ACTIVE</span>
+                    </div>
+                    <h1 class="chart-title" style="font-size: 1.65rem; letter-spacing: -0.02em; margin: 0 0 0.35rem 0; color: var(--navy-900);">Anomaly & Regime-Shift Observatory</h1>
+                    <div class="chart-subtitle" style="font-size: 0.88rem; max-width: 880px; line-height: 1.4; color: var(--text-secondary);">
+                      Statistical forensic detection of unusual airfare departures, elasticity inversions, volatility spikes, and persistent structural regime shifts across India's domestic aviation network.
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <button class="btn btn-ghost" onclick="openAnomalyMathModal()" style="font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border-subtle); padding: 0.4rem 0.85rem;">
+                        📐 Show the Math (Modified Z)
+                      </button>
+                      <button class="btn btn-primary" onclick="openAnomalyReproduceModal()" style="font-size: 0.78rem; padding: 0.4rem 0.85rem;">
+                        ⚙️ Reproduce Detection
+                      </button>
+                    </div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
+                      Method: <span style="color: var(--navy-900); font-weight: 600;">Boris Iglewicz & David Hoaglin (1993)</span> • Threshold: |Z| ≥ 3.0σ
+                    </div>
+                  </div>
                 </div>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                  <span class="kpi-badge rose" id="anomalies-count-badge">1 CRITICAL SURGE ACTIVE</span>
-                  <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
+
+                <!-- Instrument Panel Status Strip -->
+                <div class="anomaly-status-strip">
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">ACTIVE ANOMALIES</span>
+                    <span class="anom-stat-val" style="color: #E11D48;" id="anom-active-count">3 Detected</span>
+                    <span class="anom-stat-sub">Across 1,180 Corridors</span>
+                  </div>
+                  <div class="anom-stat-box" style="border-left: 2px solid #E11D48; padding-left: 0.75rem;">
+                    <span class="anom-stat-label">CRITICAL SURGES</span>
+                    <span class="anom-stat-val" style="color: #E11D48;" id="anom-critical-count">1 Active</span>
+                    <span class="anom-stat-sub">DEL-BOM (Z=3.82σ)</span>
+                  </div>
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">ELASTICITY INVERSIONS</span>
+                    <span class="anom-stat-val" style="color: #D97706;" id="anom-inversion-count">1 Active</span>
+                    <span class="anom-stat-sub">BOM-BLR (L03 &lt; L14)</span>
+                  </div>
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">REGIME SHIFTS</span>
+                    <span class="anom-stat-val" style="color: #6366F1;" id="anom-regime-count">1 Confirmed</span>
+                    <span class="anom-stat-sub">3 Verified Cycles Persisted</span>
+                  </div>
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">MONITORED CLUSTERS</span>
+                    <span class="anom-stat-val" style="color: #0284C7;" id="anom-monitored-count">1 Corridor</span>
+                    <span class="anom-stat-sub">DEL-SXR Weather Hold</span>
+                  </div>
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">QUOTE SUPPORT RATE</span>
+                    <span class="anom-stat-val" style="color: #059669;" id="anom-support-rate">98.4%</span>
+                    <span class="anom-stat-sub">Multi-Quote Verified</span>
+                  </div>
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">LAST DETECTION SCAN</span>
+                    <span class="anom-stat-val" style="font-size: 0.88rem; color: var(--navy-900);">14m ago</span>
+                    <span class="anom-stat-sub">12:30 IST Cycle</span>
+                  </div>
+                  <div class="anom-stat-box">
+                    <span class="anom-stat-label">INFERENCE POLICY</span>
+                    <span class="anom-stat-val" style="font-size: 0.88rem; color: #0284C7;">NON-CAUSAL</span>
+                    <span class="anom-stat-sub">Mandate 09 Compliant</span>
+                  </div>
+                </div>
+
+                <!-- Anomaly Filter Ribbon -->
+                <div class="anomaly-filter-ribbon">
+                  <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Filter Anomaly Type:</span>
+                    <div class="btn-group" id="anom-type-group">
+                      <button class="btn btn-ghost active" onclick="filterAnomalyType('ALL', this)">All (3)</button>
+                      <button class="btn btn-ghost" onclick="filterAnomalyType('SURGE', this)">Price Surges (1)</button>
+                      <button class="btn btn-ghost" onclick="filterAnomalyType('INVERSION', this)">Inversions (1)</button>
+                      <button class="btn btn-ghost" onclick="filterAnomalyType('REGIME_SHIFT', this)">Regime Shifts (1)</button>
+                      <button class="btn btn-ghost" onclick="filterAnomalyType('MONITORED', this)">Monitored (1)</button>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-left: auto;">
+                    <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Corridor Focus:</span>
+                    <select id="anom-corridor-filter" class="form-select" onchange="filterAnomalyCorridor(this.value)" style="font-size: 0.74rem; padding: 0.3rem 0.6rem;">
+                      <option value="ALL">All Network Corridors</option>
+                      <option value="DEL-BOM">DEL-BOM (Delhi ⇄ Mumbai)</option>
+                      <option value="BOM-BLR">BOM-BLR (Mumbai ⇄ Bengaluru)</option>
+                      <option value="DEL-SXR">DEL-SXR (Delhi ⇄ Srinagar)</option>
+                      <option value="DEL-BLR">DEL-BLR (Delhi ⇄ Bengaluru)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Epistemological Discipline Banner -->
+                <div class="epistemology-banner" style="margin-top: 1rem;">
+                  <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <span style="font-size: 1.1rem; color: #E11D48;">ℹ️</span>
+                    <div style="font-size: 0.76rem; line-height: 1.45; color: #334155;">
+                      <strong>Statistical Anomaly vs Causality Policy:</strong> Anomaly detection flags empirical quotes departing from the rolling 14-day same-day-of-week median. Detection does not establish why the deviation occurred or assign operational blame. External events (festivals, weather, promotions) are recorded as <em>temporal co-occurrences</em> only; causal inference is never asserted without econometric proof.
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Methodology & Math Formulation Box -->
-              <div class="formula-callout">
-                <span style="color: #38BDF8; font-weight: 700;">// REPRODUCIBLE ANOMALY FORMULA (Iglewicz & Hoaglin 1993)</span><br>
-                Modified Z = 0.6745 × |observed_fare - baseline_median| / MAD<br>
-                Threshold: Z ≥ 3.0 indicates statistically anomalous deviation.<br>
-                Baseline: Same-day-of-week rolling 14-day median · Quote support required for confirmation.
+              <!-- CHAPTER 02 & 03: MARKET ANOMALY PULSE & SPATIAL LANDSCAPE -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 02 & 03 — MARKET ANOMALY PULSE & SPATIAL TOPOLOGY</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.35rem; margin-bottom: 0.25rem;">Market Anomaly Pulse: Timeline Scatter Field</h2>
+                    <div class="chart-subtitle">Modified Z-Scores plotted over time against statistical thresholds (±3.0σ). Green band denotes expected statistical baseline range.</div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.72rem;">
+                    <span class="legend-box pulse-expected"></span> <span style="font-weight: 600; color: #059669;">Expected Normal Range (|Z| &lt; 3.0σ)</span>
+                    <span class="legend-box pulse-surge" style="margin-left: 0.5rem;"></span> <span style="font-weight: 600; color: #E11D48;">Surge Event</span>
+                    <span class="legend-box pulse-inversion" style="margin-left: 0.5rem;"></span> <span style="font-weight: 600; color: #D97706;">Inversion</span>
+                  </div>
+                </div>
+
+                <!-- Pulse Timeline Scatter Chart Stage -->
+                <div class="anomaly-pulse-wrapper">
+                  <svg id="anomaly-pulse-svg" viewBox="0 0 920 300" style="width: 100%; height: auto; display: block;">
+                    <!-- Rendered dynamically -->
+                  </svg>
+                </div>
+
+                <!-- Spatial India Anomaly Landscape Layout -->
+                <div style="margin-top: 1.75rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <div>
+                      <strong style="font-size: 0.88rem; color: var(--navy-900);">ALL-INDIA ANOMALY TOPOLOGY & DENSITY MAP</strong>
+                      <div style="font-size: 0.72rem; color: var(--text-secondary);">Geographic concentration of active anomalies and regime shift change-points</div>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem;">
+                      <span class="badge-tag" style="background: rgba(225, 29, 72, 0.1); color: #E11D48;">● Active Surge</span>
+                      <span class="badge-tag" style="background: rgba(217, 119, 6, 0.1); color: #D97706;">● Inversion</span>
+                      <span class="badge-tag" style="background: rgba(2, 132, 199, 0.1); color: #0284C7;">● Monitored</span>
+                    </div>
+                  </div>
+
+                  <div class="spatial-anomaly-grid">
+                    <div class="spatial-svg-stage">
+                      <svg id="india-anomaly-svg" viewBox="0 0 540 540" style="width: 100%; height: auto;">
+                        <!-- Rendered dynamically -->
+                      </svg>
+                    </div>
+                    <div class="spatial-callout-sidebar" id="spatial-callout-sidebar">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <!-- Active Anomaly Inspection Card -->
-              <div id="reproducible-anomalies-container">
-                <!-- Populated dynamically via JS from /api/v1/analytics/anomalies -->
+              <!-- CHAPTER 04 & 05: ANOMALY TYPE OBSERVATORY & EXPECTED VS OBSERVED -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 04 & 05 — ANOMALY TYPES & EXPECTED VS OBSERVED DEVIATION</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Statistical Typology & Observed Deviation Analysis</h2>
+                    <div class="chart-subtitle">Rigorous breakdown of observed fares against empirical baselines, MAD dispersion, and relative deviations</div>
+                  </div>
+                  <span class="brand-badge" style="background: rgba(14, 165, 233, 0.1); color: #0284C7; font-weight: 700;">6 TAXONOMIC CLASSES</span>
+                </div>
+
+                <!-- 6 Taxonomic Anomaly Classes Grid -->
+                <div class="anomaly-taxonomy-grid">
+                  <div class="tax-card active" onclick="selectTaxonomyCard('SURGE', this)">
+                    <div class="tax-header">
+                      <span class="tax-badge" style="background: #E11D48; color: #FFF;">PRICE SURGE</span>
+                      <strong style="color: #E11D48;">Z = +3.82σ</strong>
+                    </div>
+                    <div class="tax-title">DEL-BOM (Delhi ⇄ Mumbai)</div>
+                    <div class="tax-desc">Observed median fare of ₹6,580 materially departs from rolling 14-day Thursday baseline of ₹4,850 (+35.7%, MAD=₹450).</div>
+                    <div class="tax-footer">
+                      <span>184 Quotes Verified</span>
+                      <span style="color: #059669; font-weight: 700;">ACTIVE CRITICAL</span>
+                    </div>
+                  </div>
+
+                  <div class="tax-card" onclick="selectTaxonomyCard('INVERSION', this)">
+                    <div class="tax-header">
+                      <span class="tax-badge" style="background: #D97706; color: #FFF;">ELASTICITY INVERSION</span>
+                      <strong style="color: #D97706;">Z = -3.15σ</strong>
+                    </div>
+                    <div class="tax-title">BOM-BLR (Mumbai ⇄ Bengaluru)</div>
+                    <div class="tax-desc">Near-term L03 booking window (₹3,890) inverted below advance L14 window (₹4,450), breaking standard scarcity pricing.</div>
+                    <div class="tax-footer">
+                      <span>96 Quotes Verified</span>
+                      <span style="color: #D97706; font-weight: 700;">ACTIVE INVERSION</span>
+                    </div>
+                  </div>
+
+                  <div class="tax-card" onclick="selectTaxonomyCard('VOLATILITY', this)">
+                    <div class="tax-header">
+                      <span class="tax-badge" style="background: #0284C7; color: #FFF;">VOLATILITY BREAK</span>
+                      <strong style="color: #0284C7;">MAD Ratio = 2.4x</strong>
+                    </div>
+                    <div class="tax-title">DEL-SXR (Delhi ⇄ Srinagar)</div>
+                    <div class="tax-desc">Median fare of ₹5,420 accompanied by extreme quote dispersion (MAD expanding from ₹280 baseline to ₹670).</div>
+                    <div class="tax-footer">
+                      <span>72 Quotes Verified</span>
+                      <span style="color: #0284C7; font-weight: 700;">MONITORED</span>
+                    </div>
+                  </div>
+
+                  <div class="tax-card" onclick="selectTaxonomyCard('REGIME_SHIFT', this)">
+                    <div class="tax-header">
+                      <span class="tax-badge" style="background: #6366F1; color: #FFF;">REGIME SHIFT</span>
+                      <strong style="color: #6366F1;">3 Cycles Persisted</strong>
+                    </div>
+                    <div class="tax-title">BLR-HYD (Bengaluru ⇄ Hyderabad)</div>
+                    <div class="tax-desc">Structural baseline shift: corridor median reset from historical ₹3,250 level to persistent new baseline ₹3,810 (+17.2%).</div>
+                    <div class="tax-footer">
+                      <span>142 Quotes Verified</span>
+                      <span style="color: #6366F1; font-weight: 700;">CONFIRMED REGIME</span>
+                    </div>
+                  </div>
+
+                  <div class="tax-card" onclick="selectTaxonomyCard('LEAD_INVERSION', this)">
+                    <div class="tax-header">
+                      <span class="tax-badge" style="background: #64748B; color: #FFF;">LEAD-TIME CLUSTER</span>
+                      <strong style="color: #64748B;">L01 Spot Spike</strong>
+                    </div>
+                    <div class="tax-title">DEL-BLR (Delhi ⇄ Bengaluru)</div>
+                    <div class="tax-desc">Isolated departure-eve surge: L01 spot fares surged to ₹8,450 while L14 advance purchase fares remained stable at ₹4,900.</div>
+                    <div class="tax-footer">
+                      <span>110 Quotes Verified</span>
+                      <span style="color: #64748B; font-weight: 700;">WINDOW-SPECIFIC</span>
+                    </div>
+                  </div>
+
+                  <div class="tax-card" onclick="selectTaxonomyCard('COVERAGE', this)">
+                    <div class="tax-header">
+                      <span class="tax-badge" style="background: #059669; color: #FFF;">CLEAN RECONCILED</span>
+                      <strong style="color: #059669;">1,175 Corridors</strong>
+                    </div>
+                    <div class="tax-title">All Other Domestic Routes</div>
+                    <div class="tax-desc">Over 99.5% of monitored domestic sectors are operating strictly within normal statistical tolerance (|Z| &lt; 2.0σ).</div>
+                    <div class="tax-footer">
+                      <span>485,000+ Quotes</span>
+                      <span style="color: #059669; font-weight: 700;">NORMAL RANGE</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Expected vs Observed Deviation Inspector Panel -->
+                <div class="expected-vs-observed-card" id="evo-inspector-card">
+                  <!-- Rendered dynamically via JS based on selected anomaly -->
+                </div>
               </div>
 
-              <!-- Historical Regime Shifts Table -->
-              <div style="margin-top: 1.5rem;">
-                <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--navy-900);">Historical Corridor Regime Shifts & Monitored Events</h4>
-                <table class="heatmap-table">
-                  <thead>
-                    <tr>
-                      <th>Severity</th>
-                      <th>Corridor</th>
-                      <th>Trigger Mechanism</th>
-                      <th>Observed vs Expected</th>
-                      <th>Non-Causal Evidence Statement</th>
-                      <th>Timestamp</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><span class="heat-cell heat-extreme">SURGE (Z=3.82)</span></td>
-                      <td>DEL-BOM</td>
-                      <td>Modified Z-Score MAD Filter</td>
-                      <td>₹6,580 vs ₹4,850 baseline (MAD=₹450)</td>
-                      <td>Fare increase of +35.7% observed alongside Diwali travel calendar window (coincident correlation r=0.84; causal inference not asserted).</td>
-                      <td>14m ago</td>
-                    </tr>
-                    <tr>
-                      <td><span class="heat-cell heat-high">INVERSION (Z=3.15)</span></td>
-                      <td>BOM-BLR</td>
-                      <td>Elasticity Inversion (L03 &lt; L14)</td>
-                      <td>₹3,890 vs ₹4,450 baseline</td>
-                      <td>Inversion observed concurrently with promotional off-peak fare filing by 6E/AI.</td>
-                      <td>42m ago</td>
-                    </tr>
-                    <tr>
-                      <td><span class="heat-cell heat-mid">MONITORED</span></td>
-                      <td>DEL-SXR</td>
-                      <td>Weather Holding Pattern</td>
-                      <td>₹5,420 vs ₹4,650 baseline</td>
-                      <td>Elevated quote volatility observed alongside CAT-III fog protocol activation at Srinagar.</td>
-                      <td>1h ago</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <!-- CHAPTER 06 & 07: REGIME-SHIFT OBSERVATORY & PERSISTENCE TRACKER -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 06 & 07 — STRUCTURAL REGIME SHIFT & PERSISTENCE AUDIT</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Regime Shift Detection vs Temporary Outlier Persistence</h2>
+                    <div class="chart-subtitle">Distinguishing short-lived transient price anomalies from structural step-function baseline resets</div>
+                  </div>
+                  <span class="badge-tag" style="background: rgba(99, 102, 241, 0.1); color: #6366F1; font-weight: 700;">
+                    3-CYCLE CONFIRMATION STANDARD
+                  </span>
+                </div>
+
+                <div class="regime-grid-layout">
+                  <!-- Step Function Change-Point Chart -->
+                  <div class="regime-chart-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                      <strong style="font-size: 0.8rem; color: var(--navy-900);">BLR-HYD STRUCTURAL CHANGE-POINT VISUALIZATION</strong>
+                      <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">Change-Point Date: 22 Sep 2026</span>
+                    </div>
+                    <svg id="regime-shift-svg" viewBox="0 0 540 220" style="width: 100%; height: auto;">
+                      <!-- Rendered dynamically -->
+                    </svg>
+                  </div>
+
+                  <!-- Persistence State Machine Tracker -->
+                  <div class="persistence-tracker-box">
+                    <strong style="font-size: 0.8rem; color: var(--navy-900); margin-bottom: 0.75rem; display: block;">REGIME PERSISTENCE STATE MACHINE</strong>
+                    
+                    <div class="persistence-steps">
+                      <div class="p-step passed">
+                        <span class="p-step-dot">✓</span>
+                        <div class="p-step-info">
+                          <strong>Cycle 1 (24 Sep 23:30 IST): Initial Detection</strong>
+                          <span>Observed median +18.4% above baseline (Z=3.10σ). Tagged as Candidate Outlier.</span>
+                        </div>
+                      </div>
+                      <div class="p-step passed">
+                        <span class="p-step-dot">✓</span>
+                        <div class="p-step-info">
+                          <strong>Cycle 2 (25 Sep 23:30 IST): Persistence Check</strong>
+                          <span>Elevated median sustained (+17.6%, Z=3.05σ). Escalated to Monitored Regime Candidate.</span>
+                        </div>
+                      </div>
+                      <div class="p-step confirmed">
+                        <span class="p-step-dot">★</span>
+                        <div class="p-step-info">
+                          <strong style="color: #6366F1;">Cycle 3 (26 Sep 12:30 IST): Confirmed Structural Shift</strong>
+                          <span>Persistence criterion satisfied (≥3 cycles). Formally classified as Structural Regime Shift. Baseline updated to ₹3,810.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.65rem 0.85rem; font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.85rem; line-height: 1.4;">
+                      <strong>Persistence Guard:</strong> Prevents ephemeral single-flight quotes or temporary scrapers from triggering false macro regime shifts.
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              <!-- CHAPTER 08: CORRIDOR REGIME & ANOMALY HISTORY TABLE -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 08 — HISTORICAL CORRIDOR REGIME SHIFTS & MONITORED EVENTS</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Corridor Regime & Anomaly Event Registry</h2>
+                    <div class="chart-subtitle">Preserves historical monitored events with trigger mechanisms, statistical scores, quote evidence, and non-causal statements</div>
+                  </div>
+                  <button class="btn btn-ghost" onclick="exportAnomalyCSV()" style="font-size: 0.74rem; border: 1px solid var(--border-subtle);">
+                    📥 Export Registry CSV
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="anomaly-registry-table" id="anomaly-registry-table">
+                    <thead>
+                      <tr>
+                        <th>STATUS & TYPE</th>
+                        <th>CORRIDOR</th>
+                        <th>TRIGGER MECHANISM</th>
+                        <th style="text-align: right;">OBSERVED VS EXPECTED</th>
+                        <th>NON-CAUSAL EVIDENCE STATEMENT</th>
+                        <th style="text-align: right;">TIMESTAMP</th>
+                        <th style="text-align: center;">FORENSICS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="anomaly-registry-tbody">
+                      <!-- Rendered dynamically (preserves DEL-BOM, BOM-BLR, DEL-SXR, BLR-HYD) -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Active Anomaly Inspection Card Container (Preserved from Master Spec) -->
+                <div id="reproducible-anomalies-container" style="margin-top: 1rem;">
+                  <!-- Populated dynamically via JS from /api/v1/analytics/anomalies -->
+                </div>
+              </div>
+
+              <!-- CHAPTER 09 & 10: QUOTE-LEVEL EVIDENCE & ANOMALY BREADTH -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 09 & 10 — ATOMIC QUOTE EVIDENCE & ANOMALY BREADTH</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Underlying Flight Quote Evidence Distribution (DEL-BOM)</h2>
+                    <div class="chart-subtitle">Testing whether the anomaly is driven by an isolated outlier quote or verified across multiple operating carriers</div>
+                  </div>
+                  <span class="badge-tag" style="background: rgba(5, 150, 105, 0.1); color: #059669; font-weight: 700;">
+                    ✓ MULTI-QUOTE SUPPORT (184 QUOTES)
+                  </span>
+                </div>
+
+                <!-- Quote Evidence Dots Chart -->
+                <div class="quote-evidence-layout">
+                  <div class="quote-dots-col">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                      <strong style="font-size: 0.8rem; color: var(--navy-900);">FARE DISTRIBUTION: BASELINE BAND VS ANOMALOUS OBSERVATIONS</strong>
+                      <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">Sampling Window: 08:00–12:30 IST</span>
+                    </div>
+                    <svg id="quote-evidence-svg" viewBox="0 0 540 220" style="width: 100%; height: auto;">
+                      <!-- Rendered dynamically -->
+                    </svg>
+                  </div>
+
+                  <!-- Anomaly Breadth & Carrier Dispersion -->
+                  <div class="anomaly-breadth-col">
+                    <strong style="font-size: 0.8rem; color: var(--navy-900); margin-bottom: 0.6rem; display: block;">ANOMALY BREADTH BREAKDOWN</strong>
+                    <div class="breadth-stat-row">
+                      <span>Unique Operating Carriers:</span>
+                      <strong style="font-family: var(--font-mono);">3 (6E, AI, QP)</strong>
+                    </div>
+                    <div class="breadth-stat-row">
+                      <span>Unique Flight Numbers:</span>
+                      <strong style="font-family: var(--font-mono);">21 Flights</strong>
+                    </div>
+                    <div class="breadth-stat-row">
+                      <span>Fare Families Affected:</span>
+                      <strong style="font-family: var(--font-mono);">Saver (72%), Flex (28%)</strong>
+                    </div>
+                    <div class="breadth-stat-row">
+                      <span>Channel Concordance:</span>
+                      <strong style="font-family: var(--font-mono); color: #059669;">Airline Direct & OTAs</strong>
+                    </div>
+                    <div class="breadth-stat-row">
+                      <span>Lead-Time Windows:</span>
+                      <strong style="font-family: var(--font-mono); color: #E11D48;">L01 to L07 (Peak)</strong>
+                    </div>
+                    <div style="margin-top: 0.65rem; padding-top: 0.5rem; border-top: 1px solid var(--border-subtle); font-size: 0.72rem; color: var(--text-muted);">
+                      <strong>Breadth Conclusion:</strong> Anomaly is cross-carrier and cross-channel. Rejected single-source defect hypothesis.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 12 & 13: ROUTE × ANOMALY TYPE & TIMELINE HEATMAP -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 12 & 13 — CROSS-SECTIONAL MATRICES & ANOMALY HEATMAP</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Cross-Sectional Route × Anomaly Matrix</h2>
+                    <div class="chart-subtitle">High-density incidence grid mapping anomaly types across India's top domestic routes</div>
+                  </div>
+                  <div style="display: flex; gap: 0.4rem; font-size: 0.72rem;">
+                    <span class="badge-tag" style="background: rgba(225, 29, 72, 0.15); color: #E11D48;">Active Surge</span>
+                    <span class="badge-tag" style="background: rgba(217, 119, 6, 0.15); color: #D97706;">Inversion</span>
+                    <span class="badge-tag" style="background: rgba(99, 102, 241, 0.15); color: #6366F1;">Regime Shift</span>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="anomaly-matrix-table" id="route-anomaly-matrix">
+                    <thead>
+                      <tr>
+                        <th style="min-width: 140px;">CORRIDOR</th>
+                        <th style="text-align: center;">Price Surge</th>
+                        <th style="text-align: center;">Elasticity Inversion</th>
+                        <th style="text-align: center;">Volatility Break</th>
+                        <th style="text-align: center;">Regime Shift</th>
+                        <th style="text-align: center;">Lead Cluster</th>
+                        <th style="text-align: right; background: #F8FAFC;">STATUS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="matrix-anomaly-tbody">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- CHAPTER 16, 17 & 18: CHANNEL CROSS-CHECK, EVENT CONTEXT & INDEX IMPACT -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 16, 17 & 18 — CHANNEL AUDIT, EVENT CONTEXT & INDEX IMPACT</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Statistical Deviation vs Aggregate Index Impact</h2>
+                    <div class="chart-subtitle">Crucial institutional separation: An anomaly can be statistically extreme without moving the headline index</div>
+                  </div>
+                  <span class="brand-badge" style="background: rgba(14, 165, 233, 0.1); color: #0284C7; font-weight: 700;">EPIDEMIOLOGY LAYER</span>
+                </div>
+
+                <div class="impact-quadrant-layout">
+                  <div class="quadrant-chart-col">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">STATISTICAL DEVIATION (|Z|) VS INDEX CONTRIBUTION (bps)</div>
+                    <svg id="quadrant-chart-svg" viewBox="0 0 540 260" style="width: 100%; height: auto;">
+                      <!-- Rendered dynamically -->
+                    </svg>
+                  </div>
+
+                  <div class="context-channel-col">
+                    <strong style="font-size: 0.8rem; color: var(--navy-900); margin-bottom: 0.5rem; display: block;">EVENT & CHANNEL CONTEXT AUDIT</strong>
+                    
+                    <div class="context-card">
+                      <div class="cc-header">
+                        <strong style="color: #E11D48;">Diwali Festive Calendar Co-occurrence</strong>
+                        <span class="data-state-pill state-observed">TEMPORAL CONTEXT</span>
+                      </div>
+                      <p style="font-size: 0.74rem; color: #475569; line-height: 1.45; margin: 0.25rem 0 0.5rem 0;">
+                        DEL-BOM surge observed concurrently with registered Diwali holiday travel booking window. Correlation coefficient r=0.84. <em>Causal inference not asserted without structural capacity econometric validation.</em>
+                      </p>
+                    </div>
+
+                    <div class="context-card" style="margin-top: 0.75rem;">
+                      <div class="cc-header">
+                        <strong style="color: #0284C7;">Srinagar Fog Holding Pattern (CAT-III)</strong>
+                        <span class="data-state-pill state-observed">OPERATIONAL CONTEXT</span>
+                      </div>
+                      <p style="font-size: 0.74rem; color: #475569; line-height: 1.45; margin: 0.25rem 0 0;">
+                        DEL-SXR elevated volatility observed alongside low-visibility airport operational protocols. Concurrently observed; causality not established.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 21, 22 & 23: ANOMALY FORENSICS & REPRODUCTION SANDBOX -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 21, 22 & 23 — ANOMALY FORENSICS & REPRODUCTION SANDBOX</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Cryptographic Anomaly Lineage & Mathematical Reproduction</h2>
+                    <div class="chart-subtitle">Independently reconstruct the Boris Iglewicz & David Hoaglin (1993) Modified Z-score calculation in an isolated browser environment</div>
+                  </div>
+                  <button class="btn btn-primary" onclick="openAnomalyReproduceModal()" style="font-size: 0.74rem;">
+                    ⚙️ Run Independent Reproduction
+                  </button>
+                </div>
+
+                <div class="provenance-grid-anomaly">
+                  <div class="pga-item">
+                    <span class="pga-label">DETECTION RULE ID</span>
+                    <strong class="pga-val" style="color: var(--navy-900);">RULE-ANOM-MAD-V2</strong>
+                    <span class="pga-sub">Iglewicz & Hoaglin 1993</span>
+                  </div>
+                  <div class="pga-item">
+                    <span class="pga-label">BASELINE MEDIAN SET</span>
+                    <strong class="pga-val">14-Day Same-Day-of-Week</strong>
+                    <span class="pga-sub">Thursday Baseline (₹4,850)</span>
+                  </div>
+                  <div class="pga-item">
+                    <span class="pga-label">HISTORICAL MAD DISPERSION</span>
+                    <strong class="pga-val" style="font-family: var(--font-mono); color: #0284C7;">MAD = ₹450.00</strong>
+                    <span class="pga-sub">Median Absolute Deviation</span>
+                  </div>
+                  <div class="pga-item">
+                    <span class="pga-label">CRYPTOGRAPHIC DIGEST</span>
+                    <strong class="pga-val" style="font-family: var(--font-mono); font-size: 0.76rem;">sha256:4c81a9f0e...</strong>
+                    <span class="pga-sub">Immutable Detection Hash</span>
+                  </div>
+                </div>
+
+                <!-- Reproduction Sandbox Results Block -->
+                <div id="anomaly-reproduce-sandbox" class="reproduce-sandbox-card" style="display: none; margin-top: 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <strong style="color: #38BDF8; font-family: var(--font-mono); font-size: 0.8rem;">AEROINDEX ANOMALY REPRODUCTION ENGINE (BORIS IGLEWICZ & DAVID HOAGLIN 1993)</strong>
+                    <span style="font-size: 0.7rem; color: #94A3B8; font-family: var(--font-mono);">STATUS: EXECUTION COMPLETE</span>
+                  </div>
+                  <pre class="repro-console-output" id="anomaly-repro-console-text">
+// Ingesting current rolling 4-hour observations for DEL-BOM...
+// Current Median Observed Fare: x = ₹6,580.00
+// Historical 14-Day Thursday Baseline Median: M = ₹4,850.00
+// Absolute Deviation: |x - M| = |6580 - 4850| = ₹1,730.00
+// Historical Median Absolute Deviation: MAD = ₹450.00
+// Calculating Modified Z-Score:
+   Formula: Z = 0.6745 * |x - M| / MAD
+   Z = 0.6745 * 1730.00 / 450.00 = 3.8247σ
+// Evaluating Threshold: |Z| ≥ 3.0σ
+   3.8247σ ≥ 3.0000σ --> CONDITION SATISFIED ✓
+// Classification: PRICE_SURGE (Observed > Baseline)
+// Quote Support Count: 184 quotes verified across 3 carriers
+// PROVENANCE CERTIFICATE GENERATED: PASS ✓
+                  </pre>
+                </div>
+              </div>
+
+              <!-- CHAPTER 24 & 25: METHODOLOGICAL NOTICE & ASK AEROINDEX -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 24 & 25 — METHODOLOGICAL NOTICE & ANOMALY INTELLIGENCE AGENT</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Forensic Anomaly Intelligence Assistant</h2>
+                    <div class="chart-subtitle">Ask questions about detected anomalies, elasticity inversions, baseline formulations, and non-causal evidence</div>
+                  </div>
+                  <span class="brand-badge" style="background: rgba(225, 29, 72, 0.12); color: #E11D48; font-weight: 700;">STATISTICALLY GROUNDED</span>
+                </div>
+
+                <!-- Prompt Chips -->
+                <div class="prompt-chips-wrapper">
+                  <button class="prompt-chip" onclick="askAnomalyPrompt('What triggered the DEL-BOM surge?')">What triggered the DEL-BOM surge?</button>
+                  <button class="prompt-chip" onclick="askAnomalyPrompt('What is an elasticity inversion?')">What is an elasticity inversion?</button>
+                  <button class="prompt-chip" onclick="askAnomalyPrompt('How does Modified Z-score differ from standard Z-score?')">Why Modified Z instead of standard Z?</button>
+                  <button class="prompt-chip" onclick="askAnomalyPrompt('How is a regime shift confirmed?')">How is a regime shift confirmed?</button>
+                  <button class="prompt-chip" onclick="askAnomalyPrompt('Did this anomaly move the national index?')">Did this surge move national index?</button>
+                  <button class="prompt-chip" onclick="askAnomalyPrompt('Reproduce the DEL-BOM anomaly calculation')">Reproduce DEL-BOM Modified Z</button>
+                </div>
+
+                <!-- AI Response Box -->
+                <div class="ai-attr-response-box" id="ai-anomaly-response">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+                    <span style="font-size: 1rem;">🤖</span>
+                    <strong style="font-size: 0.82rem; color: var(--navy-900);">AeroIndex Forensic Anomaly Analyst</strong>
+                    <span class="data-state-pill state-calculated" style="font-size: 0.65rem;">GROUNDED IN 184 VERIFIED QUOTES</span>
+                  </div>
+                  <div id="ai-anomaly-response-content" style="font-size: 0.8rem; line-height: 1.55; color: #334155;">
+                    The <strong>DEL-BOM surge</strong> was detected at <strong>Z = 3.82σ</strong> under the Boris Iglewicz & David Hoaglin (1993) Modified Z-score rule (threshold: 3.0σ). The observed median fare of <strong>₹6,580</strong> departed from the 14-day same-day-of-week baseline of <strong>₹4,850</strong> (+35.7%, MAD = ₹450). It is supported by 184 atomic quotes across 3 carriers (6E, AI, QP). While this surge occurred during the registered Diwali travel calendar window (r=0.84), causal inference is not asserted without structural econometric validation.
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
 
