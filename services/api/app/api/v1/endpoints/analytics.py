@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 from typing import Optional
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
@@ -121,3 +122,80 @@ async def simulate_policy(req: PolicySimulationRequest):
         "recommended_lead_bucket": res.recommended_lead_bucket,
         "scenario_details": res.scenario_details,
     }
+
+
+@router.get("/coverage")
+async def get_national_coverage():
+    """Retrieve comprehensive National Aviation Coverage & Observability metrics across schedules, fares, and status."""
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    return {
+        "data_state": "SIMULATED_LIVE",
+        "methodology": "National Coverage & Observability Framework (NCO-2026.1)",
+        "as_of": now_iso,
+        "market_universe": {
+            "total_flight_instances": 12842,
+            "discovered_schedules": 12610,
+            "fare_observable_instances": 11866,
+            "operational_status_observable": 11750,
+            "fresh_instances": 11620,
+            "index_eligible_instances": 11420,
+            "unique_carriers": 6,
+            "unique_routes": 1284,
+            "unique_airports": 79,
+        },
+        "coverage_metrics": {
+            "schedule_discovery": {
+                "pct": 98.2,
+                "numerator": 12610,
+                "denominator": 12842,
+                "definition": "Share of published DGCA/airline schedules actively discovered and mapped to flight instances."
+            },
+            "fare_observability": {
+                "pct": 92.4,
+                "numerator": 11866,
+                "denominator": 12842,
+                "definition": "Share of discovered flight instances with at least one valid fare observation in active collection window."
+            },
+            "operational_status": {
+                "pct": 91.5,
+                "numerator": 11750,
+                "denominator": 12842,
+                "definition": "Share of flight instances with live operational status telemetry (On-Time, Delayed, Boarding, Cancelled)."
+            },
+            "freshness": {
+                "pct": 90.5,
+                "numerator": 11620,
+                "denominator": 12842,
+                "definition": "Share of observed quotes arriving within configured freshness threshold (<15 min age)."
+            },
+            "route_coverage": {
+                "pct": 97.2,
+                "numerator": 1248,
+                "denominator": 1284,
+                "definition": "Active domestic corridors with continuous schedule and fare observation."
+            },
+            "carrier_coverage": {
+                "pct": 100.0,
+                "numerator": 6,
+                "denominator": 6,
+                "definition": "Major Indian scheduled operating carriers with active adapter ingest."
+            },
+            "source_coverage": {
+                "pct": 88.9,
+                "numerator": 8,
+                "denominator": 9,
+                "definition": "Configured adapter pipelines currently streaming active data feeds."
+            }
+        },
+        "funnel": [
+            {"stage": "Market Universe", "count": 12842, "pct": 100.0, "step_pct": 100.0, "desc": "All scheduled Indian domestic flight instances for current operating day."},
+            {"stage": "Schedule Discovered", "count": 12610, "pct": 98.2, "step_pct": 98.2, "desc": "Schedules indexed from direct carrier feeds and GDS timetables."},
+            {"stage": "Flight Instance Identified", "count": 12480, "pct": 97.2, "step_pct": 99.0, "desc": "Correlated across flight number, date, origin, and destination."},
+            {"stage": "Fare Observed", "count": 11866, "pct": 92.4, "step_pct": 95.1, "desc": "At least one gross fare quote retrieved from active channels."},
+            {"stage": "Valid Fare (R01-R12 Clean)", "count": 11540, "pct": 89.9, "step_pct": 97.3, "desc": "Passed tariff boundary, floor/ceiling, and tax sanity rules."},
+            {"stage": "Operational Status Observed", "count": 11750, "pct": 91.5, "step_pct": 94.1, "desc": "Live ADS-B and airport departure telemetry matched."},
+            {"stage": "Fresh Observation (<15m)", "count": 11620, "pct": 90.5, "step_pct": 98.9, "desc": "Quote age verified within real-time latency budget."},
+            {"stage": "Index-Eligible Observation", "count": 11420, "pct": 88.9, "step_pct": 98.3, "desc": "Matched to elementary cell basket weights for Jevons aggregation."}
+        ]
+    }
+

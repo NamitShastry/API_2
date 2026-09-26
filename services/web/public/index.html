@@ -19,7 +19,7 @@
     <!-- Public Header Navigation -->
     <header class="public-nav">
       <div class="public-nav-container">
-        <div class="public-brand">
+        <div class="public-brand" id="brand-landing-logo" title="Return to Mission Control Overview" style="cursor: pointer;">
           <div class="brand-icon">✈</div>
           <span class="brand-title">AeroIndex</span>
           <span class="brand-sub">/ FareOS</span>
@@ -32,8 +32,7 @@
           <a href="#pricing" class="public-nav-link" id="link-pricing">Pricing & Tiers</a>
         </div>
         <div class="public-nav-actions">
-          <button class="btn btn-ghost" id="btn-landing-login">Log In</button>
-          <button class="btn btn-primary" id="btn-landing-launch">Launch Workspace →</button>
+          <button class="btn btn-primary btn-launch-prominent" id="btn-landing-launch"><span>Launch Workspace</span> <span class="launch-arrow">→</span></button>
         </div>
       </div>
     </header>
@@ -203,7 +202,7 @@
         <button class="btn btn-ghost" id="btn-auth-back">
           ← Back to AeroIndex
         </button>
-        <div class="public-brand">
+        <div class="public-brand" id="brand-landing-logo" title="Return to Mission Control Overview" style="cursor: pointer;">
           <div class="brand-icon">✈</div>
           <span class="brand-title">AeroIndex</span>
           <span class="brand-sub">/ FareOS</span>
@@ -289,7 +288,7 @@
       <aside class="workspace-sidebar">
         <!-- Brand & Workspace Switcher -->
         <div class="sidebar-brand-area">
-          <div class="sidebar-brand-top">
+          <div class="sidebar-brand-top" id="brand-workspace-logo" title="Return to Mission Control Overview" style="cursor: pointer;">
             <div class="brand-icon">✈</div>
             <div>
               <span class="brand-title">AeroIndex</span>
@@ -314,74 +313,74 @@
           <div class="sidebar-section-label">OVERVIEW & CORE ANALYTICS</div>
           
           <button class="sidebar-nav-item active" data-tab="overview">
-            <span class="nav-item-icon">📊</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
             <span class="nav-item-num">01</span>
             <span class="nav-item-text">Overview Mission Control</span>
           </button>
 
           <button class="sidebar-nav-item live-pulse-item" data-tab="delhi-live">
-            <span class="nav-item-icon">⚡</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
             <span class="nav-item-num">02</span>
             <span class="nav-item-text">Delhi Live Command Center</span>
             <span class="sidebar-badge-live">LIVE</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="explorer">
-            <span class="nav-item-icon">📈</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
             <span class="nav-item-num">03</span>
             <span class="nav-item-text">Index Explorer</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="routes">
-            <span class="nav-item-icon">🗺️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M16.2 7.8l-2 6.3-6.4 2.1 2.1-6.4z"/></svg></span>
             <span class="nav-item-num">04</span>
             <span class="nav-item-text">Route Intelligence & Heatmap</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="flights">
-            <span class="nav-item-icon">🛫</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-.6-.1-1.2.1-1.6.5l-.7.7 5.5 3.5-3 3-2.5-.5-.8.8 2.3 1.8 1.8 2.3.8-.8-.5-2.5 3-3 3.5 5.5.7-.7c.4-.4.6-1 .5-1.6z"/></svg></span>
             <span class="nav-item-num">05</span>
             <span class="nav-item-text">Flight Intelligence</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="elasticity">
-            <span class="nav-item-icon">📉</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
             <span class="nav-item-num">06</span>
             <span class="nav-item-text">Lead-Time Intelligence</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="carriers">
-            <span class="nav-item-icon">✈️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
             <span class="nav-item-num">07</span>
             <span class="nav-item-text">Carrier Intelligence</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="channels">
-            <span class="nav-item-icon">🌐</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
             <span class="nav-item-num">08</span>
             <span class="nav-item-text">Channel Intelligence</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="components">
-            <span class="nav-item-icon">📑</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></span>
             <span class="nav-item-num">09</span>
             <span class="nav-item-text">Fare Components</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="waterfall">
-            <span class="nav-item-icon">🌊</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
             <span class="nav-item-num">10</span>
             <span class="nav-item-text">What-Moved Waterfall</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="forecast">
-            <span class="nav-item-icon">🔮</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
             <span class="nav-item-num">11</span>
             <span class="nav-item-text">Nowcast & Forecast</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="anomalies">
-            <span class="nav-item-icon">⚠️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
             <span class="nav-item-num">12</span>
             <span class="nav-item-text">Anomaly Center</span>
           </button>
@@ -390,31 +389,31 @@
           <div class="sidebar-section-label">DATA & OPERATIONS</div>
 
           <button class="sidebar-nav-item" data-tab="coverage">
-            <span class="nav-item-icon">🌐</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
             <span class="nav-item-num">13</span>
             <span class="nav-item-text">National Coverage Matrix</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="sources">
-            <span class="nav-item-icon">🔌</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
             <span class="nav-item-num">14</span>
             <span class="nav-item-text">Source Health & Quotas</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="pipeline">
-            <span class="nav-item-icon">⚙️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
             <span class="nav-item-num">15</span>
             <span class="nav-item-text">Pipeline Monitor</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="quality">
-            <span class="nav-item-icon">🛡️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
             <span class="nav-item-num">16</span>
             <span class="nav-item-text">Quality Review (R01-R12)</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="events">
-            <span class="nav-item-icon">📅</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
             <span class="nav-item-num">17</span>
             <span class="nav-item-text">Festival & Event Calendar</span>
           </button>
@@ -423,37 +422,37 @@
           <div class="sidebar-section-label">RESEARCH & MODELING</div>
 
           <button class="sidebar-nav-item" data-tab="backtest">
-            <span class="nav-item-icon">🧪</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2v7.31L4.69 16.5A2 2 0 0 0 6.23 19.5h11.54a2 2 0 0 0 1.54-3L14 9.31V2"/></svg></span>
             <span class="nav-item-num">18</span>
             <span class="nav-item-text">Backtest Lab (DGCA Replay)</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="scenario">
-            <span class="nav-item-icon">🎛️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg></span>
             <span class="nav-item-num">19</span>
             <span class="nav-item-text">Scenario & Shock Lab</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="savings">
-            <span class="nav-item-icon">💰</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
             <span class="nav-item-num">20</span>
             <span class="nav-item-text">Booking Savings Simulator</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="cpi-bridge">
-            <span class="nav-item-icon">🏛️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="21" x2="21" y2="21"/><path d="M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 2l10 8H2l10-8z"/></svg></span>
             <span class="nav-item-num">21</span>
             <span class="nav-item-text">CPI Transport Bridge</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="saved-views">
-            <span class="nav-item-icon">⭐</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
             <span class="nav-item-num">22</span>
             <span class="nav-item-text">Saved Watchlists & Views</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="comparison">
-            <span class="nav-item-icon">⚖️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
             <span class="nav-item-num">23</span>
             <span class="nav-item-text">Comparison Workspace</span>
           </button>
@@ -462,19 +461,19 @@
           <div class="sidebar-section-label">GOVERNANCE & TRUST</div>
 
           <button class="sidebar-nav-item" data-tab="methodology">
-            <span class="nav-item-icon">📖</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
             <span class="nav-item-num">24</span>
             <span class="nav-item-text">Methodology & Formulas</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="provenance">
-            <span class="nav-item-icon">🔍</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
             <span class="nav-item-num">25</span>
             <span class="nav-item-text">Data Lineage & Provenance</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="reproduce">
-            <span class="nav-item-icon">🧮</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/></svg></span>
             <span class="nav-item-num">26</span>
             <span class="nav-item-text">Reproduce Number Sandbox</span>
           </button>
@@ -486,7 +485,7 @@
           </button>
 
           <button class="sidebar-nav-item" data-tab="audit-log">
-            <span class="nav-item-icon">🔐</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
             <span class="nav-item-num">28</span>
             <span class="nav-item-text">Tamper-Evident Audit Log</span>
           </button>
@@ -495,7 +494,7 @@
           <div class="sidebar-section-label">PLATFORM & DEVELOPERS</div>
 
           <button class="sidebar-nav-item" data-tab="reports">
-            <span class="nav-item-icon">📄</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
             <span class="nav-item-num">29</span>
             <span class="nav-item-text">Report Builder (PDF / SDMX)</span>
           </button>
@@ -528,25 +527,25 @@
           <div class="sidebar-section-label">ADMINISTRATION</div>
 
           <button class="sidebar-nav-item" data-tab="users">
-            <span class="nav-item-icon">👥</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
             <span class="nav-item-num">34</span>
             <span class="nav-item-text">Users & RBAC Roles</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="security">
-            <span class="nav-item-icon">🛡️</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
             <span class="nav-item-num">35</span>
             <span class="nav-item-text">Security, MFA & Sessions</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="billing">
-            <span class="nav-item-icon">💳</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
             <span class="nav-item-num">36</span>
             <span class="nav-item-text">Billing, Quotas & Plans</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="tenant-settings">
-            <span class="nav-item-icon">🏢</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
             <span class="nav-item-num">37</span>
             <span class="nav-item-text">Tenant Settings</span>
           </button>
@@ -555,7 +554,7 @@
           <div class="sidebar-section-label">INTELLIGENCE AGENT</div>
 
           <button class="sidebar-nav-item ai-agent-item" data-tab="ai-analyst">
-            <span class="nav-item-icon">✦</span>
+            <span class="nav-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></span>
             <span class="nav-item-num">38</span>
             <span class="nav-item-text">Ask AeroIndex AI Analyst</span>
           </button>
@@ -748,15 +747,22 @@
               <div class="glass-panel chart-container">
                 <div class="chart-header">
                   <div>
+                    <div class="chart-header-pre">REAL-TIME TIME-SERIES ANALYTICS</div>
                     <h2 class="chart-title">AeroIndex Trend — National Composite (APIX-NAT-COMP)</h2>
                     <div class="chart-subtitle">
-                      Geometric Jevons calculation with DGCA passenger traffic weighting
+                      Geometric Jevons calculation with DGCA passenger traffic weighting & volatility confidence bands
                     </div>
                   </div>
-                  <div class="chart-controls">
-                    <button class="filter-btn" data-days="7">7D</button>
-                    <button class="filter-btn active" data-days="30">30D</button>
-                    <button class="filter-btn" data-days="90">90D</button>
+                  <div class="chart-controls-group">
+                    <div class="metric-toggle-group">
+                      <button class="metric-toggle-btn active" id="btn-chart-metric-index" onclick="switchOverviewChartMetric('INDEX')">National Index</button>
+                      <button class="metric-toggle-btn" id="btn-chart-metric-volatility" onclick="switchOverviewChartMetric('VOLATILITY')">Route Volatility</button>
+                    </div>
+                    <div class="chart-controls">
+                      <button class="filter-btn" data-days="7">7D</button>
+                      <button class="filter-btn active" data-days="30">30D</button>
+                      <button class="filter-btn" data-days="90">90D</button>
+                    </div>
                   </div>
                 </div>
                 
@@ -902,17 +908,103 @@
 
             <!-- Delhi Visual Analytics Split: Airport Flow Map & Price Movement Feed -->
             <div class="grid-2-col">
-              <!-- Radial Flow Map -->
-              <div class="glass-panel flow-map-container">
+              <!-- Radial Flow Map & Active Telemetry Dashboard -->
+              <div class="glass-panel flow-map-container" style="display: flex; flex-direction: column; gap: 1rem;">
                 <div class="chart-header">
                   <div>
+                    <div class="chart-header-pre">REAL-TIME RADIAL RADAR & CORRIDOR PRESSURE</div>
                     <h3 class="chart-title">Delhi Radial Corridor Flow & Price Pressure</h3>
-                    <div class="chart-subtitle">Thickness represents scheduled daily frequency; node size indicates seat volume</div>
+                    <div class="chart-subtitle">Thickness represents scheduled daily frequency; node size indicates seat volume; color shows price pressure</div>
+                  </div>
+                  <span class="brand-badge-mini" id="delhi-radar-status">LIVE TELEMETRY</span>
+                </div>
+                
+                <!-- SVG Radial Visualizer -->
+                <div style="position: relative; width: 100%; height: 320px; background: #0B132B; border-radius: 8px; overflow: hidden;">
+                  <svg class="delhi-radial-map-svg" viewBox="0 0 600 420" id="delhi-radial-svg" style="width: 100%; height: 100%;">
+                    <!-- Generated dynamically in JS -->
+                  </svg>
+                  <div class="delhi-radar-legend">
+                    <span class="legend-chip surge"><span class="chip-dot"></span> Surge (>+5%)</span>
+                    <span class="legend-chip stable"><span class="chip-dot"></span> Stable (±5%)</span>
+                    <span class="legend-chip ease"><span class="chip-dot"></span> Ease (<-5%)</span>
                   </div>
                 </div>
-                <svg class="delhi-radial-map-svg" viewBox="0 0 600 460" id="delhi-radial-svg">
-                  <!-- Generated dynamically in JS -->
-                </svg>
+
+                <!-- Rich Dynamic Telemetry Content: 4 Metric Cards -->
+                <div class="delhi-telemetry-strip-grid">
+                  <div class="delhi-tel-card">
+                    <div class="tel-card-label">AIRBORNE / TAXIING</div>
+                    <div class="tel-card-val" id="tel-airborne-count">84 Active</div>
+                    <div class="tel-card-sub">Runway 28/29L + 11/29</div>
+                  </div>
+                  <div class="delhi-tel-card">
+                    <div class="tel-card-label">PEAK RUNWAY LOAD</div>
+                    <div class="tel-card-val text-blue">38 Mvts/hr</div>
+                    <div class="tel-card-sub">Optimal capacity</div>
+                  </div>
+                  <div class="delhi-tel-card">
+                    <div class="tel-card-label">AVG DEPARTURE DELAY</div>
+                    <div class="tel-card-val text-emerald">+4.2 min</div>
+                    <div class="tel-card-sub">On-Time Index 94.2%</div>
+                  </div>
+                  <div class="delhi-tel-card">
+                    <div class="tel-card-label">PRICE PRESSURE INDEX</div>
+                    <div class="tel-card-val text-rose">+3.4% vs 14D</div>
+                    <div class="tel-card-sub">Moderate upward yield</div>
+                  </div>
+                </div>
+
+                <!-- Live Corridor Congestion & Schedule Distribution -->
+                <div class="delhi-corridor-congestion-box">
+                  <div class="congestion-header">
+                    <span class="congestion-title">LIVE CORRIDOR CONGESTION &amp; ON-TIME RELIABILITY</span>
+                    <span class="congestion-meta">UPDATED 10s AGO</span>
+                  </div>
+                  <div class="congestion-rows">
+                    <div class="congestion-row">
+                      <div class="corridor-id"><strong>DEL → BOM</strong> <span class="corridor-flts">68 flts</span></div>
+                      <div class="congestion-bar-track"><div class="congestion-bar-fill fill-rose" style="width: 88%;"></div></div>
+                      <div class="corridor-stat text-rose">+8.2% ₹4,890</div>
+                      <div class="corridor-ontime">92% On-Time</div>
+                    </div>
+                    <div class="congestion-row">
+                      <div class="corridor-id"><strong>DEL → BLR</strong> <span class="corridor-flts">44 flts</span></div>
+                      <div class="congestion-bar-track"><div class="congestion-bar-fill fill-rose" style="width: 94%;"></div></div>
+                      <div class="corridor-stat text-rose">+14.8% ₹6,240</div>
+                      <div class="corridor-ontime">88% On-Time</div>
+                    </div>
+                    <div class="congestion-row">
+                      <div class="corridor-id"><strong>DEL → HYD</strong> <span class="corridor-flts">32 flts</span></div>
+                      <div class="congestion-bar-track"><div class="congestion-bar-fill fill-emerald" style="width: 65%;"></div></div>
+                      <div class="corridor-stat text-emerald">-5.4% ₹4,560</div>
+                      <div class="corridor-ontime">96% On-Time</div>
+                    </div>
+                    <div class="congestion-row">
+                      <div class="corridor-id"><strong>DEL → CCU</strong> <span class="corridor-flts">28 flts</span></div>
+                      <div class="congestion-bar-track"><div class="congestion-bar-fill fill-blue" style="width: 72%;"></div></div>
+                      <div class="corridor-stat text-blue">+4.2% ₹5,120</div>
+                      <div class="corridor-ontime">94% On-Time</div>
+                    </div>
+                    <div class="congestion-row">
+                      <div class="corridor-id"><strong>DEL → SXR</strong> <span class="corridor-flts">24 flts</span></div>
+                      <div class="congestion-bar-track"><div class="congestion-bar-fill fill-amber" style="width: 80%;"></div></div>
+                      <div class="corridor-stat text-amber">+7.5% ₹4,650</div>
+                      <div class="corridor-ontime">CAT-III Fog</div>
+                    </div>
+                  </div>
+
+                  <!-- Schedule Distribution Banks -->
+                  <div class="delhi-banks-box">
+                    <span class="banks-label">DEPARTURE BANK LOAD PROFILE:</span>
+                    <div class="banks-bar">
+                      <div class="bank-seg bank-morning" style="width: 34%;" title="Morning (05:00-09:00): 34%">05-09h (34%)</div>
+                      <div class="bank-seg bank-midday" style="width: 28%;" title="Midday (09:00-15:00): 28%">09-15h (28%)</div>
+                      <div class="bank-seg bank-evening" style="width: 30%;" title="Evening (15:00-20:00): 30%">15-20h (30%)</div>
+                      <div class="bank-seg bank-night" style="width: 8%;" title="Night (20:00-02:00): 8%">Night (8%)</div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Live Price Movement Feed -->
@@ -7579,33 +7671,717 @@
             </div>
           </section>
 
-          <!-- TAB 13: NATIONAL COVERAGE MATRIX -->
+          <!-- TAB 13: NATIONAL COVERAGE OBSERVATORY (22 CHAPTERS) -->
           <section class="tab-pane" id="pane-coverage">
-            <div class="glass-panel table-card">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">National Schedule, Fare & Status Coverage Matrix</h2>
-                  <div class="chart-subtitle">Current domestic Indian aviation inventory across all major operating carriers</div>
+            <div class="cov-observatory-wrapper">
+
+              <!-- CHAPTER 01: COMMAND HEADER -->
+              <div class="cov-command-header">
+                <div class="cov-header-left">
+                  <div class="cov-header-eyebrow">
+                    <span class="cov-pulse-beacon"></span>
+                    <span>NATIONAL AVIATION OBSERVABILITY CONTROL CENTER</span>
+                    <span class="cov-badge cov-badge-calc">ENGINE: CALCULATED</span>
+                    <span class="cov-badge cov-badge-live">STATE: SIMULATED_LIVE</span>
+                  </div>
+                  <h1 class="cov-header-title">NATIONAL COVERAGE OBSERVATORY</h1>
+                  <p class="cov-header-subtitle">
+                    Real-time visibility into India's domestic schedule, fare, operational status, source, and freshness coverage.
+                  </p>
+                </div>
+                <div class="cov-header-right">
+                  <div class="cov-header-meta-grid">
+                    <div class="cov-meta-cell">
+                      <span class="cov-meta-label">LAST UPDATED</span>
+                      <span class="cov-meta-val" id="cov-meta-updated">14:10:17 IST</span>
+                    </div>
+                    <div class="cov-meta-cell">
+                      <span class="cov-meta-label">MARKET UNIVERSE</span>
+                      <span class="cov-meta-val" id="cov-meta-universe">12,842 FLIGHTS</span>
+                    </div>
+                    <div class="cov-meta-cell">
+                      <span class="cov-meta-label">OPERATING CARRIERS</span>
+                      <span class="cov-meta-val" id="cov-meta-carriers">6 / 6 ACTIVE</span>
+                    </div>
+                    <div class="cov-meta-cell">
+                      <span class="cov-meta-label">DOMESTIC ROUTES</span>
+                      <span class="cov-meta-val" id="cov-meta-routes">1,284 ROUTES</span>
+                    </div>
+                    <div class="cov-meta-cell">
+                      <span class="cov-meta-label">AIRPORT NODES</span>
+                      <span class="cov-meta-val" id="cov-meta-airports">79 AIRPORTS</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="coverage-metrics-strip" id="coverage-matrix-stats">
-                <!-- Populated dynamically via JS -->
+
+              <!-- CHAPTER 02: NATIONAL COVERAGE PULSE -->
+              <div class="cov-pulse-strip" id="coverage-matrix-stats">
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('SCHEDULE')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">SCHEDULE DISCOVERY</div>
+                  <div class="cov-pulse-val" id="cov-pulse-schedule">98.2%</div>
+                  <div class="cov-pulse-denom">12,610 / 12,842 instances</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-green" style="width: 98.2%;"></div></div>
+                  <div class="cov-pulse-sub">Direct API &amp; GDS timetables</div>
+                </div>
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('FARE')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">FARE OBSERVABILITY</div>
+                  <div class="cov-pulse-val" id="cov-pulse-fare">92.4%</div>
+                  <div class="cov-pulse-denom">11,866 / 12,842 instances</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-blue" style="width: 92.4%;"></div></div>
+                  <div class="cov-pulse-sub">≥1 valid fare quote</div>
+                </div>
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('STATUS')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">OPERATIONAL STATUS</div>
+                  <div class="cov-pulse-val" id="cov-pulse-status">91.5%</div>
+                  <div class="cov-pulse-denom">11,750 / 12,842 instances</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-cyan" style="width: 91.5%;"></div></div>
+                  <div class="cov-pulse-sub">Live departure &amp; ADS-B</div>
+                </div>
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('FRESHNESS')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">TEMPORAL FRESHNESS</div>
+                  <div class="cov-pulse-val" id="cov-pulse-freshness">90.5%</div>
+                  <div class="cov-pulse-denom">11,620 / 12,842 instances</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-purple" style="width: 90.5%;"></div></div>
+                  <div class="cov-pulse-sub">&lt;15 min observation age</div>
+                </div>
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('ROUTES')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">ROUTE COVERAGE</div>
+                  <div class="cov-pulse-val" id="cov-pulse-routes">97.2%</div>
+                  <div class="cov-pulse-denom">1,248 / 1,284 corridors</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-emerald" style="width: 97.2%;"></div></div>
+                  <div class="cov-pulse-sub">Continuously monitored</div>
+                </div>
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('CARRIERS')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">CARRIER COVERAGE</div>
+                  <div class="cov-pulse-val" id="cov-pulse-carriers">100%</div>
+                  <div class="cov-pulse-denom">6 / 6 operating airlines</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-gold" style="width: 100%;"></div></div>
+                  <div class="cov-pulse-sub">6E, AI, QP, SG, IX, I5</div>
+                </div>
+                <div class="cov-pulse-card" onclick="inspectCoverageMetric('SOURCES')" title="Click to view denominator and formula">
+                  <div class="cov-pulse-label">SOURCE COVERAGE</div>
+                  <div class="cov-pulse-val" id="cov-pulse-sources">88.9%</div>
+                  <div class="cov-pulse-denom">8 / 9 active adapters</div>
+                  <div class="cov-pulse-progress"><div class="cov-progress-fill cov-fill-teal" style="width: 88.9%;"></div></div>
+                  <div class="cov-pulse-sub">1 secondary adapter sync</div>
+                </div>
               </div>
-              <table class="heatmap-table" id="coverage-matrix-table">
-                <thead>
-                  <tr>
-                    <th>Operating Carrier</th>
-                    <th>Schedule Discovered</th>
-                    <th>Fare Observed</th>
-                    <th>Operational Status</th>
-                    <th>Source Provider</th>
-                    <th>Freshness</th>
-                  </tr>
-                </thead>
-                <tbody id="coverage-matrix-tbody">
-                  <!-- Populated dynamically via JS -->
-                </tbody>
-              </table>
+
+              <!-- CHAPTER 03: MARKET OBSERVABILITY FUNNEL -->
+              <div class="cov-section-card">
+                <div class="cov-section-header">
+                  <div>
+                    <div class="cov-sec-tag">SIGNATURE VISUAL 01 · MARKET ATTRITION ENGINE</div>
+                    <h2 class="cov-sec-title">Market Observability Funnel</h2>
+                    <p class="cov-sec-desc">
+                      Survival funnel from national domestic flight universe down to index-eligible quotes. Click any stage to inspect denominators and loss reasons.
+                    </p>
+                  </div>
+                  <div class="cov-header-actions">
+                    <button class="cov-btn cov-btn-sm active" id="cov-funnel-mode-pct" onclick="toggleFunnelMetric('pct')">SURVIVAL %</button>
+                    <button class="cov-btn cov-btn-sm" id="cov-funnel-mode-count" onclick="toggleFunnelMetric('count')">ABSOLUTE COUNT</button>
+                  </div>
+                </div>
+
+                <div class="cov-funnel-track-wrapper" id="cov-funnel-container">
+                  <!-- Rendered dynamically by renderCoverageFunnel() -->
+                </div>
+
+                <!-- Funnel Stage Diagnostic Drawer -->
+                <div class="cov-funnel-diagnostic" id="cov-funnel-diagnostic-box" style="display: none;">
+                  <div class="cov-diag-header">
+                    <div class="cov-diag-title" id="cov-diag-title">STAGE DIAGNOSTIC: FARE OBSERVED</div>
+                    <button class="cov-diag-close" onclick="closeFunnelDiagnostic()">&times;</button>
+                  </div>
+                  <div class="cov-diag-grid" id="cov-diag-grid">
+                    <!-- Dynamically populated -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 04: INDIA COVERAGE MAP (WHERE AEROINDEX CAN SEE) -->
+              <div class="cov-section-card">
+                <div class="cov-section-header">
+                  <div>
+                    <div class="cov-sec-tag">SIGNATURE VISUAL 02 · GEOSPATIAL OBSERVABILITY</div>
+                    <h2 class="cov-sec-title">Where AeroIndex Can See — National Observability Map</h2>
+                    <p class="cov-sec-desc">
+                      Geographic coverage topology. Node size encodes flight universe volume; inner fill represents observability %; outer halo encodes temporal freshness.
+                    </p>
+                  </div>
+                  <div class="cov-header-actions">
+                    <div class="cov-btn-group">
+                      <button class="cov-btn cov-btn-sm active" onclick="setCoverageMapMode('OVERALL', this)">OVERALL COVERAGE</button>
+                      <button class="cov-btn cov-btn-sm" onclick="setCoverageMapMode('SCHEDULE', this)">SCHEDULE</button>
+                      <button class="cov-btn cov-btn-sm" onclick="setCoverageMapMode('FARES', this)">FARES</button>
+                      <button class="cov-btn cov-btn-sm" onclick="setCoverageMapMode('STATUS', this)">STATUS</button>
+                      <button class="cov-btn cov-btn-sm" onclick="setCoverageMapMode('FRESHNESS', this)">FRESHNESS</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cov-map-container">
+                  <div class="cov-map-svg-container" id="cov-map-svg-wrapper">
+                    <!-- SVG rendered by renderCoverageMap() -->
+                  </div>
+                  <div class="cov-map-legend">
+                    <div class="cov-legend-title">OBSERVABILITY SCALE</div>
+                    <div class="cov-legend-row"><span class="cov-dot cov-dot-high"></span> &gt;90% High Observability</div>
+                    <div class="cov-legend-row"><span class="cov-dot cov-dot-mid"></span> 75%–90% Partial Observability</div>
+                    <div class="cov-legend-row"><span class="cov-dot cov-dot-low"></span> &lt;75% Thinner Coverage</div>
+                    <div class="cov-legend-row"><span class="cov-dot cov-dot-offline"></span> Adapter Inactive</div>
+                    <div class="cov-legend-divider"></div>
+                    <div class="cov-legend-meta">Selected Airport: <strong id="cov-selected-airport-name">DEL (Indira Gandhi Int'l)</strong></div>
+                    <button class="cov-btn cov-btn-xs cov-btn-outline" onclick="openSelectedAirportProfile()">INSPECT AIRPORT DOSSIER</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DUAL COLUMN: CHAPTER 05 & CHAPTER 06 -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 05: AIRPORT × OBSERVABILITY MATRIX -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">SIGNATURE VISUAL 03 · NODAL MATRIX</div>
+                      <h3 class="cov-sec-title-sm">Airport × Observability Matrix</h3>
+                      <p class="cov-sec-desc-sm">Coverage breakdown across 16 primary Indian hubs and regional spokes.</p>
+                    </div>
+                  </div>
+                  <div class="cov-table-responsive cov-max-h-table">
+                    <table class="cov-table" id="cov-airport-matrix-table">
+                      <thead>
+                        <tr>
+                          <th>AIRPORT</th>
+                          <th>CITY</th>
+                          <th>SCHEDULE</th>
+                          <th>FARE</th>
+                          <th>STATUS</th>
+                          <th>FRESH</th>
+                          <th>SOURCES</th>
+                        </tr>
+                      </thead>
+                      <tbody id="cov-airport-matrix-tbody">
+                        <!-- Rendered dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- CHAPTER 06: CARRIER COVERAGE MATRIX (PRESERVING ORIGINAL TABLE) -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">PRESERVED &amp; EXPANDED MASTER TABLE</div>
+                      <h3 class="cov-sec-title-sm">Carrier Coverage &amp; Operating Status</h3>
+                      <p class="cov-sec-desc-sm">Full inventory across major domestic scheduled carriers with original fields.</p>
+                    </div>
+                  </div>
+                  <div class="cov-table-responsive cov-max-h-table">
+                    <table class="cov-table" id="coverage-matrix-table">
+                      <thead>
+                        <tr>
+                          <th>OPERATING CARRIER</th>
+                          <th>SCHEDULE DISCOVERED</th>
+                          <th>FARE OBSERVED</th>
+                          <th>OPERATIONAL STATUS</th>
+                          <th>SOURCE PROVIDER</th>
+                          <th>FRESHNESS</th>
+                        </tr>
+                      </thead>
+                      <tbody id="coverage-matrix-tbody">
+                        <!-- Rendered dynamically via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DUAL COLUMN: CHAPTER 07 & CHAPTER 08 -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 07: ROUTE COVERAGE HEATMAP -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">SIGNATURE VISUAL 04 · CORRIDOR OBSERVABILITY</div>
+                      <h3 class="cov-sec-title-sm">Route Coverage Heatmap</h3>
+                      <p class="cov-sec-desc-sm">Corridor visibility across top domestic routes. Click any row to view Route Intelligence.</p>
+                    </div>
+                    <div class="cov-header-actions">
+                      <select class="cov-select cov-select-sm" id="cov-route-heatmap-metric" onchange="renderRouteCoverageHeatmap()">
+                        <option value="FARE">Fare Observability %</option>
+                        <option value="SCHEDULE">Schedule %</option>
+                        <option value="STATUS">Status %</option>
+                        <option value="FRESHNESS">Freshness %</option>
+                        <option value="DENSITY">Quote Density (q/hr)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="cov-table-responsive cov-max-h-table">
+                    <table class="cov-table" id="cov-route-heatmap-table">
+                      <thead>
+                        <tr>
+                          <th>CORRIDOR</th>
+                          <th>CATEGORY</th>
+                          <th>OBSERVABILITY</th>
+                          <th>QUOTES / HR</th>
+                          <th>SOURCES</th>
+                          <th>STATUS</th>
+                        </tr>
+                      </thead>
+                      <tbody id="cov-route-heatmap-tbody">
+                        <!-- Rendered dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- CHAPTER 08: FLIGHT INSTANCE OBSERVABILITY -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">DISCRETE OBSERVABILITY STATES</div>
+                      <h3 class="cov-sec-title-sm">Flight Instance Observability</h3>
+                      <p class="cov-sec-desc-sm">Multi-state matrix classifying flight instances into observational completeness states.</p>
+                    </div>
+                  </div>
+                  <div class="cov-flight-states-grid">
+                    <div class="cov-state-card cov-state-full">
+                      <div class="cov-state-title">FULLY OBSERVED</div>
+                      <div class="cov-state-metric">11,210 <span class="cov-state-pct">87.3%</span></div>
+                      <div class="cov-state-signals">Schedule ✓ · Fare ✓ · Status ✓</div>
+                      <div class="cov-state-desc">Full operational &amp; pricing visibility. Index eligible.</div>
+                    </div>
+                    <div class="cov-state-card cov-state-partial">
+                      <div class="cov-state-title">FARE MISSING</div>
+                      <div class="cov-state-metric">884 <span class="cov-state-pct">6.9%</span></div>
+                      <div class="cov-state-signals">Schedule ✓ · Fare — · Status ✓</div>
+                      <div class="cov-state-desc">Timetable and operational flight active, but zero fare quote returned.</div>
+                    </div>
+                    <div class="cov-state-card cov-state-partial">
+                      <div class="cov-state-title">STATUS MISSING</div>
+                      <div class="cov-state-metric">482 <span class="cov-state-pct">3.8%</span></div>
+                      <div class="cov-state-signals">Schedule ✓ · Fare ✓ · Status —</div>
+                      <div class="cov-state-desc">Fares actively priced, but airport ADS-B/departure gate unobserved.</div>
+                    </div>
+                    <div class="cov-state-card cov-state-blind">
+                      <div class="cov-state-title">BOTH MISSING</div>
+                      <div class="cov-state-metric">266 <span class="cov-state-pct">2.1%</span></div>
+                      <div class="cov-state-signals">Schedule ✓ · Fare — · Status —</div>
+                      <div class="cov-state-desc">Discovered in seasonal timetable, zero telemetry observed today.</div>
+                    </div>
+                  </div>
+                  <div class="cov-depart-window-chart" id="cov-depart-window-box">
+                    <div class="cov-depart-title">TIME-OF-DAY DEPARTURE COVERAGE PROFILE</div>
+                    <div class="cov-depart-bars" id="cov-depart-bars-container">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DUAL COLUMN: CHAPTER 09 & CHAPTER 10 -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 09: NATIONAL FRESHNESS OBSERVATORY -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">TEMPORAL OBSOLESCENCE MONITOR</div>
+                      <h3 class="cov-sec-title-sm">National Freshness Observatory</h3>
+                      <p class="cov-sec-desc-sm">Observation age distribution across the domestic flight universe.</p>
+                    </div>
+                  </div>
+                  <div class="cov-freshness-dist-container">
+                    <div class="cov-freshness-histogram" id="cov-freshness-histogram">
+                      <!-- Populated dynamically -->
+                    </div>
+                    <div class="cov-freshness-metrics-row">
+                      <div class="cov-fresh-stat">
+                        <span class="cov-fresh-lbl">MEDIAN AGE</span>
+                        <strong class="cov-fresh-val">4m 12s</strong>
+                      </div>
+                      <div class="cov-fresh-stat">
+                        <span class="cov-fresh-lbl">P90 TAIL AGE</span>
+                        <strong class="cov-fresh-val">14m 38s</strong>
+                      </div>
+                      <div class="cov-fresh-stat">
+                        <span class="cov-fresh-lbl">P99 LATENCY</span>
+                        <strong class="cov-fresh-val">28m 10s</strong>
+                      </div>
+                      <div class="cov-fresh-stat">
+                        <span class="cov-fresh-lbl">STALE RATE (&gt;30m)</span>
+                        <strong class="cov-fresh-val text-amber">2.1%</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CHAPTER 10 & 11: SOURCE COVERAGE & REDUNDANCY -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">DATA INGESTION ARCHITECTURE</div>
+                      <h3 class="cov-sec-title-sm">Source Contribution &amp; Overlap</h3>
+                      <p class="cov-sec-desc-sm">How individual adapters supply the national flight universe, and multi-source redundancy.</p>
+                    </div>
+                  </div>
+                  <div class="cov-source-contrib-bars" id="cov-source-contrib-bars">
+                    <!-- Rendered dynamically -->
+                  </div>
+                  <div class="cov-redundancy-box">
+                    <div class="cov-redundancy-title">MULTI-SOURCE REDUNDANCY DISTRIBUTION</div>
+                    <div class="cov-redundancy-track">
+                      <div class="cov-red-seg cov-red-1" style="width: 12.4%;" title="1 Source: 12.4%">12.4% (1 Source)</div>
+                      <div class="cov-red-seg cov-red-2" style="width: 38.6%;" title="2 Sources: 38.6%">38.6% (2 Sources)</div>
+                      <div class="cov-red-seg cov-red-3" style="width: 34.2%;" title="3 Sources: 34.2%">34.2% (3 Sources)</div>
+                      <div class="cov-red-seg cov-red-4" style="width: 14.8%;" title="4+ Sources: 14.8%">14.8% (4+)</div>
+                    </div>
+                    <div class="cov-redundancy-note">
+                      A route observed by multiple sources independently verifies price discovery and insulates the index against single-provider outages.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DUAL COLUMN: CHAPTER 12, 13 & CHAPTER 14 -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 12 & 13: SCHEDULE TO FARE & INDEX ELIGIBILITY -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">CONVERSION &amp; ELIGIBILITY PIPELINE</div>
+                      <h3 class="cov-sec-title-sm">Schedule $	o$ Fare $	o$ Index Eligibility</h3>
+                      <p class="cov-sec-desc-sm">The pipeline gate converting raw operational discovery into axiomatic index input.</p>
+                    </div>
+                  </div>
+                  <div class="cov-conversion-ladder">
+                    <div class="cov-ladder-step">
+                      <div class="cov-ladder-num">1</div>
+                      <div class="cov-ladder-body">
+                        <div class="cov-ladder-title">SCHEDULE DISCOVERY (12,610)</div>
+                        <div class="cov-ladder-sub">98.2% of DGCA domestic timetable discovered across airline and GDS feeds.</div>
+                      </div>
+                      <div class="cov-ladder-pct">98.2%</div>
+                    </div>
+                    <div class="cov-ladder-step">
+                      <div class="cov-ladder-num">2</div>
+                      <div class="cov-ladder-body">
+                        <div class="cov-ladder-title">FARE OBSERVABILITY (11,866)</div>
+                        <div class="cov-ladder-sub">94.1% of discovered schedules yield active commercial seat quotes.</div>
+                      </div>
+                      <div class="cov-ladder-pct">92.4%</div>
+                    </div>
+                    <div class="cov-ladder-step">
+                      <div class="cov-ladder-num">3</div>
+                      <div class="cov-ladder-body">
+                        <div class="cov-ladder-title">VALID FARE / R01-R12 CLEAN (11,540)</div>
+                        <div class="cov-ladder-sub">Passed tariff bounds (₹1,200 floor, ₹65,000 ceiling, tax consistency).</div>
+                      </div>
+                      <div class="cov-ladder-pct">89.9%</div>
+                    </div>
+                    <div class="cov-ladder-step">
+                      <div class="cov-ladder-num">4</div>
+                      <div class="cov-ladder-body">
+                        <div class="cov-ladder-title">INDEX-ELIGIBLE OBSERVATION (11,420)</div>
+                        <div class="cov-ladder-sub">Matched to 20-route DGCA basket weights and lead buckets (L01-L60).</div>
+                      </div>
+                      <div class="cov-ladder-pct">88.9%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CHAPTER 14: SIGNATURE VISUAL 05 · COVERAGE LOSS WATERFALL -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">SIGNATURE VISUAL 05 · WHERE OBSERVATIONS DISAPPEAR</div>
+                      <h3 class="cov-sec-title-sm">Coverage Loss Waterfall</h3>
+                      <p class="cov-sec-desc-sm">Traceable decomposition of observation loss from ingestion to Jevons calculation.</p>
+                    </div>
+                  </div>
+                  <div class="cov-waterfall-container" id="cov-waterfall-bars">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 15: WHERE AEROINDEX CANNOT SEE (COVERAGE GAP ANALYSIS) -->
+              <div class="cov-section-card">
+                <div class="cov-section-header">
+                  <div>
+                    <div class="cov-sec-tag">DIAGNOSTIC VISIBILITY GAPS</div>
+                    <h2 class="cov-sec-title">Where AeroIndex Cannot See — National Gap Analysis</h2>
+                    <p class="cov-sec-desc">
+                      Exposing the blind spots of the data collection engine. Explicit tracking of unmonitored flights, stale feeds, and adapter dropouts.
+                    </p>
+                  </div>
+                  <div class="cov-header-actions">
+                    <div class="cov-btn-group">
+                      <button class="cov-btn cov-btn-sm active" onclick="filterCoverageGaps('ALL', this)">ALL GAPS (7)</button>
+                      <button class="cov-btn cov-btn-sm" onclick="filterCoverageGaps('FARE', this)">FARE MISSING</button>
+                      <button class="cov-btn cov-btn-sm" onclick="filterCoverageGaps('STATUS', this)">STATUS MISSING</button>
+                      <button class="cov-btn cov-btn-sm" onclick="filterCoverageGaps('STALE', this)">STALE OBSERVATION</button>
+                      <button class="cov-btn cov-btn-sm" onclick="filterCoverageGaps('OFFLINE', this)">PROVIDER OFFLINE</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cov-table-responsive">
+                  <table class="cov-table" id="cov-gap-table">
+                    <thead>
+                      <tr>
+                        <th>CORRIDOR</th>
+                        <th>CARRIER</th>
+                        <th>FLIGHT</th>
+                        <th>MISSING DATA TYPE</th>
+                        <th>EXPECTED SOURCE</th>
+                        <th>LAST OBSERVED</th>
+                        <th>AGE</th>
+                        <th>DIAGNOSTIC REASON</th>
+                        <th>STATUS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="cov-gap-tbody">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- DUAL COLUMN: CHAPTER 16 & CHAPTER 17 -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 16: LEAD-TIME OBSERVABILITY -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">TEMPORAL WINDOW COVERAGE</div>
+                      <h3 class="cov-sec-title-sm">Lead-Time Observability Matrix</h3>
+                      <p class="cov-sec-desc-sm">Fare quote observability across booking horizons (L60 to L01). Not a price curve.</p>
+                    </div>
+                  </div>
+                  <div class="cov-lead-obs-grid" id="cov-lead-obs-grid">
+                    <!-- Populated dynamically -->
+                  </div>
+                  <div class="cov-sec-footnote">
+                    Early horizons (L60/L30) have structurally lower fare observability (71.4%–86.2%) due to selective airline tariff publishing windows, compared to near-departure windows (L07-L01) at &gt;97%.
+                  </div>
+                </div>
+
+                <!-- CHAPTER 17: COVERAGE × INDEX WEIGHT MATRIX -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">REPRESENTATIVENESS SANITY MATRIX</div>
+                      <h3 class="cov-sec-title-sm">Coverage × AeroIndex Weight Quadrant</h3>
+                      <p class="cov-sec-desc-sm">Cross-referencing corridor observation coverage against DGCA basket weights.</p>
+                    </div>
+                  </div>
+                  <div class="cov-quadrant-wrapper">
+                    <div class="cov-quadrant-grid">
+                      <div class="cov-quad-cell cov-quad-hi-hi">
+                        <div class="cov-quad-title">HIGH COVERAGE / HIGH WEIGHT</div>
+                        <div class="cov-quad-corridors">DEL-BOM (98.4% · 18.5%), BOM-BLR (96.8% · 11.2%), DEL-BLR (97.1% · 9.8%)</div>
+                        <div class="cov-quad-badge text-emerald">OPTIMAL INDEX TRUST</div>
+                      </div>
+                      <div class="cov-quad-cell cov-quad-hi-lo">
+                        <div class="cov-quad-title">HIGH COVERAGE / LOW WEIGHT</div>
+                        <div class="cov-quad-corridors">DEL-PAT (94.2% · 1.4%), BOM-GOI (96.1% · 2.1%), DEL-SXR (88.4% · 1.8%)</div>
+                        <div class="cov-quad-badge text-blue">HIGH OBSERVABILITY</div>
+                      </div>
+                      <div class="cov-quad-cell cov-quad-lo-hi">
+                        <div class="cov-quad-title">LOW COVERAGE / HIGH WEIGHT</div>
+                        <div class="cov-quad-corridors">NONE ACTIVE (Guarded by 80% elementary cell coverage circuit)</div>
+                        <div class="cov-quad-badge text-amber">CIRCUIT GUARD ACTIVE</div>
+                      </div>
+                      <div class="cov-quad-cell cov-quad-lo-lo">
+                        <div class="cov-quad-title">LOW COVERAGE / LOW WEIGHT</div>
+                        <div class="cov-quad-corridors">DEL-DED (72.4% · 0.4%), DEL-IXL (68.9% · 0.3%)</div>
+                        <div class="cov-quad-badge text-muted">PERIPHERAL REGIONAL</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DUAL COLUMN: CHAPTER 18 & CHAPTER 19 -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 18: NATIONAL COVERAGE TIMELINE -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">LONGITUDINAL STABILITY</div>
+                      <h3 class="cov-sec-title-sm">National Coverage Timeline</h3>
+                      <p class="cov-sec-desc-sm">Multi-horizon coverage tracking over 24 Hours, 7 Days, and 30 Days.</p>
+                    </div>
+                    <div class="cov-header-actions">
+                      <div class="cov-btn-group">
+                        <button class="cov-btn cov-btn-sm active" onclick="setCoverageTimelineHorizon(24, this)">24H</button>
+                        <button class="cov-btn cov-btn-sm" onclick="setCoverageTimelineHorizon(7, this)">7D</button>
+                        <button class="cov-btn cov-btn-sm" onclick="setCoverageTimelineHorizon(30, this)">30D</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cov-timeline-svg-container" id="cov-timeline-svg-box">
+                    <!-- SVG rendered dynamically -->
+                  </div>
+                </div>
+
+                <!-- CHAPTER 19: COVERAGE INTERRUPTION EVENTS -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">INCIDENT &amp; TELEMETRY LOG</div>
+                      <h3 class="cov-sec-title-sm">Coverage Interruption Log</h3>
+                      <p class="cov-sec-desc-sm">Timestamped telemetry events tracking coverage drops, source pauses, and restorations.</p>
+                    </div>
+                  </div>
+                  <div class="cov-incident-list" id="cov-incident-list">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 20: COVERAGE FORENSICS WORKSPACE (TABBED DOSSIER) -->
+              <div class="cov-section-card">
+                <div class="cov-section-header">
+                  <div>
+                    <div class="cov-sec-tag">DEEP DIVE DOSSIER</div>
+                    <h2 class="cov-sec-title">Coverage Forensics Workspace</h2>
+                    <p class="cov-sec-desc">
+                      Institutional investigation workspace across all 10 observability dimensions. Click tabs to switch analytical views.
+                    </p>
+                  </div>
+                </div>
+                <div class="cov-forensics-tabs">
+                  <button class="cov-f-tab active" onclick="switchForensicsTab('AIRPORTS', this)">AIRPORTS</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('CARRIERS', this)">CARRIERS</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('ROUTES', this)">ROUTES</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('FLIGHTS', this)">FLIGHTS</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('FARES', this)">FARES</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('STATUS', this)">STATUS</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('SOURCES', this)">SOURCES</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('FRESHNESS', this)">FRESHNESS</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('QUALITY', this)">QUALITY</button>
+                  <button class="cov-f-tab" onclick="switchForensicsTab('PROVENANCE', this)">PROVENANCE</button>
+                </div>
+                <div class="cov-forensics-content" id="cov-forensics-pane">
+                  <!-- Dynamically populated based on active forensics tab -->
+                </div>
+              </div>
+
+              <!-- CHAPTER 21 & CHAPTER 22: PROVENANCE, REPRODUCE & ASK AEROINDEX -->
+              <div class="cov-dual-grid">
+                <!-- CHAPTER 21 & REPRODUCE THIS NUMBER -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">AXIOMATIC REPRODUCIBILITY</div>
+                      <h3 class="cov-sec-title-sm">Reproduce This Coverage Number</h3>
+                      <p class="cov-sec-desc-sm">Verify exact denominator, numerator, and formula calculation in an audited sandbox.</p>
+                    </div>
+                  </div>
+                  <div class="cov-reproduce-box">
+                    <div class="cov-reproduce-select-row">
+                      <label class="cov-label">SELECT COVERAGE METRIC TO REPRODUCE:</label>
+                      <select class="cov-select" id="cov-reproduce-metric-select" onchange="updateCoverageReproductionSandbox()">
+                        <option value="FARE">Fare Observability (92.4%)</option>
+                        <option value="SCHEDULE">Schedule Discovery (98.2%)</option>
+                        <option value="STATUS">Operational Status Observability (91.5%)</option>
+                        <option value="FRESHNESS">Temporal Freshness &lt;15m (90.5%)</option>
+                        <option value="ROUTE">Route Universe Coverage (97.2%)</option>
+                      </select>
+                    </div>
+
+                    <div class="cov-formula-calc-box" id="cov-formula-calc-box">
+                      <!-- Populated dynamically -->
+                    </div>
+
+                    <div class="cov-reproduce-action-row">
+                      <button class="cov-btn cov-btn-primary" onclick="executeCoverageReproductionCheck()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        REPRODUCE CALCULATION
+                      </button>
+                      <div class="cov-reproduce-result" id="cov-reproduce-result-tag">
+                        <span class="cov-tag-match">STATUS: VERIFIED (MATCH)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CHAPTER 22: ASK AEROINDEX AGENT -->
+                <div class="cov-section-card">
+                  <div class="cov-section-header">
+                    <div>
+                      <div class="cov-sec-tag">NATURAL LANGUAGE OBSERVABILITY CONSOLE</div>
+                      <h3 class="cov-sec-title-sm">Ask AeroIndex: Coverage &amp; Observability Agent</h3>
+                      <p class="cov-sec-desc-sm">Interrogate market universe, blind spots, provider contributions, and freshness.</p>
+                    </div>
+                  </div>
+                  <div class="cov-agent-box">
+                    <div class="cov-agent-chat-area" id="cov-agent-chat-area">
+                      <div class="cov-agent-msg cov-agent-msg-bot">
+                        <strong>AeroIndex Coverage Engine:</strong> Ready for observability queries. Ask about unmonitored routes, carrier data completeness, freshness latency percentiles, or source redundancy.
+                      </div>
+                    </div>
+                    <div class="cov-agent-input-row">
+                      <input type="text" class="cov-input" id="cov-agent-input" placeholder="e.g. Why is DEL-SXR fare coverage lower than DEL-BOM?" onkeydown="if(event.key==='Enter') submitCoverageAgentQuery()">
+                      <button class="cov-btn cov-btn-primary" onclick="submitCoverageAgentQuery()">ASK</button>
+                    </div>
+                    <div class="cov-agent-suggestions">
+                      <span class="cov-sugg-chip" onclick="runSuggestedCoverageQuery(this)">Why are some flights in timetable missing fares?</span>
+                      <span class="cov-sugg-chip" onclick="runSuggestedCoverageQuery(this)">Which carrier has the highest quote freshness?</span>
+                      <span class="cov-sugg-chip" onclick="runSuggestedCoverageQuery(this)">Show all offline routes with provider dropouts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 21 (PART 2): METHODOLOGICAL NOTICE & DATA HONESTY DISCLOSURE -->
+              <div class="cov-section-card cov-method-card">
+                <div class="cov-method-header">
+                  <div class="cov-method-badge">METHODOLOGICAL NOTICE · NCO-2026.1</div>
+                  <h3 class="cov-method-title">Aviation Coverage &amp; Observability Epistemological Standard</h3>
+                </div>
+                <div class="cov-method-grid">
+                  <div class="cov-method-col">
+                    <h4>1. Coverage vs. Source Health</h4>
+                    <p>
+                      Source Health measures whether a provider API or scraper adapter is functioning. National Coverage measures what portion of the domestic aviation market AeroIndex can actually observe as a result. A completely healthy source adapter may still produce sparse coverage if carrier inventory is throttled or restricted.
+                    </p>
+                  </div>
+                  <div class="cov-method-col">
+                    <h4>2. Coverage vs. Statistical Representativeness</h4>
+                    <p>
+                      Coverage is a prerequisite for interpreting an index, but coverage percentage alone does not establish statistical representativeness. AeroIndex strictly enforces DGCA passenger traffic weights and an 80% elementary cell coverage guard before computing Jevons composite price changes.
+                    </p>
+                  </div>
+                  <div class="cov-method-col">
+                    <h4>3. Explicit Denominator Disclosure</h4>
+                    <p>
+                      AeroIndex never reports arbitrary percentage scores. Every metric exposes its exact numerator (observed valid units) and denominator (discovered domestic market universe) alongside timestamped collection audit logs.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AIRPORT COVERAGE DETAIL DRAWER (MODAL) -->
+              <div class="cov-drawer-overlay" id="cov-airport-drawer-overlay" style="display: none;" onclick="closeAirportCoverageDrawer()">
+                <div class="cov-drawer-panel" onclick="event.stopPropagation()">
+                  <div class="cov-drawer-header">
+                    <div>
+                      <div class="cov-drawer-tag">AIRPORT COVERAGE DOSSIER</div>
+                      <h2 class="cov-drawer-title" id="cov-drawer-airport-title">DELHI (DEL) — COVERAGE PROFILE</h2>
+                      <div class="cov-drawer-sub" id="cov-drawer-airport-sub">Indira Gandhi International Airport · Northern Hub</div>
+                    </div>
+                    <button class="cov-drawer-close" onclick="closeAirportCoverageDrawer()">&times;</button>
+                  </div>
+                  <div class="cov-drawer-body" id="cov-drawer-airport-body">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
 
@@ -8279,39 +9055,80 @@
             </div>
           </section>
 
-          <!-- TAB 38: ASK AEROINDEX AI ANALYST (DEDICATED FULL VIEW) -->
+          <!-- TAB 38: ASK AEROINDEX AI ANALYST (CHATGPT-STYLE CONVERSATIONAL WORKSPACE) -->
           <section class="tab-pane" id="pane-ai-analyst">
-            <div class="glass-panel chat-full-workspace">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">Ask AeroIndex — Grounded Aviation Intelligence Assistant</h2>
-                  <div class="chart-subtitle">Grounded AI analyst using read-only database tools, verifiable citations, and automatic chart generation</div>
-                </div>
-                <span class="brand-badge">TOOL-GROUNDED · NO HALLUCINATIONS</span>
-              </div>
+            <div class="chatgpt-layout-container">
               
-              <div class="chat-messages-container" id="full-chat-messages">
-                <div class="ai-msg">
-                  <div class="ai-msg-header">
-                    <span class="ai-badge">✦ AeroIndex Analyst</span>
-                    <span class="ai-timestamp">Just now</span>
-                  </div>
-                  <div class="ai-msg-body">
-                    Welcome to AeroIndex Intelligence. I am grounded in live flight observations, the official DGCA basket, and Jevons mathematical models. Ask me anything about Delhi departures, price volatility, index attribution, or methodology.
-                  </div>
-                  <div class="ai-suggested-prompts">
-                    <button class="chat-prompt-pill" data-query="Why did APIx rise today?">Why did APIx rise today?</button>
-                    <button class="chat-prompt-pill" data-query="Show DEL-BOM live fare trends">Show DEL-BOM live fare trends</button>
-                    <button class="chat-prompt-pill" data-query="Calculate 30-day index volatility">Calculate 30-day index volatility</button>
-                    <button class="chat-prompt-pill" data-query="Explain the Jevons elementary formula">Explain Jevons formula</button>
+              <!-- Prominent COMING SOON Banner -->
+              <div class="chatgpt-coming-soon-banner">
+                <div class="coming-soon-badge-row">
+                  <span class="coming-soon-pill">✦ COMING SOON</span>
+                  <span class="coming-soon-release">LAUNCHING Q4 2026 · CLOSED PREVIEW ACTIVE</span>
+                </div>
+                <h3 class="coming-soon-title">AeroIndex Intelligence Agent &amp; Copilot</h3>
+                <p class="coming-soon-desc">
+                  An autonomous, tool-grounded conversational agent with direct read-only access to India\'s domestic airfare observation database, automated Jevons index decomposition, and instant chart synthesis. You can test interactive preview questions below.
+                </p>
+              </div>
+
+              <!-- Main Chat History Area -->
+              <div class="chatgpt-conversation-area" id="full-chat-messages">
+                <!-- Welcome Greeting -->
+                <div class="chatgpt-message bot">
+                  <div class="chatgpt-avatar bot">✦</div>
+                  <div class="chatgpt-bubble">
+                    <div class="chatgpt-sender">AeroIndex Copilot <span class="model-tag">AviationLLM-Preview</span></div>
+                    <div class="chatgpt-text">
+                      Hello! I\'m your aviation economics copilot. I analyze India\'s civil aviation pricing, track real-time volatility across the 140 DGCA elementary cells, and explain basis-point attribution movements. How can I help you today?
+                    </div>
+                    
+                    <!-- Suggested Prompt Cards -->
+                    <div class="chatgpt-prompt-cards">
+                      <button class="chatgpt-card-btn" data-query="Why did the National Composite Index move today?">
+                        <span class="card-icon">📈</span>
+                        <span class="card-title">Index Attribution</span>
+                        <span class="card-desc">Explain today\'s +145 bps index movement</span>
+                      </button>
+                      <button class="chatgpt-card-btn" data-query="Show DEL-BOM live fare trends and surge knee">
+                        <span class="card-icon">⚡</span>
+                        <span class="card-title">DEL-BOM Corridor</span>
+                        <span class="card-desc">Analyze spot fares and T-3 surge kneepoint</span>
+                      </button>
+                      <button class="chatgpt-card-btn" data-query="Which domestic routes are exhibiting elasticity inversions?">
+                        <span class="card-icon">⚠️</span>
+                        <span class="card-title">Anomaly Detection</span>
+                        <span class="card-desc">Detect elasticity inversions (L03 &lt; L14)</span>
+                      </button>
+                      <button class="chatgpt-card-btn" data-query="Decompose current base fare vs fuel surcharge shares">
+                        <span class="card-icon">📑</span>
+                        <span class="card-title">Fare Economics</span>
+                        <span class="card-desc">Unbundle Base, ATF, UDF and GST shares</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <form class="chat-input-bar" id="full-chat-form">
-                <input type="text" class="chat-text-input" id="full-chat-input" placeholder="Ask a data question (e.g. Why did APIx rise today? Which flight has the biggest surge?)..." />
-                <button type="submit" class="btn btn-primary" id="btn-full-chat-send">Ask Assistant</button>
-              </form>
+              <!-- Floating Bottom Prompt Input Bar (ChatGPT Style) -->
+              <div class="chatgpt-input-wrapper">
+                <form class="chatgpt-input-box" id="full-chat-form">
+                  <button type="button" class="chatgpt-attach-btn" title="Inspect Database Tools">✦</button>
+                  <input 
+                    type="text" 
+                    class="chatgpt-input-field" 
+                    id="full-chat-input" 
+                    placeholder="Ask AeroIndex anything about airfares, flights, routes, or index models..." 
+                    autocomplete="off"
+                  />
+                  <button type="submit" class="chatgpt-send-btn" id="btn-full-chat-send" title="Send message">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </button>
+                </form>
+                <div class="chatgpt-disclaimer">
+                  AeroIndex AI Copilot synthesizes live observations from 12,842 domestic flight instances. Verify figures with mathematical provenance before commercial filings.
+                </div>
+              </div>
+
             </div>
           </section>
 
