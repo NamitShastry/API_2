@@ -1642,42 +1642,754 @@
           </section>
 
 
-          <!-- TAB 05: FLIGHT INTELLIGENCE -->
+          <!-- TAB 05: FLIGHT INTELLIGENCE — ALL-INDIA AVIATION INTELLIGENCE TERMINAL -->
           <section class="tab-pane" id="pane-flights">
-            <div class="glass-panel table-card">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">All-India Domestic Flight Universe</h2>
-                  <div class="chart-subtitle">Comprehensive flight instance inventory, cabin classes, and decomposed fares</div>
+            <div class="flight-intel-story-wrapper">
+
+              <!-- =========================================================================
+                   SECTION 01: FLIGHT INTELLIGENCE COMMAND HEADER
+                   ========================================================================= -->
+              <div class="command-header-box">
+                <div class="story-eyebrow">
+                  <span class="eyebrow-dot"></span>
+                  <span>FLIGHT INTELLIGENCE / DOMESTIC OPERATING INVENTORY · DGCA REGISTRY BV-2026.1</span>
                 </div>
-                <div class="table-actions">
-                  <input type="text" class="table-search-input" id="flight-universe-search" placeholder="Search by flight number, carrier, origin, or destination..." />
+                <h1 class="story-title">All-India Domestic Flight Universe</h1>
+                <p class="story-subtitle">
+                  A flight-level intelligence layer covering domestic operating instances, schedules, cabins, fare families, availability signals, and decomposed pricing across the Indian aviation network.
+                </p>
+
+                <!-- High-Level Real-Time Metrics Strip -->
+                <div class="command-metrics-grid">
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="fstat-stream-status">● LIVE</span>
+                    <span class="command-stat-lbl">Stream Status</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="fstat-last-sync">10:42:18 IST</span>
+                    <span class="command-stat-lbl">Last Synchronized</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="fstat-flight-instances">12,842</span>
+                    <span class="command-stat-lbl">Flight Instances</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">6</span>
+                    <span class="command-stat-lbl">Carriers Monitored</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">79</span>
+                    <span class="command-stat-lbl">Domestic Airports</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">1,284</span>
+                    <span class="command-stat-lbl">Directional Routes</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="fstat-quote-observations">486,201</span>
+                    <span class="command-stat-lbl">Fare Observations</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" style="color: #6B21A8; font-size: 1.05rem;" id="fstat-data-mode">SIMULATED_LIVE</span>
+                    <span class="command-stat-lbl">Data State</span>
+                  </div>
                 </div>
               </div>
-              <div class="table-scroll-container">
-                <table class="heatmap-table" id="flight-universe-table">
-                  <thead>
-                    <tr>
-                      <th>Instance ID</th>
-                      <th>Flight</th>
-                      <th>Carrier</th>
-                      <th>Route</th>
-                      <th>Departure</th>
-                      <th>Arrival</th>
-                      <th>Fare Family</th>
-                      <th>Base Fare</th>
-                      <th>Total Fare</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="flight-universe-tbody">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
+
+              <!-- =========================================================================
+                   SECTION 02: ALL-INDIA DOMESTIC FLIGHT UNIVERSE (HERO NETWORK MAP)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">01</span>
+                    <span>ALL-INDIA AIRPORT NODES & DENSITY CORRIDORS</span>
+                  </div>
+                  <h2 class="story-title">India Domestic Flight Network</h2>
+                  <p class="story-subtitle">
+                    Spatial distribution of domestic flight instances across India's primary hub and spoke network. Node radius reflects total daily departures; connection thickness represents directional daily capacity. Hover any hub or route to inspect real-time metrics; click to filter downstream inventory.
+                  </p>
+                </div>
+
+                <div class="india-map-container" id="flight-map-hero-wrapper">
+                  <!-- Floating Map Top-Right Controls -->
+                  <div class="map-floating-panel map-floating-controls">
+                    <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy-900); text-transform: uppercase;">Hub Filter</div>
+                    <div style="display: flex; gap: 0.35rem;">
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;" id="btn-fmap-all" onclick="filterFlightMap('ALL')">All Hubs (79)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;" id="btn-fmap-metro" onclick="filterFlightMap('METRO')">Top 6 Metros</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;" id="btn-fmap-regional" onclick="filterFlightMap('REGIONAL')">Regional</button>
+                    </div>
+                  </div>
+
+                  <!-- Floating Map Bottom-Left Legend -->
+                  <div class="map-floating-panel map-floating-legend">
+                    <div style="font-weight: 700; color: var(--navy-900); margin-bottom: 0.2rem;">Network Legend</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 22px; height: 3.5px; background: #2563EB;"></span>
+                      <span>High Frequency Trunk (&gt;30 daily flts)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 22px; height: 2px; background: #60A5FA;"></span>
+                      <span>Secondary Metro Connector (15–30 flts)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 22px; height: 1.2px; background: #94A3B8;"></span>
+                      <span>Regional Spoke (&lt;15 flts)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #0F172A; border: 2px solid #F59E0B;"></span>
+                      <span>Primary Hub Airport (DEL, BOM, BLR)</span>
+                    </div>
+                  </div>
+
+                  <!-- SVG Map of All-India Network -->
+                  <svg class="india-flow-svg" viewBox="0 0 950 640" id="flight-hero-map-svg">
+                    <!-- Populated dynamically via JS renderFlightHeroMap() -->
+                  </svg>
+
+                  <!-- Dynamic Map Hover Tooltip -->
+                  <div class="map-interactive-tooltip" id="flight-map-tooltip">
+                    <!-- Populated dynamically on hover -->
+                  </div>
+                </div>
               </div>
+
+              <!-- =========================================================================
+                   SECTION 03: NETWORK OPERATING PULSE (TEMPORAL SCHEDULE WAVES)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">02</span>
+                    <span>24-HOUR TEMPORAL OPERATING PROFILE</span>
+                  </div>
+                  <h2 class="story-title">Network Operating Pulse</h2>
+                  <p class="story-subtitle">
+                    Temporal structure of domestic flight activity across the 24-hour operational cycle. Observe the distinct dual-bank departure structure: Morning Metro Outflow (06:00–09:00) and Evening Corporate Return (17:00–20:00). Click any hour block to filter the inventory below.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <span style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900);">Metric Display:</span>
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;" id="btn-pulse-dep" onclick="switchPulseMetric('DEPARTURES')">Scheduled Departures</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;" id="btn-pulse-arr" onclick="switchPulseMetric('ARRIVALS')">Scheduled Arrivals</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;" id="btn-pulse-quotes" onclick="switchPulseMetric('QUOTES')">Fare Observations</button>
+                    </div>
+                    <span class="data-state-pill state-calculated">TEMPORAL PROFILE</span>
+                  </div>
+
+                  <svg class="svg-chart" id="network-pulse-chart-svg" viewBox="0 0 950 260" style="width: 100%; height: auto; max-height: 280px;">
+                    <!-- Rendered dynamically via JS renderOperatingPulseChart() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 04: FLIGHT SEARCH + ADVANCED FILTERS
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">03</span>
+                    <span>COMMAND-LINE SEARCH &amp; MULTI-DIMENSIONAL FILTERS</span>
+                  </div>
+                  <h2 class="story-title">Flight Search &amp; Intelligence Filters</h2>
+                  <p class="story-subtitle">
+                    Universal command filter query across operating flight instances. Search by carrier code (6E, AI), flight number (6E-2041), corridor (DEL-BOM), cabin class, or fare family.
+                  </p>
+                </div>
+
+                <!-- Command Search Box -->
+                <div class="flight-search-container">
+                  <div class="flight-search-input-box">
+                    <span class="search-icon-hero">🔍</span>
+                    <input type="text" class="flight-search-input-large" id="flight-universe-search" placeholder="Search by flight number (e.g. 6E 2041, AI 805), carrier, origin, destination (BOM), cabin, or fare family..." autocomplete="off" />
+                    <span class="search-kbd-hint"><kbd>⌘K</kbd> or <kbd>/</kbd> to focus</span>
+                  </div>
+
+                  <!-- Advanced Filter Controls Ribbon -->
+                  <div class="flight-filter-ribbon">
+                    <div class="filter-control-item">
+                      <label>Origin Hub</label>
+                      <select class="filter-select-sleek" id="flt-filter-origin" onchange="applyFlightFilters()">
+                        <option value="ALL" selected>All Origins (DEL, BOM, BLR...)</option>
+                        <option value="DEL">DEL (New Delhi / IGI)</option>
+                        <option value="BOM">BOM (Mumbai / CSMIA)</option>
+                        <option value="BLR">BLR (Bengaluru / KIA)</option>
+                        <option value="HYD">HYD (Hyderabad / RGIA)</option>
+                        <option value="CCU">CCU (Kolkata / NSCBI)</option>
+                        <option value="MAA">MAA (Chennai)</option>
+                        <option value="GOI">GOI (Goa Dabolim/Mopa)</option>
+                      </select>
+                    </div>
+
+                    <div class="filter-control-item">
+                      <label>Destination</label>
+                      <select class="filter-select-sleek" id="flt-filter-dest" onchange="applyFlightFilters()">
+                        <option value="ALL" selected>All Destinations</option>
+                        <option value="BOM">BOM (Mumbai)</option>
+                        <option value="BLR">BLR (Bengaluru)</option>
+                        <option value="HYD">HYD (Hyderabad)</option>
+                        <option value="CCU">CCU (Kolkata)</option>
+                        <option value="MAA">MAA (Chennai)</option>
+                        <option value="GOI">GOI (Goa)</option>
+                        <option value="AMD">AMD (Ahmedabad)</option>
+                        <option value="PNQ">PNQ (Pune)</option>
+                        <option value="COK">COK (Kochi)</option>
+                        <option value="SXR">SXR (Srinagar)</option>
+                        <option value="PAT">PAT (Patna)</option>
+                      </select>
+                    </div>
+
+                    <div class="filter-control-item">
+                      <label>Operating Carrier</label>
+                      <select class="filter-select-sleek" id="flt-filter-carrier" onchange="applyFlightFilters()">
+                        <option value="ALL" selected>All Carriers</option>
+                        <option value="6E">IndiGo (6E)</option>
+                        <option value="AI">Air India (AI)</option>
+                        <option value="QP">Akasa Air (QP)</option>
+                        <option value="SG">SpiceJet (SG)</option>
+                        <option value="IX">AI Express (IX)</option>
+                      </select>
+                    </div>
+
+                    <div class="filter-control-item">
+                      <label>Departure Window</label>
+                      <select class="filter-select-sleek" id="flt-filter-window" onchange="applyFlightFilters()">
+                        <option value="ALL" selected>All Day (00:00–23:59)</option>
+                        <option value="00-06">Early Morning (00:00–06:00)</option>
+                        <option value="06-12">Morning Peak (06:00–12:00)</option>
+                        <option value="12-18">Afternoon (12:00–18:00)</option>
+                        <option value="18-24">Evening Peak (18:00–24:00)</option>
+                      </select>
+                    </div>
+
+                    <div class="filter-control-item">
+                      <label>Fare Family</label>
+                      <select class="filter-select-sleek" id="flt-filter-family" onchange="applyFlightFilters()">
+                        <option value="ALL" selected>All Fare Families</option>
+                        <option value="SAVER">Saver (Lowest / Non-Refundable)</option>
+                        <option value="STANDARD">Standard</option>
+                        <option value="FLEX">Flex (Free Changes)</option>
+                        <option value="CORPORATE">Corporate / Super Flex</option>
+                      </select>
+                    </div>
+
+                    <div class="filter-control-item">
+                      <label>Availability</label>
+                      <select class="filter-select-sleek" id="flt-filter-avail" onchange="applyFlightFilters()">
+                        <option value="ALL" selected>All Availability Signals</option>
+                        <option value="HIGH">High (9+ Seats)</option>
+                        <option value="MEDIUM">Medium (5–8 Seats)</option>
+                        <option value="LOW">Sell-Out Risk (1–4 Seats)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Active Filter Summary Strip -->
+                  <div class="active-filter-summary-bar" id="flight-filter-summary-bar">
+                    <span style="font-weight: 700; color: var(--navy-900);" id="flight-showing-count">Showing 42 flight instances</span>
+                    <div class="active-filter-chips" id="active-filter-chips">
+                      <!-- Filter chips injected dynamically -->
+                    </div>
+                    <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; margin-left: auto;" onclick="clearAllFlightFilters()">Clear All Filters</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 05: FLIGHT INSTANCE INVENTORY (PROFESSIONAL DATA TABLE)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">04</span>
+                    <span>ATOMIC FLIGHT INSTANCE REPOSITORY</span>
+                  </div>
+                  <h2 class="story-title">Flight Instance Inventory</h2>
+                  <p class="story-subtitle">
+                    Every observed domestic operating instance represented in the current intelligence window. Features progressive row expansion for decomposed fare structures and instant deep-dive inspection.
+                  </p>
+                </div>
+
+                <div class="glass-panel table-card">
+                  <div class="table-scroll-container">
+                    <table class="heatmap-table flight-inventory-table" id="flight-universe-table">
+                      <thead>
+                        <tr>
+                          <th>Instance ID</th>
+                          <th>Flight</th>
+                          <th>Carrier</th>
+                          <th>Route</th>
+                          <th>Departure</th>
+                          <th>Arrival</th>
+                          <th>Fare Family</th>
+                          <th style="text-align: right;">Base Fare</th>
+                          <th style="text-align: right;">Total Fare</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="flight-universe-tbody">
+                        <!-- Populated dynamically via JS renderFlightInventoryTable() -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 06: DEPARTURE / ARRIVAL DISTRIBUTION ("WHEN DOES THE NETWORK MOVE?")
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">05</span>
+                    <span>FLIGHT SCHEDULING DENSITY &amp; PEAK BANKS</span>
+                  </div>
+                  <h2 class="story-title">When Does the Network Move?</h2>
+                  <p class="story-subtitle">
+                    Aggregated 24-hour departure and arrival distributions showing banking density across major metropolitan hubs. Identifies capacity crunch hours where spot fares exhibit highest volatility.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Hourly Departure Wave vs Arrival Wave Banking</h4>
+                      <span style="font-size: 0.78rem; color: var(--text-muted);">Blue bars indicate scheduled departures; emerald line represents inbound arrivals</span>
+                    </div>
+                    <span class="data-state-pill state-calculated">24H SCHEDULE ARCHITECTURE</span>
+                  </div>
+
+                  <svg class="svg-chart" id="departure-arrival-dist-svg" viewBox="0 0 950 280" style="width: 100%; height: auto; max-height: 300px;">
+                    <!-- Rendered dynamically via JS renderDepartureArrivalDistribution() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 07: CABIN & FARE FAMILY INTELLIGENCE ("WHAT IS ACTUALLY BEING SOLD?")
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">06</span>
+                    <span>COMMERCIAL CABIN MIX &amp; PRODUCT PACKAGING</span>
+                  </div>
+                  <h2 class="story-title">What Is Actually Being Sold?</h2>
+                  <p class="story-subtitle">
+                    Commercial fare family stratification showing how airlines unbundle amenities and price seat flexibility across Economy, Premium Economy, and Business cabins.
+                  </p>
+                </div>
+
+                <!-- Structured Hierarchy Visual Cards -->
+                <div class="cabin-hierarchy-container">
+                  <div class="cabin-mix-bar-wrapper">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem;">
+                      <span>Commercial Cabin Inventory Distribution</span>
+                      <span>Economy (84%) · Business (10%) · Premium Economy (6%)</span>
+                    </div>
+                    <div class="cabin-mix-track">
+                      <div class="cabin-mix-seg seg-economy" style="width: 84%;" title="Economy Cabin: 84% capacity"></div>
+                      <div class="cabin-mix-seg seg-business" style="width: 10%;" title="Business Class: 10% capacity"></div>
+                      <div class="cabin-mix-seg seg-premium" style="width: 6%;" title="Premium Economy: 6% capacity"></div>
+                    </div>
+                  </div>
+
+                  <!-- 4 Fare Family Strategy Cards -->
+                  <div class="fare-family-cards-grid">
+                    <div class="fare-family-card">
+                      <div class="family-card-badge saver">SAVER TIER</div>
+                      <div class="family-card-title">Saver / Lite Fare</div>
+                      <div class="family-card-price">From ₹4,890</div>
+                      <div class="family-card-rules">
+                        <div>• Hand baggage only (7kg) + 15kg checked</div>
+                        <div>• Non-refundable on cancellation</div>
+                        <div>• Paid seat selection (₹250–800)</div>
+                        <div>• Change fee: ₹3,250 + fare difference</div>
+                      </div>
+                    </div>
+
+                    <div class="fare-family-card">
+                      <div class="family-card-badge standard">STANDARD TIER</div>
+                      <div class="family-card-title">Standard Economy</div>
+                      <div class="family-card-price">From ₹5,450</div>
+                      <div class="family-card-rules">
+                        <div>• Standard 15kg baggage included</div>
+                        <div>• Standard cancellation fee (₹3,000)</div>
+                        <div>• Standard seat selection included</div>
+                        <div>• 1 Date change allowed with fee</div>
+                      </div>
+                    </div>
+
+                    <div class="fare-family-card">
+                      <div class="family-card-badge flex">FLEX TIER</div>
+                      <div class="family-card-title">Flexi Plus Fare</div>
+                      <div class="family-card-price">From ₹6,580</div>
+                      <div class="family-card-rules">
+                        <div>• Complimentary standard seat assignment</div>
+                        <div>• Zero date change fee up to 2h prior</div>
+                        <div>• Reduced cancellation fee (₹1,500)</div>
+                        <div>• Complimentary onboard snack/beverage</div>
+                      </div>
+                    </div>
+
+                    <div class="fare-family-card">
+                      <div class="family-card-badge corporate">CORPORATE / SUPER FLEX</div>
+                      <div class="family-card-title">Corporate Flex &amp; Business</div>
+                      <div class="family-card-price">From ₹8,920</div>
+                      <div class="family-card-rules">
+                        <div>• Prime seat selection (XL / Front row)</div>
+                        <div>• Unlimited free date changes</div>
+                        <div>• Nominal refund deduction (₹500)</div>
+                        <div>• Priority check-in &amp; baggage delivery</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 08: FARE DECOMPOSITION ("WHERE DOES THE TICKET PRICE COME FROM?")
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">07</span>
+                    <span>ATOMIC PRICE COMPOSITION WATERFALL</span>
+                  </div>
+                  <h2 class="story-title">Where Does the Ticket Price Come From?</h2>
+                  <p class="story-subtitle">
+                    Mathematical unbundling of the total passenger fare into carrier revenue (Base Fare), fuel surcharges, regulatory airport development fees (UDF/PSF), and statutory taxes (GST). Select any flight instance to inspect its exact breakdown.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                      <span style="font-size: 0.82rem; font-weight: 700; color: var(--navy-900);">Active Flight Instance:</span>
+                      <select class="control-select-sleek" id="flt-decomp-selector" onchange="renderFareDecomposition(this.value)">
+                        <!-- Injected dynamically via JS -->
+                      </select>
+                    </div>
+                    <span class="data-state-pill state-calculated">R03 REGULATORY AUDIT PASS</span>
+                  </div>
+
+                  <div id="flight-fare-decomp-container">
+                    <!-- Rendered dynamically via JS renderFareDecomposition() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 09: INVENTORY & AVAILABILITY SIGNALS ("INVENTORY & AVAILABILITY")
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">08</span>
+                    <span>SEAT AVAILABILITY &amp; SELL-OUT VELOCITY</span>
+                  </div>
+                  <h2 class="story-title">Inventory &amp; Availability Signals</h2>
+                  <p class="story-subtitle">
+                    Observed bucket availability tiers mapped across cabin classes and advance booking windows. Track seat depletion velocity from T-30 days to departure to identify sell-out risk thresholds.
+                  </p>
+                </div>
+
+                <div class="grid-2-col">
+                  <!-- Availability Matrix -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Observed Cabin × Fare Family Availability</h4>
+                      <span class="brand-badge">REAL-TIME SIGNALS</span>
+                    </div>
+                    <table class="heatmap-table" id="avail-matrix-table">
+                      <thead>
+                        <tr>
+                          <th>Cabin Tier</th>
+                          <th>Saver</th>
+                          <th>Standard</th>
+                          <th>Flex</th>
+                          <th>Corporate</th>
+                        </tr>
+                      </thead>
+                      <tbody id="avail-matrix-tbody">
+                        <!-- Populated via JS renderAvailabilityMatrix() -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Availability Depletion vs Fare Spike Graphic -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Inventory Depletion vs Price Acceleration</h4>
+                      <span class="data-state-pill state-calculated">T-30 TO T-0</span>
+                    </div>
+                    <svg class="svg-chart" id="avail-depletion-svg" viewBox="0 0 450 240" style="width: 100%; height: auto;">
+                      <!-- Rendered dynamically via JS -->
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 10: FLIGHT-LEVEL PRICE MOVEMENT ("WHAT CHANGED ON THIS FLIGHT?")
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">09</span>
+                    <span>INTRADAY SPOT FARE TRAJECTORY</span>
+                  </div>
+                  <h2 class="story-title">What Changed on This Flight?</h2>
+                  <p class="story-subtitle">
+                    High-frequency historical trajectory of observed spot quotes across the rolling 24-hour observation window for the selected flight instance, benchmarked against concurrent departure alternatives.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <span style="font-size: 0.82rem; font-weight: 700; color: var(--navy-900);">Corridor Benchmark:</span>
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;" onclick="switchFlightHistoryCorridor('DEL-BOM')">DEL-BOM (6E 2041 vs AI 805 vs QP 1354)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;" onclick="switchFlightHistoryCorridor('DEL-BLR')">DEL-BLR (QP 1102 vs 6E 208 vs AI 504)</button>
+                    </div>
+                    <span class="brand-badge">24H TELEMETRY TRACE</span>
+                  </div>
+
+                  <svg class="svg-chart" id="flight-price-history-svg" viewBox="0 0 950 280" style="width: 100%; height: auto; max-height: 300px;">
+                    <!-- Rendered dynamically via JS renderFlightPriceMovement() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 11: CARRIER / ROUTE COMPARISON (CROSS-CARRIER BENCHMARKING)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">10</span>
+                    <span>CROSS-CARRIER PRICING DISPERSION</span>
+                  </div>
+                  <h2 class="story-title">Carrier Pricing Comparison on Key Corridors</h2>
+                  <p class="story-subtitle">
+                    Side-by-side comparison of competing operating carriers on major trunk routes. Evaluates capacity shares, average spot yields, and price dispersion indices.
+                  </p>
+                </div>
+
+                <div class="comparison-corridors-grid" id="flight-carrier-comparison-grid">
+                  <!-- Injected dynamically via JS renderCarrierComparisonCards() -->
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 12: FLIGHT-LEVEL EXCEPTIONS & ANOMALIES
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">11</span>
+                    <span>STATISTICAL RESIDUALS &amp; REGIME DRIFT</span>
+                  </div>
+                  <h2 class="story-title">Flight-Level Exceptions &amp; Anomalies</h2>
+                  <p class="story-subtitle">
+                    Algorithmic identification of unusual flight instances deviating from corridor historical baselines by Modified Z-Score ≥ 3.0σ. Strictly formulates observations without unfounded causal assertions.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div class="formula-callout" style="margin-top: 0;">
+                    <span style="color: #38BDF8; font-weight: 700;">// FLIGHT EXCEPTION METHODOLOGY (Median Absolute Deviation)</span><br>
+                    Modified Z = 0.6745 × |observed_flight_fare − corridor_median_fare| / MAD<br>
+                    Threshold: Z ≥ 3.0 indicates statistically anomalous pricing or seat depletion behavior.
+                  </div>
+
+                  <div id="flight-exceptions-container">
+                    <!-- Populated dynamically via JS renderFlightExceptions() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 13: DATA QUALITY & INTEGRITY ("CAN I TRUST THIS OBSERVATION?")
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">12</span>
+                    <span>QUALITY ASSURANCE &amp; QUARANTINE VALIDATION</span>
+                  </div>
+                  <h2 class="story-title">Can I Trust This Observation?</h2>
+                  <p class="story-subtitle">
+                    Transparent operational health audits evaluating every ingested flight instance against rules R01 through R12, duplicate signatures, and observation freshness.
+                  </p>
+                </div>
+
+                <div class="quality-audit-grid">
+                  <div class="quality-audit-card">
+                    <div class="audit-card-icon">✓</div>
+                    <div class="audit-card-title">Source Adapter</div>
+                    <div class="audit-card-val">VERIFIED DIRECT</div>
+                    <div class="audit-card-sub">Carrier NDC / GDS direct adapter</div>
+                  </div>
+
+                  <div class="quality-audit-card">
+                    <div class="audit-card-icon">⏱</div>
+                    <div class="audit-card-title">Observation Age</div>
+                    <div class="audit-card-val" id="audit-obs-age">42s AGO</div>
+                    <div class="audit-card-sub">Sub-minute high-frequency cycle</div>
+                  </div>
+
+                  <div class="quality-audit-card">
+                    <div class="audit-card-icon">⚙</div>
+                    <div class="audit-card-title">Parser Health</div>
+                    <div class="audit-card-val">VALID JSON-LD</div>
+                    <div class="audit-card-sub">Strict schema normalizer passed</div>
+                  </div>
+
+                  <div class="quality-audit-card">
+                    <div class="audit-card-icon">🔒</div>
+                    <div class="audit-card-title">Deduplication Check</div>
+                    <div class="audit-card-val">PASSED (R06)</div>
+                    <div class="audit-card-sub">Unique SHA-256 fingerprint hash</div>
+                  </div>
+
+                  <div class="quality-audit-card">
+                    <div class="audit-card-icon">🛡</div>
+                    <div class="audit-card-title">Rules Evaluation</div>
+                    <div class="audit-card-val">12/12 ACCEPTED</div>
+                    <div class="audit-card-sub">Zero quarantine violations</div>
+                  </div>
+
+                  <div class="quality-audit-card">
+                    <div class="audit-card-icon">📊</div>
+                    <div class="audit-card-title">Outlier Guard</div>
+                    <div class="audit-card-val">MAD Z &lt; 3.0</div>
+                    <div class="audit-card-sub">Within empirical distribution limits</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 14: CRYPTOGRAPHIC PROVENANCE & PIPELINE AUDIT
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">13</span>
+                    <span>END-TO-END CRYPTOGRAPHIC AUDITABILITY</span>
+                  </div>
+                  <h2 class="story-title">Flight Observation Provenance</h2>
+                  <p class="story-subtitle">
+                    End-to-end cryptographic lineage tracing raw capture payloads through parsing, quarantine evaluation, and elementary cell matching into the published market feed.
+                  </p>
+                </div>
+
+                <div class="drilldown-terminal-card" style="margin-bottom: 2rem;">
+                  <div class="drilldown-path-bar">
+                    <span class="drilldown-step-badge">1. Raw API Response</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">2. Schema Normalizer</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">3. R01-R12 Rules Evaluation</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">4. SHA-256 Fingerprint</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">5. Clean Quote Ingest</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">6. Published Index Feed</span>
+                  </div>
+
+                  <div class="drilldown-level-grid">
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Active Flight Record Identity</span>
+                        <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
+                      </div>
+                      <div style="font-size: 0.8rem; line-height: 1.8;">
+                        <div><strong>Instance ID:</strong> <span style="font-family: var(--font-mono);">FI-DEL6E2041-20260926</span></div>
+                        <div><strong>Flight Number:</strong> <span style="font-family: var(--font-mono); font-weight: 700;">6E 2041</span> (IndiGo)</div>
+                        <div><strong>Origin → Destination:</strong> DEL (Terminal 1) → BOM (Terminal 2)</div>
+                        <div><strong>Departure:</strong> 05:45 IST · Duration: 02h 10m</div>
+                        <div><strong>Captured At:</strong> 2026-09-26T10:41:36.418Z (42s ago)</div>
+                        <div><strong>Source Adapter:</strong> INDIGO_DIRECT_NDC_API</div>
+                      </div>
+                    </div>
+
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Cryptographic Fingerprint &amp; Signature</span>
+                        <span class="data-state-pill state-calculated">VERIFIED</span>
+                      </div>
+                      <div style="font-family: var(--font-mono); font-size: 0.74rem; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; word-break: break-all; line-height: 1.6;">
+                        SHA-256 Signature:<br>
+                        <span style="color: #2563EB; font-weight: 700;">e8b19d44c029a8f2b704c32b509ef541a789531e21b72e1c911cf8d2e463a890</span><br><br>
+                        Audit Trail ID: AUDIT-FLT-20260926-e8b19d44<br>
+                        Methodology: AeroIndex Aviation Standard BV-2026.1<br>
+                        Zero Tampering Confirmed
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 15: ASK AEROINDEX (FLIGHT INTELLIGENCE AGENT)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">14</span>
+                    <span>NATURAL LANGUAGE FLIGHT INTELLIGENCE</span>
+                  </div>
+                  <h2 class="story-title">Ask AeroIndex: Flight Intelligence</h2>
+                  <p class="story-subtitle">
+                    Interact directly with AeroIndex flight operating telemetry in natural language. Answers are strictly grounded in live observed departures and fares.
+                  </p>
+                </div>
+
+                <div class="ask-network-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 1rem; color: #FFFFFF;">✦ AeroIndex Flight Intelligence Agent</div>
+                    <span class="data-state-pill state-calculated" style="background: rgba(255,255,255,0.1); color: #38BDF8; border-color: rgba(56,189,248,0.3);">GROUNDED FLIGHT REASONING</span>
+                  </div>
+
+                  <form class="ask-network-input-box" id="ask-flight-form" onsubmit="handleFlightQuery(event)">
+                    <span style="color: #94A3B8; font-size: 1.1rem; line-height: 1.8;">✦</span>
+                    <input type="text" class="ask-network-input" id="ask-flight-input" placeholder="Ask any flight intelligence question (e.g. Which DEL-BOM flights have the lowest fare right now?)..." autocomplete="off" />
+                    <button type="submit" class="btn btn-primary" style="padding: 0.4rem 1rem;">Query →</button>
+                  </form>
+
+                  <div class="ask-prompt-pills">
+                    <span style="font-size: 0.72rem; color: #64748B; align-self: center;">Suggested:</span>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickFlightPrompt('Which DEL-BOM flights have the lowest fare right now?')">Which DEL-BOM flights have the lowest fare right now?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickFlightPrompt('Compare IndiGo and Air India on the evening Delhi-Bengaluru departure wave')">Compare IndiGo vs Air India on DEL-BLR evening wave</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickFlightPrompt('Which flights are experiencing sell-out risk today?')">Which flights are experiencing sell-out risk today?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickFlightPrompt('Explain the fare decomposition of 6E-2041')">Explain fare decomposition of 6E-2041</button>
+                  </div>
+
+                  <div class="ask-answer-box" id="ask-flight-answer" style="display: none;">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
+
+          <!-- FLIGHT INSTANCE DEEP DIVE MODAL / DRAWER -->
+          <div class="flight-detail-drawer" id="flight-detail-drawer">
+            <div class="drawer-header">
+              <div>
+                <h3 class="drawer-title" id="drawer-flight-title">Flight Instance Intelligence</h3>
+                <div class="drawer-subtitle" id="drawer-flight-subtitle">Instance ID &amp; Operational Telemetry</div>
+              </div>
+              <button class="btn btn-ghost" id="btn-close-flight-drawer" onclick="closeFlightDetail()">✕ Close</button>
+            </div>
+            <div class="drawer-body" id="flight-drawer-body">
+              <!-- Rendered dynamically via JS openFlightInstanceModal() -->
+            </div>
+          </div>
 
           <!-- TAB 06: LEAD-TIME INTELLIGENCE -->
           <section class="tab-pane" id="pane-elasticity">

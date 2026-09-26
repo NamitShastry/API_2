@@ -3171,4 +3171,360 @@ html, body {
   line-height: 1.6;
 }
 
+/* ============================================================================
+   FLIGHT INTELLIGENCE MASTER STORY STYLING
+   ============================================================================ */
+
+.flight-intel-story-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+/* Flight Search Command Bar */
+.flight-search-container {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.flight-search-input-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #F8FAFC;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  transition: border-color 0.15s ease;
+}
+
+.flight-search-input-box:focus-within {
+  border-color: var(--blue-primary);
+  background: #FFFFFF;
+}
+
+.search-icon-hero {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+}
+
+.flight-search-input-large {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--navy-900);
+}
+
+.search-kbd-hint {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  background: #FFFFFF;
+  border: 1px solid var(--border-hairline);
+  border-radius: 4px;
+  padding: 0.2rem 0.45rem;
+}
+
+.flight-filter-ribbon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.filter-control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.filter-control-item label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.filter-select-sleek {
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 0.38rem 0.55rem;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--navy-900);
+  background: #FFFFFF;
+  outline: none;
+}
+
+.filter-select-sleek:focus {
+  border-color: var(--blue-primary);
+}
+
+.active-filter-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed var(--border-hairline);
+  font-size: 0.78rem;
+}
+
+.active-filter-chips {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.active-filter-chip {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1D4ED8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.active-filter-chip:hover {
+  background: #DBEAFE;
+}
+
+/* Flight Inventory Table Enhancements */
+.flight-inventory-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.flight-inventory-table tbody tr:hover {
+  background: #F8FAFC;
+}
+
+.flight-code-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+}
+
+.carrier-logo-mini {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: #F1F5F9;
+  color: var(--navy-900);
+  border: 1px solid var(--border-subtle);
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+}
+
+.fare-micro-delta {
+  display: block;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.fare-micro-delta.up {
+  color: #E11D48;
+}
+
+.fare-micro-delta.down {
+  color: #059669;
+}
+
+.fare-micro-delta.flat {
+  color: var(--text-dim);
+}
+
+/* Row Expansion Drawer */
+.expanded-flight-row td {
+  background: #F8FAFC !important;
+  border-left: 3px solid var(--blue-primary);
+  padding: 1.25rem !important;
+}
+
+.expanded-flight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+}
+
+.expanded-flight-block h5 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* Cabin Hierarchy & Mix */
+.cabin-hierarchy-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cabin-mix-bar-wrapper {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  padding: 1.25rem;
+  border-radius: 8px;
+}
+
+.cabin-mix-track {
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  background: #E2E8F0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.cabin-mix-seg.seg-economy {
+  background: #2563EB;
+}
+
+.cabin-mix-seg.seg-business {
+  background: #7C3AED;
+}
+
+.cabin-mix-seg.seg-premium {
+  background: #059669;
+}
+
+.fare-family-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.fare-family-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fare-family-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.family-card-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.45rem;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.family-card-badge.saver {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.family-card-badge.standard {
+  background: #F1F5F9;
+  color: #334155;
+}
+
+.family-card-badge.flex {
+  background: #ECFDF5;
+  color: #047857;
+}
+
+.family-card-badge.corporate {
+  background: #FAF5FF;
+  color: #6B21A8;
+}
+
+.family-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 0.25rem;
+}
+
+.family-card-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--navy-900);
+  margin-bottom: 0.75rem;
+}
+
+.family-card-rules {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Quality Audit 6-Tile Grid */
+.quality-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.quality-audit-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+
+.quality-audit-card:hover {
+  transform: translateY(-2px);
+}
+
+.audit-card-icon {
+  font-size: 1.5rem;
+  color: #10B981;
+  margin-bottom: 0.5rem;
+}
+
+.audit-card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.audit-card-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--navy-900);
+  margin: 0.25rem 0;
+}
+
+.audit-card-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
 

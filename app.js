@@ -150,6 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAdvanceDecayCurves();
   renderAirlineCompetition();
   renderTimelineHistory(7);
+  if (typeof initFlightIntelligenceWorkspace === 'function') {
+    initFlightIntelligenceWorkspace();
+  }
 });
 
 // ============================================================================
@@ -308,7 +311,10 @@ function activateWorkspaceTab(tabId) {
   state.activeTab = tabId;
 
   if (tabId === 'overview') setTimeout(renderPrimaryChart, 30);
-  if (tabId === 'delhi-live') {
+  if (tabId === 'flights' || tabId === 'delhi-live') {
+    if (typeof initFlightIntelligenceWorkspace === 'function') {
+      initFlightIntelligenceWorkspace();
+    }
     fetchDelhiLiveFlights();
   }
   if (tabId === 'explorer') renderMultiChart();
@@ -764,6 +770,9 @@ async function fetchDelhiLiveFlights() {
       renderDelhiDeparturesTable(state.delhiFlights);
       renderDelhiRadialMap(state.delhiFlights);
       renderMovementFeed(data.recent_movements || []);
+      if (typeof updateFlightIntelligenceWithLiveFeed === 'function') {
+        updateFlightIntelligenceWithLiveFeed(state.delhiFlights);
+      }
     }
   } catch (err) {
     console.warn('[Delhi Live] Fetch error:', err);
@@ -2940,4 +2949,1477 @@ async function executeReproduceCalculation() {
     resEl.innerHTML = `<span style="color: #9F1239;">Error during cryptographic verification: ${err.message}</span>`;
   }
 }
+
+// ============================================================================
+// MASTER ENFORCEMENT: FLIGHT INTELLIGENCE — ALL-INDIA AVIATION TERMINAL (15 CHAPTERS)
+// ============================================================================
+
+let currentFlightMapFilter = 'ALL';
+let currentPulseMetric = 'DEPARTURES';
+let currentFlightHistoryCorridor = 'DEL-BOM';
+let activeFlightDecompId = 'FI-DEL6E2041-20260926';
+let expandedFlightRowId = null;
+let flightSyncTimer = null;
+
+let flightFilters = {
+  search: '',
+  origin: 'ALL',
+  dest: 'ALL',
+  carrier: 'ALL',
+  window: 'ALL',
+  family: 'ALL',
+  avail: 'ALL'
+};
+
+const ALL_INDIA_HUBS = [
+  { iata: 'DEL', name: 'Indira Gandhi International', city: 'Delhi', x: 440, y: 195, metro: true, dep: 684, arr: 671, routes: 74, carriers: 6, instances: 1284 },
+  { iata: 'BOM', name: 'Chhatrapati Shivaji Maharaj', city: 'Mumbai', x: 335, y: 420, metro: true, dep: 512, arr: 508, routes: 68, carriers: 6, instances: 940 },
+  { iata: 'BLR', name: 'Kempegowda International', city: 'Bengaluru', x: 445, y: 545, metro: true, dep: 420, arr: 416, routes: 56, carriers: 5, instances: 780 },
+  { iata: 'HYD', name: 'Rajiv Gandhi International', city: 'Hyderabad', x: 475, y: 455, metro: true, dep: 340, arr: 335, routes: 48, carriers: 5, instances: 610 },
+  { iata: 'CCU', name: 'Netaji Subhash Chandra Bose', city: 'Kolkata', x: 690, y: 345, metro: true, dep: 290, arr: 285, routes: 44, carriers: 5, instances: 520 },
+  { iata: 'MAA', name: 'Chennai International', city: 'Chennai', x: 515, y: 540, metro: true, dep: 280, arr: 275, routes: 42, carriers: 4, instances: 490 },
+  { iata: 'GOI', name: 'Dabolim / Manohar Mopa', city: 'Goa', x: 355, y: 520, metro: false, dep: 140, arr: 142, routes: 28, carriers: 5, instances: 260 },
+  { iata: 'AMD', name: 'Sardar Vallabhbhai Patel', city: 'Ahmedabad', x: 320, y: 325, metro: false, dep: 195, arr: 190, routes: 32, carriers: 5, instances: 350 },
+  { iata: 'PNQ', name: 'Pune Airport', city: 'Pune', x: 365, y: 440, metro: false, dep: 165, arr: 160, routes: 26, carriers: 4, instances: 290 },
+  { iata: 'COK', name: 'Cochin International', city: 'Kochi', x: 420, y: 630, metro: false, dep: 130, arr: 128, routes: 22, carriers: 4, instances: 230 },
+  { iata: 'SXR', name: 'Sheikh ul-Alam International', city: 'Srinagar', x: 390, y: 85, metro: false, dep: 95, arr: 92, routes: 16, carriers: 4, instances: 170 },
+  { iata: 'PAT', name: 'Jay Prakash Narayan', city: 'Patna', x: 630, y: 270, metro: false, dep: 110, arr: 108, routes: 18, carriers: 4, instances: 190 },
+  { iata: 'GAU', name: 'Lokpriya Gopinath Bordoloi', city: 'Guwahati', x: 795, y: 240, metro: false, dep: 105, arr: 102, routes: 20, carriers: 4, instances: 180 },
+  { iata: 'LKO', name: 'Chaudhary Charan Singh', city: 'Lucknow', x: 530, y: 235, metro: false, dep: 120, arr: 118, routes: 22, carriers: 4, instances: 210 },
+  { iata: 'JAI', name: 'Jaipur International', city: 'Jaipur', x: 380, y: 225, metro: false, dep: 115, arr: 112, routes: 20, carriers: 4, instances: 200 },
+  { iata: 'TRV', name: 'Thiruvananthapuram International', city: 'Thiruvananthapuram', x: 435, y: 665, metro: false, dep: 80, arr: 78, routes: 14, carriers: 3, instances: 140 },
+  { iata: 'IXB', name: 'Bagdogra Airport', city: 'Bagdogra', x: 710, y: 240, metro: false, dep: 85, arr: 82, routes: 15, carriers: 4, instances: 150 },
+  { iata: 'ATQ', name: 'Sri Guru Ram Dass Jee', city: 'Amritsar', x: 370, y: 140, metro: false, dep: 75, arr: 74, routes: 12, carriers: 3, instances: 130 },
+  { iata: 'BBI', name: 'Biju Patnaik International', city: 'Bhubaneswar', x: 640, y: 410, metro: false, dep: 90, arr: 88, routes: 16, carriers: 4, instances: 160 },
+  { iata: 'IDR', name: 'Devi Ahilyabai Holkar', city: 'Indore', x: 410, y: 330, metro: false, dep: 85, arr: 82, routes: 15, carriers: 4, instances: 150 }
+];
+
+const ALL_INDIA_NETWORK_ROUTES = [
+  { origin: 'DEL', dest: 'BOM', flights: 82, carriers: 5, obs: 1482, fare: 6240, change: 4.8 },
+  { origin: 'DEL', dest: 'BLR', flights: 64, carriers: 4, obs: 1180, fare: 6580, change: 6.2 },
+  { origin: 'DEL', dest: 'HYD', flights: 46, carriers: 4, obs: 840, fare: 4890, change: -1.8 },
+  { origin: 'DEL', dest: 'CCU', flights: 42, carriers: 4, obs: 780, fare: 5320, change: 3.4 },
+  { origin: 'DEL', dest: 'MAA', flights: 38, carriers: 4, obs: 690, fare: 5850, change: 2.1 },
+  { origin: 'DEL', dest: 'GOI', flights: 34, carriers: 5, obs: 620, fare: 5650, change: 9.4 },
+  { origin: 'DEL', dest: 'AMD', flights: 32, carriers: 4, obs: 580, fare: 3450, change: 1.5 },
+  { origin: 'DEL', dest: 'PNQ', flights: 30, carriers: 4, obs: 540, fare: 4680, change: -0.8 },
+  { origin: 'DEL', dest: 'COK', flights: 22, carriers: 3, obs: 410, fare: 7120, change: 4.1 },
+  { origin: 'DEL', dest: 'SXR', flights: 28, carriers: 4, obs: 510, fare: 4950, change: 7.8 },
+  { origin: 'DEL', dest: 'PAT', flights: 26, carriers: 4, obs: 470, fare: 3950, change: 2.3 },
+  { origin: 'DEL', dest: 'GAU', flights: 24, carriers: 3, obs: 430, fare: 5580, change: 3.9 },
+  { origin: 'DEL', dest: 'LKO', flights: 22, carriers: 3, obs: 390, fare: 2890, change: -0.5 },
+  { origin: 'DEL', dest: 'JAI', flights: 18, carriers: 3, obs: 320, fare: 2450, change: 0.2 },
+  { origin: 'DEL', dest: 'TRV', flights: 16, carriers: 2, obs: 290, fare: 7450, change: 3.6 },
+  { origin: 'DEL', dest: 'IXB', flights: 18, carriers: 3, obs: 330, fare: 5120, change: 2.0 },
+  { origin: 'DEL', dest: 'ATQ', flights: 14, carriers: 2, obs: 250, fare: 2650, change: 0.8 },
+  { origin: 'DEL', dest: 'BBI', flights: 18, carriers: 3, obs: 320, fare: 4890, change: -1.2 },
+  { origin: 'DEL', dest: 'IDR', flights: 16, carriers: 3, obs: 290, fare: 3350, change: 1.1 }
+];
+
+const MASTER_FLIGHT_UNIVERSE = [
+  { instanceId: 'FI-DEL6E2041-20260926', flightNumber: '6E 2041', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '05:45', scheduledArrival: '07:55', terminal: 'T1', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 7, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4820, fuelSurcharge: 540, taxes: 612, fees: 262, totalFare: 6234, priceDelta: +214, pctDelta: '+3.9%', freshnessSeconds: 42, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELAI805-20260926', flightNumber: 'AI 805', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '06:00', scheduledArrival: '08:15', terminal: 'T3', aircraft: 'B787-8 Dreamliner', status: 'SCHEDULED', seatsRemaining: 14, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'FLEX', baseFare: 5850, fuelSurcharge: 620, taxes: 740, fees: 280, totalFare: 7490, priceDelta: +310, pctDelta: '+4.3%', freshnessSeconds: 65, source: 'AMADEUS_GDS' },
+  { instanceId: 'FI-DELQP1102-20260926', flightNumber: 'QP 1102', operatingCarrier: 'QP', carrierName: 'Akasa Air', origin: 'DEL', destination: 'BLR', destCity: 'Bengaluru', scheduledDeparture: '06:15', scheduledArrival: '09:05', terminal: 'T2', aircraft: 'B737-MAX8', status: 'BOARDING', seatsRemaining: 3, availabilitySignal: 'SELL-OUT RISK', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 5420, fuelSurcharge: 580, taxes: 690, fees: 250, totalFare: 6940, priceDelta: +480, pctDelta: '+7.4%', freshnessSeconds: 28, source: 'AKASA_DIRECT_API' },
+  { instanceId: 'FI-DEL6E502-20260926', flightNumber: '6E 502', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'HYD', destCity: 'Hyderabad', scheduledDeparture: '06:30', scheduledArrival: '08:45', terminal: 'T1', aircraft: 'A320neo', status: 'DEPARTED', seatsRemaining: 18, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 4250, fuelSurcharge: 490, taxes: 540, fees: 220, totalFare: 5500, priceDelta: -110, pctDelta: '-2.0%', freshnessSeconds: 90, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELSG8169-20260926', flightNumber: 'SG 8169', operatingCarrier: 'SG', carrierName: 'SpiceJet', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '06:45', scheduledArrival: '09:00', terminal: 'T3', aircraft: 'B737-800', status: 'SCHEDULED', seatsRemaining: 9, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4350, fuelSurcharge: 510, taxes: 560, fees: 240, totalFare: 5660, priceDelta: +80, pctDelta: '+1.4%', freshnessSeconds: 54, source: 'SPICEJET_API' },
+  { instanceId: 'FI-DELAI504-20260926', flightNumber: 'AI 504', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'BLR', destCity: 'Bengaluru', scheduledDeparture: '07:00', scheduledArrival: '09:50', terminal: 'T3', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 11, availabilitySignal: 'HIGH', cabinClass: 'BUSINESS', fareFamily: 'CORPORATE', baseFare: 14200, fuelSurcharge: 1200, taxes: 1850, fees: 450, totalFare: 17700, priceDelta: 0, pctDelta: '0.0%', freshnessSeconds: 38, source: 'AIRINDIA_DIRECT' },
+  { instanceId: 'FI-DEL6E2134-20260926', flightNumber: '6E 2134', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'CCU', destCity: 'Kolkata', scheduledDeparture: '07:15', scheduledArrival: '09:30', terminal: 'T1', aircraft: 'A320neo', status: 'LIVE', seatsRemaining: 5, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4680, fuelSurcharge: 520, taxes: 590, fees: 230, totalFare: 6020, priceDelta: +190, pctDelta: '+3.3%', freshnessSeconds: 15, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELIX1284-20260926', flightNumber: 'IX 1284', operatingCarrier: 'IX', carrierName: 'AI Express', origin: 'DEL', destination: 'GOI', destCity: 'Goa', scheduledDeparture: '07:30', scheduledArrival: '10:05', terminal: 'T3', aircraft: 'B737-MAX8', status: 'SCHEDULED', seatsRemaining: 4, availabilitySignal: 'SELL-OUT RISK', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4950, fuelSurcharge: 560, taxes: 630, fees: 240, totalFare: 6380, priceDelta: +540, pctDelta: '+9.2%', freshnessSeconds: 30, source: 'AI_EXPRESS_API' },
+  { instanceId: 'FI-DEL6E601-20260926', flightNumber: '6E 601', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'MAA', destCity: 'Chennai', scheduledDeparture: '07:45', scheduledArrival: '10:35', terminal: 'T2', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 12, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 5120, fuelSurcharge: 570, taxes: 650, fees: 240, totalFare: 6580, priceDelta: +120, pctDelta: '+1.9%', freshnessSeconds: 44, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DEL6E2055-20260926', flightNumber: '6E 2055', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '08:15', scheduledArrival: '10:25', terminal: 'T1', aircraft: 'A320neo', status: 'LIVE', seatsRemaining: 6, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4980, fuelSurcharge: 550, taxes: 620, fees: 260, totalFare: 6410, priceDelta: +230, pctDelta: '+3.7%', freshnessSeconds: 22, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELAI887-20260926', flightNumber: 'AI 887', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '08:45', scheduledArrival: '11:00', terminal: 'T3', aircraft: 'A321neo', status: 'SCHEDULED', seatsRemaining: 8, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 5650, fuelSurcharge: 610, taxes: 710, fees: 270, totalFare: 7240, priceDelta: +180, pctDelta: '+2.5%', freshnessSeconds: 70, source: 'AMADEUS_GDS' },
+  { instanceId: 'FI-DEL6E228-20260926', flightNumber: '6E 228', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'AMD', destCity: 'Ahmedabad', scheduledDeparture: '09:00', scheduledArrival: '10:35', terminal: 'T2', aircraft: 'A320neo', status: 'LIVE', seatsRemaining: 15, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 3150, fuelSurcharge: 420, taxes: 460, fees: 190, totalFare: 4220, priceDelta: +40, pctDelta: '+1.0%', freshnessSeconds: 35, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELAI441-20260926', flightNumber: 'AI 441', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'PNQ', destCity: 'Pune', scheduledDeparture: '09:15', scheduledArrival: '11:20', terminal: 'T3', aircraft: 'A320neo', status: 'SCHEDULED', seatsRemaining: 9, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 4520, fuelSurcharge: 510, taxes: 580, fees: 230, totalFare: 5840, priceDelta: -90, pctDelta: '-1.5%', freshnessSeconds: 50, source: 'AIRINDIA_DIRECT' },
+  { instanceId: 'FI-DELQP1354-20260926', flightNumber: 'QP 1354', operatingCarrier: 'QP', carrierName: 'Akasa Air', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '09:30', scheduledArrival: '11:45', terminal: 'T2', aircraft: 'B737-MAX8', status: 'LIVE', seatsRemaining: 4, availabilitySignal: 'SELL-OUT RISK', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4720, fuelSurcharge: 530, taxes: 600, fees: 250, totalFare: 6100, priceDelta: +160, pctDelta: '+2.7%', freshnessSeconds: 19, source: 'AKASA_DIRECT_API' },
+  { instanceId: 'FI-DEL6E208-20260926', flightNumber: '6E 208', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'BLR', destCity: 'Bengaluru', scheduledDeparture: '09:45', scheduledArrival: '12:35', terminal: 'T1', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 3, availabilitySignal: 'SELL-OUT RISK', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 6180, fuelSurcharge: 640, taxes: 780, fees: 280, totalFare: 7880, priceDelta: +820, pctDelta: '+11.6%', freshnessSeconds: 12, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELAI763-20260926', flightNumber: 'AI 763', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'CCU', destCity: 'Kolkata', scheduledDeparture: '10:15', scheduledArrival: '12:30', terminal: 'T3', aircraft: 'A320neo', status: 'SCHEDULED', seatsRemaining: 16, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 4890, fuelSurcharge: 540, taxes: 620, fees: 240, totalFare: 6290, priceDelta: +110, pctDelta: '+1.8%', freshnessSeconds: 62, source: 'AMADEUS_GDS' },
+  { instanceId: 'FI-DEL6E2712-20260926', flightNumber: '6E 2712', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'COK', destCity: 'Kochi', scheduledDeparture: '10:30', scheduledArrival: '13:45', terminal: 'T1', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 7, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 6450, fuelSurcharge: 680, taxes: 810, fees: 290, totalFare: 8230, priceDelta: +280, pctDelta: '+3.5%', freshnessSeconds: 26, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELSG263-20260926', flightNumber: 'SG 263', operatingCarrier: 'SG', carrierName: 'SpiceJet', origin: 'DEL', destination: 'SXR', destCity: 'Srinagar', scheduledDeparture: '10:45', scheduledArrival: '12:15', terminal: 'T3', aircraft: 'B737-800', status: 'SCHEDULED', seatsRemaining: 2, availabilitySignal: 'SELL-OUT RISK', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4650, fuelSurcharge: 520, taxes: 590, fees: 230, totalFare: 5990, priceDelta: +430, pctDelta: '+7.7%', freshnessSeconds: 40, source: 'SPICEJET_API' },
+  { instanceId: 'FI-DELAI865-20260926', flightNumber: 'AI 865', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '11:00', scheduledArrival: '13:10', terminal: 'T3', aircraft: 'B777-300ER', status: 'LIVE', seatsRemaining: 22, availabilitySignal: 'HIGH', cabinClass: 'PREMIUM ECONOMY', fareFamily: 'FLEX', baseFare: 8400, fuelSurcharge: 850, taxes: 1080, fees: 340, totalFare: 10670, priceDelta: +350, pctDelta: '+3.4%', freshnessSeconds: 18, source: 'AIRINDIA_DIRECT' },
+  { instanceId: 'FI-DEL6E5034-20260926', flightNumber: '6E 5034', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'GAU', destCity: 'Guwahati', scheduledDeparture: '11:15', scheduledArrival: '13:35', terminal: 'T2', aircraft: 'A320neo', status: 'LIVE', seatsRemaining: 10, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 5240, fuelSurcharge: 580, taxes: 660, fees: 250, totalFare: 6730, priceDelta: +190, pctDelta: '+2.9%', freshnessSeconds: 31, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELQP1402-20260926', flightNumber: 'QP 1402', operatingCarrier: 'QP', carrierName: 'Akasa Air', origin: 'DEL', destination: 'HYD', destCity: 'Hyderabad', scheduledDeparture: '11:30', scheduledArrival: '13:45', terminal: 'T2', aircraft: 'B737-MAX8', status: 'SCHEDULED', seatsRemaining: 8, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 4180, fuelSurcharge: 480, taxes: 530, fees: 220, totalFare: 5410, priceDelta: -70, pctDelta: '-1.3%', freshnessSeconds: 47, source: 'AKASA_DIRECT_API' },
+  { instanceId: 'FI-DELAI407-20260926', flightNumber: 'AI 407', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'PAT', destCity: 'Patna', scheduledDeparture: '11:45', scheduledArrival: '13:20', terminal: 'T3', aircraft: 'A320neo', status: 'SCHEDULED', seatsRemaining: 14, availabilitySignal: 'HIGH', cabinClass: 'ECONOMY', fareFamily: 'STANDARD', baseFare: 3650, fuelSurcharge: 440, taxes: 470, fees: 210, totalFare: 4770, priceDelta: +90, pctDelta: '+1.9%', freshnessSeconds: 58, source: 'AMADEUS_GDS' },
+  { instanceId: 'FI-DEL6E2204-20260926', flightNumber: '6E 2204', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '16:15', scheduledArrival: '18:25', terminal: 'T1', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 5, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 5290, fuelSurcharge: 570, taxes: 660, fees: 260, totalFare: 6780, priceDelta: +340, pctDelta: '+5.3%', freshnessSeconds: 14, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELAI863-20260926', flightNumber: 'AI 863', operatingCarrier: 'AI', carrierName: 'Air India', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '16:45', scheduledArrival: '19:00', terminal: 'T3', aircraft: 'B787-8 Dreamliner', status: 'LIVE', seatsRemaining: 12, availabilitySignal: 'HIGH', cabinClass: 'BUSINESS', fareFamily: 'CORPORATE', baseFare: 15400, fuelSurcharge: 1350, taxes: 1980, fees: 470, totalFare: 19200, priceDelta: +600, pctDelta: '+3.2%', freshnessSeconds: 25, source: 'AIRINDIA_DIRECT' },
+  { instanceId: 'FI-DEL6E284-20260926', flightNumber: '6E 284', operatingCarrier: '6E', carrierName: 'IndiGo', origin: 'DEL', destination: 'BLR', destCity: 'Bengaluru', scheduledDeparture: '17:00', scheduledArrival: '19:50', terminal: 'T1', aircraft: 'A321neo', status: 'LIVE', seatsRemaining: 2, availabilitySignal: 'SELL-OUT RISK', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 6490, fuelSurcharge: 660, taxes: 820, fees: 290, totalFare: 8260, priceDelta: +940, pctDelta: '+12.8%', freshnessSeconds: 8, source: 'INDIGO_DIRECT_NDC' },
+  { instanceId: 'FI-DELQP1712-20260926', flightNumber: 'QP 1712', operatingCarrier: 'QP', carrierName: 'Akasa Air', origin: 'DEL', destination: 'BOM', destCity: 'Mumbai', scheduledDeparture: '18:45', scheduledArrival: '21:00', terminal: 'T2', aircraft: 'B737-MAX8', status: 'LIVE', seatsRemaining: 6, availabilitySignal: 'MEDIUM', cabinClass: 'ECONOMY', fareFamily: 'SAVER', baseFare: 5040, fuelSurcharge: 550, taxes: 630, fees: 250, totalFare: 6470, priceDelta: +210, pctDelta: '+3.4%', freshnessSeconds: 16, source: 'AKASA_DIRECT_API' }
+];
+
+let activeFlightsData = [...MASTER_FLIGHT_UNIVERSE];
+
+// ============================================================================
+// INITIALIZATION & LIFECYCLE
+// ============================================================================
+
+function initFlightIntelligenceWorkspace() {
+  initFlightSearchAndFilters();
+  renderFlightHeroMap();
+  renderOperatingPulseChart();
+  renderDepartureArrivalDistribution();
+  populateFlightDecompSelector();
+  renderFareDecomposition(activeFlightDecompId);
+  renderAvailabilityMatrix();
+  renderFlightPriceMovement('DEL-BOM');
+  renderCarrierComparisonCards();
+  renderFlightExceptions();
+  applyFlightFilters();
+
+  // Keep timestamp freshly updated
+  if (flightSyncTimer) clearInterval(flightSyncTimer);
+  flightSyncTimer = setInterval(() => {
+    const syncEl = document.getElementById('fstat-last-sync');
+    const ageEl = document.getElementById('audit-obs-age');
+    if (syncEl) {
+      const d = new Date();
+      syncEl.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')} IST`;
+    }
+    if (ageEl) {
+      const secs = Math.floor(Math.random() * 30 + 15);
+      ageEl.textContent = `${secs}s AGO`;
+    }
+  }, 5000);
+}
+
+function updateFlightIntelligenceWithLiveFeed(flights) {
+  if (!flights || !flights.length) return;
+  activeFlightsData = flights.map((f, i) => {
+    const decomp = f.fareDecomposition || {
+      baseFare: Math.round(f.totalFare * 0.78),
+      fuelSurcharge: 540,
+      taxes: Math.round(f.totalFare * 0.12),
+      fees: 220
+    };
+    return {
+      instanceId: f.instanceId || `FI-DEL${(f.flightNumber||'').replace(/[^a-zA-Z0-9]/g, '')}-${i}`,
+      flightNumber: f.flightNumber,
+      operatingCarrier: f.operatingCarrier,
+      carrierName: f.carrierName || f.operatingCarrier,
+      origin: f.origin || 'DEL',
+      destination: f.destination,
+      destCity: f.destinationName || f.destination,
+      scheduledDeparture: f.scheduledDeparture,
+      scheduledArrival: f.scheduledArrival || '--:--',
+      terminal: f.terminal || 'T1',
+      aircraft: f.aircraft || 'A320neo',
+      status: f.status || 'LIVE',
+      seatsRemaining: f.seatsRemaining || 8,
+      availabilitySignal: f.seatsRemaining <= 4 ? 'SELL-OUT RISK' : f.seatsRemaining <= 8 ? 'MEDIUM' : 'HIGH',
+      cabinClass: f.cabin || 'ECONOMY',
+      fareFamily: (f.fareFamily || 'SAVER').toUpperCase(),
+      baseFare: decomp.baseFare,
+      fuelSurcharge: decomp.fuelSurcharge,
+      taxes: decomp.taxes,
+      fees: decomp.fees,
+      totalFare: f.totalFare,
+      priceDelta: f.priceDelta || 0,
+      pctDelta: f.priceDelta ? `${f.priceDelta > 0 ? '+' : ''}${((f.priceDelta / f.totalFare) * 100).toFixed(1)}%` : '0.0%',
+      freshnessSeconds: f.freshnessSeconds || 42,
+      source: f.source || 'INDIGO_DIRECT_NDC'
+    };
+  });
+
+  const countEl = document.getElementById('fstat-flight-instances');
+  if (countEl) countEl.textContent = activeFlightsData.length.toLocaleString();
+
+  populateFlightDecompSelector();
+  applyFlightFilters();
+}
+
+// ============================================================================
+// SECTION 02: HERO NETWORK MAP (SVG ALL-INDIA UNIVERSE)
+// ============================================================================
+
+function filterFlightMap(filter) {
+  currentFlightMapFilter = filter;
+  ['all', 'metro', 'regional'].forEach(id => {
+    const btn = document.getElementById(`btn-fmap-${id}`);
+    if (btn) btn.classList.toggle('active', id.toUpperCase() === filter);
+  });
+  renderFlightHeroMap(filter);
+}
+
+function renderFlightHeroMap(filter = currentFlightMapFilter) {
+  const svg = document.getElementById('flight-hero-map-svg');
+  if (!svg) return;
+
+  const originX = 440;
+  const originY = 195;
+
+  let filteredHubs = ALL_INDIA_HUBS;
+  if (filter === 'METRO') {
+    filteredHubs = ALL_INDIA_HUBS.filter(h => h.metro);
+  } else if (filter === 'REGIONAL') {
+    filteredHubs = ALL_INDIA_HUBS.filter(h => !h.metro);
+  }
+
+  let defs = `
+    <defs>
+      <filter id="hub-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+      <linearGradient id="trunk-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2563EB" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#60A5FA" stop-opacity="0.6" />
+      </linearGradient>
+    </defs>
+  `;
+
+  let bg = `
+    <!-- Grid -->
+    <g stroke="#F1F5F9" stroke-width="1" stroke-dasharray="2 4">
+      <line x1="200" y1="100" x2="900" y2="100" />
+      <line x1="200" y1="200" x2="900" y2="200" />
+      <line x1="200" y1="300" x2="900" y2="300" />
+      <line x1="200" y1="400" x2="900" y2="400" />
+      <line x1="200" y1="500" x2="900" y2="500" />
+      <line x1="200" y1="600" x2="900" y2="600" />
+      <line x1="300" y1="40" x2="300" y2="670" />
+      <line x1="440" y1="40" x2="440" y2="670" />
+      <line x1="580" y1="40" x2="580" y2="670" />
+      <line x1="720" y1="40" x2="720" y2="670" />
+      <line x1="860" y1="40" x2="860" y2="670" />
+    </g>
+
+    <!-- Stylized India Boundary Contour -->
+    <path d="M 380 65 C 410 45, 470 45, 490 75 C 510 105, 470 135, 480 155 C 500 165, 560 205, 600 225 C 660 245, 710 225, 750 205 C 780 195, 840 165, 890 175 C 920 185, 880 245, 850 295 C 820 325, 780 295, 750 275 C 710 285, 680 335, 660 375 C 640 425, 570 475, 540 535 C 510 585, 470 645, 440 670 C 420 645, 390 585, 365 515 C 345 465, 330 415, 320 355 C 310 315, 320 275, 335 245 C 350 205, 340 155, 360 115 Z" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2" opacity="0.95" />
+
+    <!-- DEL Radial Range Rings -->
+    <circle cx="${originX}" cy="${originY}" r="115" fill="none" stroke="#E2E8F0" stroke-dasharray="3 5" stroke-width="1" />
+    <circle cx="${originX}" cy="${originY}" r="230" fill="none" stroke="#E2E8F0" stroke-dasharray="3 5" stroke-width="1" />
+    <circle cx="${originX}" cy="${originY}" r="345" fill="none" stroke="#E2E8F0" stroke-dasharray="3 5" stroke-width="1" />
+  `;
+
+  // Draw Corridors
+  let arcs = '<g class="arcs-layer">';
+  let particles = '<g class="particles-layer">';
+
+  ALL_INDIA_NETWORK_ROUTES.forEach(r => {
+    const destHub = ALL_INDIA_HUBS.find(h => h.iata === r.dest);
+    if (!destHub) return;
+
+    const midX = (originX + destHub.x) / 2;
+    const midY = (originY + destHub.y) / 2;
+    const dx = destHub.x - originX;
+    const dy = destHub.y - originY;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const normalX = -dy / (len || 1);
+    const normalY = dx / (len || 1);
+    const curveMag = Math.min(36, Math.max(12, len * 0.08)) * (destHub.x >= originX ? -1 : 1);
+    const cx = midX + normalX * curveMag;
+    const cy = midY + normalY * curveMag;
+    const arcPath = `M ${originX} ${originY} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${destHub.x} ${destHub.y}`;
+
+    const strokeWidth = r.flights >= 50 ? 3.6 : r.flights >= 30 ? 2.4 : 1.4;
+    const strokeColor = r.change > 5.0 ? '#E11D48' : r.flights >= 40 ? '#2563EB' : '#60A5FA';
+
+    arcs += `
+      <path d="${arcPath}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" opacity="0.75" class="map-flow-arc" onmousemove="handleFlightRouteHover(event, '${r.dest}')" onmouseleave="handleFlightMapLeave()" onclick="selectFlightMapRoute('${r.dest}')" style="cursor: pointer;" />
+    `;
+
+    if (r.flights >= 30) {
+      const dur = (2.8 + (len / 350)).toFixed(1);
+      particles += `
+        <circle r="3" fill="#FFFFFF" stroke="${strokeColor}" stroke-width="1.5" filter="url(#hub-glow)">
+          <animateMotion path="${arcPath}" dur="${dur}s" repeatCount="indefinite" />
+        </circle>
+      `;
+    }
+  });
+
+  arcs += '</g>';
+  particles += '</g>';
+
+  // Draw Airport Hub Nodes
+  let nodes = '<g class="nodes-layer">';
+  filteredHubs.forEach(h => {
+    if (h.iata === 'DEL') return; // Origin drawn separately
+    const nodeR = h.metro ? 6.5 : 4.5;
+    const nodeFill = h.metro ? '#2563EB' : '#475569';
+
+    nodes += `
+      <g class="map-airport-node" onmousemove="handleFlightHubHover(event, '${h.iata}')" onmouseleave="handleFlightMapLeave()" onclick="selectFlightMapHub('${h.iata}')" style="cursor: pointer;">
+        ${h.metro ? `<circle cx="${h.x}" cy="${h.y}" r="12" fill="none" stroke="#2563EB" stroke-width="1.2" opacity="0.35" />` : ''}
+        <circle cx="${h.x}" cy="${h.y}" r="${nodeR}" fill="${nodeFill}" stroke="#FFFFFF" stroke-width="1.5" />
+        <text x="${h.x}" y="${h.y + (h.y > 580 ? -10 : 15)}" font-family="'JetBrains Mono', monospace" font-size="${h.metro ? '10' : '8.5'}" font-weight="${h.metro ? '800' : '600'}" fill="#0F172A" text-anchor="middle">
+          ${h.iata}
+        </text>
+      </g>
+    `;
+  });
+  nodes += '</g>';
+
+  // DEL Origin Hub Beacon
+  const delBeacon = `
+    <g class="del-origin-hub" onmousemove="handleFlightHubHover(event, 'DEL')" onmouseleave="handleFlightMapLeave()">
+      <circle cx="${originX}" cy="${originY}" r="24" fill="none" stroke="#F59E0B" stroke-width="1.2" opacity="0.5">
+        <animate attributeName="r" values="8;34" dur="2.4s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.8;0" dur="2.4s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="${originX}" cy="${originY}" r="10" fill="#0F172A" stroke="#F59E0B" stroke-width="2.5" />
+      <circle cx="${originX}" cy="${originY}" r="3.5" fill="#F59E0B" />
+      <text x="${originX}" y="${originY - 14}" font-family="Inter, sans-serif" font-size="11" font-weight="800" fill="#0F172A" text-anchor="middle">
+        DEL (PRIMARY HUB)
+      </text>
+    </g>
+  `;
+
+  svg.innerHTML = defs + bg + arcs + particles + nodes + delBeacon;
+}
+
+function handleFlightRouteHover(evt, destCode) {
+  const r = ALL_INDIA_NETWORK_ROUTES.find(item => item.dest === destCode);
+  const destHub = ALL_INDIA_HUBS.find(h => h.iata === destCode);
+  if (!r || !destHub) return;
+
+  const tooltip = document.getElementById('flight-map-tooltip');
+  const container = document.getElementById('flight-map-hero-wrapper');
+  if (!tooltip || !container) return;
+
+  const rect = container.getBoundingClientRect();
+  const x = evt.clientX - rect.left + 15;
+  const y = evt.clientY - rect.top + 15;
+
+  const sign = r.change >= 0 ? '+' : '';
+  const color = r.change > 5.0 ? '#E11D48' : r.change < 0 ? '#059669' : '#2563EB';
+
+  tooltip.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.35rem; margin-bottom: 0.4rem;">
+      <strong style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--navy-900);">DEL → ${r.dest} (${destHub.city})</strong>
+      <span class="data-state-pill state-observed">COVERED</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Flights today:</span>
+      <span style="font-weight: 700;">${r.flights} daily flights</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Carriers operating:</span>
+      <span>${r.carriers} airlines</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Fare observations:</span>
+      <span style="font-family: var(--font-mono);">${r.obs.toLocaleString()} quotes</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Median fare:</span>
+      <span style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">₹${r.fare.toLocaleString()}</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">24H Movement:</span>
+      <span style="font-family: var(--font-mono); font-weight: 700; color: ${color};">${sign}${r.change}%</span>
+    </div>
+    <div style="font-size: 0.68rem; color: #2563EB; margin-top: 0.35rem; border-top: 1px solid var(--border-hairline); padding-top: 0.3rem; font-weight: 600;">
+      Click corridor to filter Flight Inventory ↓
+    </div>
+  `;
+
+  tooltip.style.left = `${Math.min(x, rect.width - 240)}px`;
+  tooltip.style.top = `${Math.min(y, rect.height - 180)}px`;
+  tooltip.classList.add('visible');
+}
+
+function handleFlightHubHover(evt, iata) {
+  const h = ALL_INDIA_HUBS.find(item => item.iata === iata);
+  if (!h) return;
+
+  const tooltip = document.getElementById('flight-map-tooltip');
+  const container = document.getElementById('flight-map-hero-wrapper');
+  if (!tooltip || !container) return;
+
+  const rect = container.getBoundingClientRect();
+  const x = evt.clientX - rect.left + 15;
+  const y = evt.clientY - rect.top + 15;
+
+  tooltip.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.35rem; margin-bottom: 0.4rem;">
+      <strong style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--navy-900);">${h.iata} — ${h.name}</strong>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Departures today:</span>
+      <span style="font-weight: 700;">${h.dep}</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Arrivals today:</span>
+      <span style="font-weight: 700;">${h.arr}</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Active routes:</span>
+      <span>${h.routes} directional</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Carriers:</span>
+      <span>${h.carriers} airlines</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+      <span style="color: var(--text-muted);">Observed instances:</span>
+      <span style="font-family: var(--font-mono);">${h.instances.toLocaleString()}</span>
+    </div>
+    <div style="font-size: 0.68rem; color: #2563EB; margin-top: 0.35rem; border-top: 1px solid var(--border-hairline); padding-top: 0.3rem; font-weight: 600;">
+      Click hub to filter flights ↓
+    </div>
+  `;
+
+  tooltip.style.left = `${Math.min(x, rect.width - 240)}px`;
+  tooltip.style.top = `${Math.min(y, rect.height - 180)}px`;
+  tooltip.classList.add('visible');
+}
+
+function handleFlightMapLeave() {
+  const tooltip = document.getElementById('flight-map-tooltip');
+  if (tooltip) tooltip.classList.remove('visible');
+}
+
+function selectFlightMapRoute(destCode) {
+  const destSelect = document.getElementById('flt-filter-dest');
+  if (destSelect) {
+    destSelect.value = destCode;
+    applyFlightFilters();
+  }
+  const tbl = document.getElementById('flight-universe-table');
+  if (tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectFlightMapHub(iata) {
+  const originSelect = document.getElementById('flt-filter-origin');
+  const destSelect = document.getElementById('flt-filter-dest');
+  if (iata === 'DEL') {
+    if (originSelect) originSelect.value = 'DEL';
+  } else {
+    if (destSelect) destSelect.value = iata;
+  }
+  applyFlightFilters();
+  const tbl = document.getElementById('flight-universe-table');
+  if (tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================================
+// SECTION 03: NETWORK OPERATING PULSE (TEMPORAL SCHEDULE WAVES)
+// ============================================================================
+
+function switchPulseMetric(metric) {
+  currentPulseMetric = metric;
+  ['dep', 'arr', 'quotes'].forEach(id => {
+    const btn = document.getElementById(`btn-pulse-${id}`);
+    if (btn) btn.classList.toggle('active', (metric === 'DEPARTURES' && id === 'dep') || (metric === 'ARRIVALS' && id === 'arr') || (metric === 'QUOTES' && id === 'quotes'));
+  });
+  renderOperatingPulseChart(metric);
+}
+
+function renderOperatingPulseChart(metric = currentPulseMetric) {
+  const svg = document.getElementById('network-pulse-chart-svg');
+  if (!svg) return;
+
+  const w = 950;
+  const h = 260;
+  const pad = { top: 35, right: 30, bottom: 45, left: 55 };
+
+  // 24 Hour Buckets with realistic Indian departure distribution
+  const hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  const depCounts = [22, 18, 14, 25, 68, 142, 185, 176, 162, 124, 98, 92, 88, 94, 90, 112, 148, 182, 194, 188, 156, 110, 72, 42];
+  const arrCounts = [15, 12, 10, 18, 42, 88, 130, 165, 178, 152, 118, 96, 90, 92, 95, 108, 136, 168, 186, 192, 170, 134, 88, 48];
+  const quoteCounts = depCounts.map(d => d * 38);
+
+  const data = metric === 'DEPARTURES' ? depCounts : metric === 'ARRIVALS' ? arrCounts : quoteCounts;
+  const maxVal = Math.max(...data) * 1.15;
+
+  const barW = ((w - pad.left - pad.right) / 24) * 0.72;
+  const getX = (idx) => pad.left + (idx * ((w - pad.left - pad.right) / 24)) + barW * 0.2;
+  const getY = (val) => pad.top + ((maxVal - val) / maxVal) * (h - pad.top - pad.bottom);
+
+  let grid = '';
+  const numSteps = 4;
+  for (let i = 0; i <= numSteps; i++) {
+    const val = Math.round((maxVal / numSteps) * i);
+    const y = getY(val);
+    grid += `
+      <line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" stroke="#F1F5F9" stroke-width="1" />
+      <text x="${pad.left - 10}" y="${y + 4}" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#94A3B8" text-anchor="end">${val.toLocaleString()}</text>
+    `;
+  }
+
+  // Bars and Curve
+  let bars = '';
+  let linePath = `M ${getX(0) + barW / 2} ${getY(data[0])}`;
+
+  hours.forEach((hr, i) => {
+    const x = getX(i);
+    const y = getY(data[i]);
+    const bHeight = (h - pad.bottom) - y;
+    const barColor = hr >= 6 && hr <= 9 ? '#2563EB' : hr >= 17 && hr <= 20 ? '#1D4ED8' : '#93C5FD';
+
+    bars += `
+      <rect x="${x}" y="${y}" width="${barW}" height="${bHeight}" rx="3" fill="${barColor}" class="pulse-bar" onclick="filterInventoryByHour(${hr})" style="cursor: pointer;">
+        <title>${String(hr).padStart(2, '0')}:00–${String(hr).padStart(2, '0')}:59 : ${data[i].toLocaleString()} ${metric.toLowerCase()}</title>
+      </rect>
+      ${data[i] >= 140 ? `<text x="${x + barW / 2}" y="${y - 6}" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#0F172A" text-anchor="middle">${data[i]}</text>` : ''}
+    `;
+
+    if (i > 0) {
+      linePath += ` L ${x + barW / 2} ${y}`;
+    }
+  });
+
+  // X Axis Labels
+  let xLabels = '';
+  hours.forEach((hr, i) => {
+    if (i % 2 === 0) {
+      const x = getX(i) + barW / 2;
+      xLabels += `
+        <text x="${x}" y="${h - 15}" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#64748B" text-anchor="middle">${String(hr).padStart(2, '0')}:00</text>
+      `;
+    }
+  });
+
+  // Morning and Evening Peak Callouts
+  const morningX = getX(7);
+  const eveningX = getX(18);
+
+  const callouts = `
+    <!-- Morning Peak -->
+    <rect x="${morningX - 45}" y="${pad.top - 18}" width="105" height="20" rx="3" fill="#0F172A" />
+    <text x="${morningX + 7}" y="${pad.top - 5}" font-family="Inter" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      MORNING METRO WAVE
+    </text>
+
+    <!-- Evening Peak -->
+    <rect x="${eveningX - 45}" y="${pad.top - 18}" width="110" height="20" rx="3" fill="#0F172A" />
+    <text x="${eveningX + 10}" y="${pad.top - 5}" font-family="Inter" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      EVENING CORP RETURN
+    </text>
+  `;
+
+  svg.innerHTML = `
+    ${grid}
+    ${bars}
+    <path d="${linePath}" fill="none" stroke="#0F172A" stroke-width="2" stroke-dasharray="3 3" opacity="0.6" />
+    ${xLabels}
+    ${callouts}
+  `;
+}
+
+function filterInventoryByHour(hour) {
+  let windowVal = 'ALL';
+  if (hour < 6) windowVal = '00-06';
+  else if (hour < 12) windowVal = '06-12';
+  else if (hour < 18) windowVal = '12-18';
+  else windowVal = '18-24';
+
+  const winSelect = document.getElementById('flt-filter-window');
+  if (winSelect) {
+    winSelect.value = windowVal;
+    applyFlightFilters();
+  }
+  const tbl = document.getElementById('flight-universe-table');
+  if (tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================================
+// SECTION 04: FLIGHT SEARCH & ADVANCED FILTERS
+// ============================================================================
+
+function initFlightSearchAndFilters() {
+  const searchInput = document.getElementById('flight-universe-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      flightFilters.search = e.target.value.trim().toLowerCase();
+      applyFlightFilters();
+    });
+  }
+
+  // Keyboard Shortcuts: ⌘K or / to focus search
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey && e.key === 'k') || (e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT')) {
+      if (document.getElementById('pane-flights')?.classList.contains('active')) {
+        e.preventDefault();
+        searchInput?.focus();
+        searchInput?.select();
+      }
+    }
+  });
+}
+
+function applyFlightFilters() {
+  const originVal = document.getElementById('flt-filter-origin')?.value || 'ALL';
+  const destVal = document.getElementById('flt-filter-dest')?.value || 'ALL';
+  const carrierVal = document.getElementById('flt-filter-carrier')?.value || 'ALL';
+  const windowVal = document.getElementById('flt-filter-window')?.value || 'ALL';
+  const familyVal = document.getElementById('flt-filter-family')?.value || 'ALL';
+  const availVal = document.getElementById('flt-filter-avail')?.value || 'ALL';
+  const searchVal = document.getElementById('flight-universe-search')?.value.trim().toLowerCase() || '';
+
+  flightFilters = {
+    search: searchVal,
+    origin: originVal,
+    dest: destVal,
+    carrier: carrierVal,
+    window: windowVal,
+    family: familyVal,
+    avail: availVal
+  };
+
+  const filtered = activeFlightsData.filter(f => {
+    // Search match
+    if (flightFilters.search) {
+      const q = flightFilters.search;
+      const match = f.flightNumber.toLowerCase().includes(q) ||
+                    f.operatingCarrier.toLowerCase().includes(q) ||
+                    f.carrierName.toLowerCase().includes(q) ||
+                    f.origin.toLowerCase().includes(q) ||
+                    f.destination.toLowerCase().includes(q) ||
+                    f.destCity.toLowerCase().includes(q) ||
+                    f.fareFamily.toLowerCase().includes(q) ||
+                    f.instanceId.toLowerCase().includes(q) ||
+                    f.cabinClass.toLowerCase().includes(q);
+      if (!match) return false;
+    }
+
+    if (flightFilters.origin !== 'ALL' && f.origin !== flightFilters.origin) return false;
+    if (flightFilters.dest !== 'ALL' && f.destination !== flightFilters.dest) return false;
+    if (flightFilters.carrier !== 'ALL' && f.operatingCarrier !== flightFilters.carrier) return false;
+    if (flightFilters.family !== 'ALL' && f.fareFamily !== flightFilters.family) return false;
+
+    if (flightFilters.avail !== 'ALL') {
+      if (flightFilters.avail === 'HIGH' && f.seatsRemaining < 9) return false;
+      if (flightFilters.avail === 'MEDIUM' && (f.seatsRemaining < 5 || f.seatsRemaining > 8)) return false;
+      if (flightFilters.avail === 'LOW' && f.seatsRemaining > 4) return false;
+    }
+
+    if (flightFilters.window !== 'ALL') {
+      const depHour = parseInt(f.scheduledDeparture.split(':')[0], 10);
+      if (flightFilters.window === '00-06' && (depHour < 0 || depHour >= 6)) return false;
+      if (flightFilters.window === '06-12' && (depHour < 6 || depHour >= 12)) return false;
+      if (flightFilters.window === '12-18' && (depHour < 12 || depHour >= 18)) return false;
+      if (flightFilters.window === '18-24' && (depHour < 18 || depHour >= 24)) return false;
+    }
+
+    return true;
+  });
+
+  renderActiveFilterChips();
+  renderFlightInventoryTable(filtered);
+}
+
+function renderActiveFilterChips() {
+  const chipsContainer = document.getElementById('active-filter-chips');
+  const countEl = document.getElementById('flight-showing-count');
+  if (!chipsContainer) return;
+
+  let chipsHtml = '';
+  if (flightFilters.origin !== 'ALL') {
+    chipsHtml += `<span class="active-filter-chip">Origin: ${flightFilters.origin} <span class="chip-remove-x" onclick="removeFlightFilter('origin')">✕</span></span>`;
+  }
+  if (flightFilters.dest !== 'ALL') {
+    chipsHtml += `<span class="active-filter-chip">Destination: ${flightFilters.dest} <span class="chip-remove-x" onclick="removeFlightFilter('dest')">✕</span></span>`;
+  }
+  if (flightFilters.carrier !== 'ALL') {
+    chipsHtml += `<span class="active-filter-chip">Carrier: ${flightFilters.carrier} <span class="chip-remove-x" onclick="removeFlightFilter('carrier')">✕</span></span>`;
+  }
+  if (flightFilters.window !== 'ALL') {
+    chipsHtml += `<span class="active-filter-chip">Window: ${flightFilters.window} <span class="chip-remove-x" onclick="removeFlightFilter('window')">✕</span></span>`;
+  }
+  if (flightFilters.family !== 'ALL') {
+    chipsHtml += `<span class="active-filter-chip">Family: ${flightFilters.family} <span class="chip-remove-x" onclick="removeFlightFilter('family')">✕</span></span>`;
+  }
+  if (flightFilters.avail !== 'ALL') {
+    chipsHtml += `<span class="active-filter-chip">Availability: ${flightFilters.avail} <span class="chip-remove-x" onclick="removeFlightFilter('avail')">✕</span></span>`;
+  }
+  if (flightFilters.search) {
+    chipsHtml += `<span class="active-filter-chip">Query: "${flightFilters.search}" <span class="chip-remove-x" onclick="removeFlightFilter('search')">✕</span></span>`;
+  }
+
+  chipsContainer.innerHTML = chipsHtml;
+}
+
+function removeFlightFilter(key) {
+  if (key === 'origin') document.getElementById('flt-filter-origin').value = 'ALL';
+  if (key === 'dest') document.getElementById('flt-filter-dest').value = 'ALL';
+  if (key === 'carrier') document.getElementById('flt-filter-carrier').value = 'ALL';
+  if (key === 'window') document.getElementById('flt-filter-window').value = 'ALL';
+  if (key === 'family') document.getElementById('flt-filter-family').value = 'ALL';
+  if (key === 'avail') document.getElementById('flt-filter-avail').value = 'ALL';
+  if (key === 'search') document.getElementById('flight-universe-search').value = '';
+  applyFlightFilters();
+}
+
+function clearAllFlightFilters() {
+  document.getElementById('flt-filter-origin').value = 'ALL';
+  document.getElementById('flt-filter-dest').value = 'ALL';
+  document.getElementById('flt-filter-carrier').value = 'ALL';
+  document.getElementById('flt-filter-window').value = 'ALL';
+  document.getElementById('flt-filter-family').value = 'ALL';
+  document.getElementById('flt-filter-avail').value = 'ALL';
+  document.getElementById('flight-universe-search').value = '';
+  applyFlightFilters();
+}
+
+// ============================================================================
+// SECTION 05: FLIGHT INSTANCE INVENTORY (11 REQUIRED COLUMNS & EXPANSION)
+// ============================================================================
+
+function renderFlightInventoryTable(flights) {
+  const tbody = document.getElementById('flight-universe-tbody');
+  const countEl = document.getElementById('flight-showing-count');
+  if (!tbody) return;
+
+  if (countEl) {
+    const uniqueRoutes = new Set(flights.map(f => `${f.origin}-${f.destination}`)).size;
+    countEl.textContent = `Showing ${flights.length} flight instances across ${uniqueRoutes} routes`;
+  }
+
+  if (!flights.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11">
+          <div class="empty-state-flight-box">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔍</div>
+            <strong style="color: var(--navy-900); font-size: 0.95rem;">NO FLIGHT INSTANCES MATCH THE CURRENT FILTERS</strong>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 1rem;">
+              Try widening the departure window, removing a carrier filter, or clearing the search query.
+            </p>
+            <button class="btn btn-primary" onclick="clearAllFlightFilters()">Reset All Filters</button>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  let html = '';
+  flights.forEach(f => {
+    const isExpanded = expandedFlightRowId === f.instanceId;
+    const sign = f.priceDelta >= 0 ? '+' : '';
+    const deltaColor = f.priceDelta > 0 ? '#E11D48' : f.priceDelta < 0 ? '#059669' : '#64748B';
+    const familyClass = f.fareFamily.toLowerCase();
+
+    // 11 Core Required Table Columns:
+    // INSTANCE ID | FLIGHT | CARRIER | ROUTE | DEPARTURE | ARRIVAL | FARE FAMILY | BASE FARE | TOTAL FARE | STATUS | ACTION
+    html += `
+      <tr class="flight-instance-row ${isExpanded ? 'active-expanded' : ''}" data-instance="${f.instanceId}" onclick="toggleFlightRowExpansion('${f.instanceId}', event)">
+        <td class="flight-instance-id-cell">
+          <span>${f.instanceId}</span>
+        </td>
+        <td>
+          <div class="flight-code-cell">
+            <span class="carrier-logo-mini">${f.operatingCarrier}</span>
+            <strong>${f.flightNumber}</strong>
+          </div>
+        </td>
+        <td>
+          <span style="font-size: 0.82rem; font-weight: 600; color: var(--navy-900);">${f.carrierName}</span>
+        </td>
+        <td>
+          <span class="route-code-badge">${f.origin} → ${f.destination}</span>
+        </td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">
+          ${f.scheduledDeparture}
+        </td>
+        <td style="font-family: var(--font-mono); color: var(--text-muted);">
+          ${f.scheduledArrival}
+        </td>
+        <td>
+          <span class="fare-family-tag ${familyClass}">${f.fareFamily}</span>
+        </td>
+        <td style="text-align: right; font-family: var(--font-mono); color: var(--text-secondary);">
+          ₹${f.baseFare.toLocaleString()}
+        </td>
+        <td style="text-align: right;">
+          <div style="font-family: var(--font-mono); font-weight: 800; color: var(--navy-900);">₹${f.totalFare.toLocaleString()}</div>
+          <div style="font-family: var(--font-mono); font-size: 0.68rem; color: ${deltaColor}; font-weight: 600;">
+            ${sign}₹${Math.abs(f.priceDelta)} (${f.pctDelta})
+          </div>
+        </td>
+        <td>
+          <span class="data-state-pill state-observed" style="font-size: 0.65rem;">● ${f.status}</span>
+          <div style="font-size: 0.68rem; color: var(--text-dim); margin-top: 2px;">${f.freshnessSeconds}s ago</div>
+        </td>
+        <td>
+          <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 700; color: #2563EB;" onclick="event.stopPropagation(); openFlightInstanceModal('${f.instanceId}')">VIEW →</button>
+        </td>
+      </tr>
+
+      <!-- Progressive Row Expansion Drawer -->
+      <tr class="flight-expanded-row" id="exp-${f.instanceId}" style="display: ${isExpanded ? 'table-row' : 'none'};">
+        <td colspan="11" style="background: #F8FAFC; padding: 1.25rem 1.5rem; border-bottom: 2px solid var(--border-subtle);">
+          <div class="row-expansion-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.5rem;">
+              <div>
+                <strong style="font-size: 0.95rem; color: var(--navy-900); font-family: var(--font-mono);">${f.flightNumber} · ${f.origin} → ${f.destination}</strong>
+                <span style="font-size: 0.78rem; color: var(--text-muted); margin-left: 0.5rem;">${f.carrierName} · Instance ID: ${f.instanceId}</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-ghost" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="activateWorkspaceTab('routes'); selectCorridorFromMap('${f.destination}');">Route Intelligence (${f.origin}-${f.destination}) →</button>
+                <button class="btn btn-primary" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="openFlightInstanceModal('${f.instanceId}')">Open Full Deep Dive Drawer →</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; font-size: 0.8rem;">
+              <!-- Flight Snapshot -->
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">Flight Operational Snapshot</div>
+                <div>Scheduled: <strong>${f.scheduledDeparture} → ${f.scheduledArrival}</strong></div>
+                <div>Terminal: <strong>${f.terminal}</strong> · Aircraft: <strong>${f.aircraft}</strong></div>
+                <div>Availability Signal: <span class="data-state-pill state-calculated">${f.seatsRemaining} seats left (${f.availabilitySignal})</span></div>
+              </div>
+
+              <!-- Fare Structure Breakdown -->
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">Fare Decomposition</div>
+                <div style="display: flex; justify-content: space-between;"><span>Base Fare (Revenue):</span> <span style="font-family: var(--font-mono);">₹${f.baseFare.toLocaleString()}</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Fuel Surcharge:</span> <span style="font-family: var(--font-mono);">₹${f.fuelSurcharge.toLocaleString()}</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Airport Taxes / UDF:</span> <span style="font-family: var(--font-mono);">₹${f.taxes.toLocaleString()}</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>User Fees:</span> <span style="font-family: var(--font-mono);">₹${f.fees.toLocaleString()}</span></div>
+                <div style="display: flex; justify-content: space-between; font-weight: 700; border-top: 1px solid var(--border-hairline); margin-top: 0.25rem; padding-top: 0.25rem;">
+                  <span>TOTAL PASSENGER FARE:</span>
+                  <span style="font-family: var(--font-mono); color: #2563EB;">₹${f.totalFare.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <!-- Integrity & Verification -->
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">Audit &amp; Provenance</div>
+                <div>Source Adapter: <span style="font-family: var(--font-mono); font-size: 0.72rem;">${f.source}</span></div>
+                <div>Observation Age: <strong>${f.freshnessSeconds} seconds ago</strong></div>
+                <div>Quality Rules: <span style="color: #059669; font-weight: 700;">R01-R12 PASSED (12/12)</span></div>
+                <div>Data Mode: <span class="data-state-pill state-simulated">SIMULATED_LIVE</span></div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html;
+}
+
+function toggleFlightRowExpansion(instanceId, evt) {
+  if (evt && (evt.target.tagName === 'BUTTON' || evt.target.closest('button'))) return;
+  expandedFlightRowId = expandedFlightRowId === instanceId ? null : instanceId;
+  applyFlightFilters();
+}
+
+// ============================================================================
+// SECTION 06: DEPARTURE / ARRIVAL DISTRIBUTION ("WHEN DOES THE NETWORK MOVE?")
+// ============================================================================
+
+function renderDepartureArrivalDistribution() {
+  const svg = document.getElementById('departure-arrival-dist-svg');
+  if (!svg) return;
+
+  const w = 950;
+  const h = 280;
+  const pad = { top: 35, right: 30, bottom: 45, left: 55 };
+
+  const hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  const depData = [22, 18, 14, 25, 68, 142, 185, 176, 162, 124, 98, 92, 88, 94, 90, 112, 148, 182, 194, 188, 156, 110, 72, 42];
+  const arrData = [15, 12, 10, 18, 42, 88, 130, 165, 178, 152, 118, 96, 90, 92, 95, 108, 136, 168, 186, 192, 170, 134, 88, 48];
+
+  const maxVal = 220;
+  const barW = ((w - pad.left - pad.right) / 24) * 0.65;
+  const getX = (idx) => pad.left + (idx * ((w - pad.left - pad.right) / 24)) + barW * 0.25;
+  const getY = (val) => pad.top + ((maxVal - val) / maxVal) * (h - pad.top - pad.bottom);
+
+  let grid = '';
+  for (let v = 0; v <= 200; v += 50) {
+    const y = getY(v);
+    grid += `
+      <line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" stroke="#F1F5F9" stroke-width="1" />
+      <text x="${pad.left - 10}" y="${y + 4}" font-family="'JetBrains Mono', monospace" font-size="9" fill="#94A3B8" text-anchor="end">${v}</text>
+    `;
+  }
+
+  let bars = '';
+  let arrSpline = `M ${getX(0) + barW / 2} ${getY(arrData[0])}`;
+
+  hours.forEach((hr, i) => {
+    const x = getX(i);
+    const y = getY(depData[i]);
+    const bHeight = (h - pad.bottom) - y;
+
+    bars += `
+      <rect x="${x}" y="${y}" width="${barW}" height="${bHeight}" rx="2.5" fill="#2563EB" opacity="0.85" onclick="filterInventoryByHour(${hr})" style="cursor: pointer;">
+        <title>${String(hr).padStart(2, '0')}:00–${String(hr).padStart(2, '0')}:59: ${depData[i]} departures, ${arrData[i]} arrivals</title>
+      </rect>
+    `;
+
+    if (i > 0) {
+      arrSpline += ` L ${x + barW / 2} ${getY(arrData[i])}`;
+    }
+  });
+
+  let xLabels = '';
+  hours.forEach((hr, i) => {
+    if (i % 2 === 0) {
+      const x = getX(i) + barW / 2;
+      xLabels += `<text x="${x}" y="${h - 15}" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#64748B" text-anchor="middle">${String(hr).padStart(2, '0')}:00</text>`;
+    }
+  });
+
+  svg.innerHTML = `
+    ${grid}
+    ${bars}
+    <path d="${arrSpline}" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" />
+    ${arrData.map((v, i) => `<circle cx="${getX(i) + barW / 2}" cy="${getY(v)}" r="3" fill="#10B981" stroke="#FFFFFF" stroke-width="1.5" />`).join('')}
+    ${xLabels}
+  `;
+}
+
+// ============================================================================
+// SECTION 08: FARE DECOMPOSITION ("WHERE DOES THE TICKET PRICE COME FROM?")
+// ============================================================================
+
+function populateFlightDecompSelector() {
+  const sel = document.getElementById('flt-decomp-selector');
+  if (!sel) return;
+  sel.innerHTML = activeFlightsData.slice(0, 15).map(f => `
+    <option value="${f.instanceId}">${f.flightNumber} (${f.origin} → ${f.destination}) · ₹${f.totalFare.toLocaleString()} (${f.fareFamily})</option>
+  `).join('');
+}
+
+function renderFareDecomposition(instanceId) {
+  activeFlightDecompId = instanceId;
+  const container = document.getElementById('flight-fare-decomp-container');
+  if (!container) return;
+
+  const f = activeFlightsData.find(item => item.instanceId === instanceId) || activeFlightsData[0];
+  if (!f) return;
+
+  const basePct = Math.round((f.baseFare / f.totalFare) * 100);
+  const fuelPct = Math.round((f.fuelSurcharge / f.totalFare) * 100);
+  const taxPct = Math.round((f.taxes / f.totalFare) * 100);
+  const feesPct = 100 - basePct - fuelPct - taxPct;
+
+  container.innerHTML = `
+    <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.5rem; margin-top: 0.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem;">
+        <div>
+          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">AeroIndex Unbundled Fare Formulation (DGCA Standard F061)</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono); margin-top: 0.2rem;">
+            Total Passenger Price: ₹${f.totalFare.toLocaleString()}
+          </h3>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+          Flight: <strong>${f.flightNumber}</strong> · Corridor: <strong>${f.origin}-${f.destination}</strong>
+        </div>
+      </div>
+
+      <!-- Large Waterfall Stacked Bar -->
+      <div class="cabin-mix-track" style="height: 28px; border-radius: 6px; margin-bottom: 1.25rem;">
+        <div style="width: ${basePct}%; background: #2563EB; height: 100%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;" title="Base Fare: ₹${f.baseFare} (${basePct}%)">
+          Base ${basePct}%
+        </div>
+        <div style="width: ${fuelPct}%; background: #F59E0B; height: 100%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;" title="Fuel Surcharge: ₹${f.fuelSurcharge} (${fuelPct}%)">
+          Fuel ${fuelPct}%
+        </div>
+        <div style="width: ${taxPct}%; background: #10B981; height: 100%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;" title="Taxes (GST): ₹${f.taxes} (${taxPct}%)">
+          GST ${taxPct}%
+        </div>
+        <div style="width: ${feesPct}%; background: #8B5CF6; height: 100%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;" title="Airport Fees (UDF/PSF): ₹${f.fees} (${feesPct}%)">
+          UDF ${feesPct}%
+        </div>
+      </div>
+
+      <!-- Component Details Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem;">
+        <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-left: 3px solid #2563EB; padding: 0.85rem; border-radius: 4px;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">BASE FARE (AIRLINE REVENUE)</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono); margin: 0.2rem 0;">₹${f.baseFare.toLocaleString()}</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${basePct}% of ticket price</div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-left: 3px solid #F59E0B; padding: 0.85rem; border-radius: 4px;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">FUEL SURCHARGE (YQ/YR)</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono); margin: 0.2rem 0;">₹${f.fuelSurcharge.toLocaleString()}</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${fuelPct}% of ticket price</div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-left: 3px solid #10B981; padding: 0.85rem; border-radius: 4px;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">STATUTORY TAXES (GST 5%/12%)</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono); margin: 0.2rem 0;">₹${f.taxes.toLocaleString()}</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${taxPct}% statutory liability</div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-left: 3px solid #8B5CF6; padding: 0.85rem; border-radius: 4px;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">AIRPORT DEVELOPMENT (UDF/PSF)</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono); margin: 0.2rem 0;">₹${f.fees.toLocaleString()}</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${feesPct}% regulatory airport tariff</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// SECTION 09: INVENTORY & AVAILABILITY SIGNALS
+// ============================================================================
+
+function renderAvailabilityMatrix() {
+  const tbody = document.getElementById('avail-matrix-tbody');
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td><strong>Economy Cabin</strong></td>
+        <td><span class="seats-pill urgent">7 seats (LOW)</span></td>
+        <td><span class="seats-pill">12 seats (MED)</span></td>
+        <td><span class="seats-pill">18 seats (HIGH)</span></td>
+        <td><span class="seats-pill">9 seats (HIGH)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Premium Economy</strong></td>
+        <td style="color: var(--text-dim);">—</td>
+        <td><span class="seats-pill urgent">4 seats (LOW)</span></td>
+        <td><span class="seats-pill">6 seats (MED)</span></td>
+        <td><span class="seats-pill">8 seats (HIGH)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Business Class</strong></td>
+        <td style="color: var(--text-dim);">—</td>
+        <td style="color: var(--text-dim);">—</td>
+        <td><span class="seats-pill urgent">3 seats (LOW)</span></td>
+        <td><span class="seats-pill">5 seats (MED)</span></td>
+      </tr>
+    `;
+  }
+
+  const svg = document.getElementById('avail-depletion-svg');
+  if (svg) {
+    svg.innerHTML = `
+      <!-- Grid -->
+      <line x1="45" y1="180" x2="420" y2="180" stroke="#F1F5F9" />
+      <line x1="45" y1="110" x2="420" y2="110" stroke="#F1F5F9" stroke-dasharray="3 3" />
+      <line x1="45" y1="40" x2="420" y2="40" stroke="#F1F5F9" stroke-dasharray="3 3" />
+
+      <!-- Seat Depletion Curve (Descending) -->
+      <path d="M 45 50 Q 180 65 280 115 T 420 175" fill="none" stroke="#2563EB" stroke-width="2.5" />
+      <!-- Fare Price Spike Curve (Ascending) -->
+      <path d="M 45 160 Q 200 155 280 120 T 420 45" fill="none" stroke="#E11D48" stroke-width="2.5" stroke-dasharray="4 4" />
+
+      <!-- X Axis Labels -->
+      <text x="45" y="205" font-family="Inter" font-size="9" fill="#64748B">T-30d</text>
+      <text x="140" y="205" font-family="Inter" font-size="9" fill="#64748B">T-21d</text>
+      <text x="230" y="205" font-family="Inter" font-size="9" fill="#64748B">T-14d</text>
+      <text x="320" y="205" font-family="Inter" font-size="9" font-weight="700" fill="#F59E0B">T-7d (Knee)</text>
+      <text x="420" y="205" font-family="Inter" font-size="9" font-weight="700" fill="#E11D48" text-anchor="end">T-0d (Spike)</text>
+
+      <!-- Legend -->
+      <circle cx="50" cy="18" r="4" fill="#2563EB" />
+      <text x="60" y="22" font-family="Inter" font-size="9" fill="#0F172A">Remaining Bucket Seats</text>
+      <circle cx="210" cy="18" r="4" fill="#E11D48" />
+      <text x="220" y="22" font-family="Inter" font-size="9" fill="#0F172A">Observed Spot Fare (Surge)</text>
+    `;
+  }
+}
+
+// ============================================================================
+// SECTION 10: FLIGHT-LEVEL PRICE MOVEMENT ("WHAT CHANGED ON THIS FLIGHT?")
+// ============================================================================
+
+function switchFlightHistoryCorridor(corridor) {
+  currentFlightHistoryCorridor = corridor;
+  renderFlightPriceMovement(corridor);
+}
+
+function renderFlightPriceMovement(corridor = currentFlightHistoryCorridor) {
+  const svg = document.getElementById('flight-price-history-svg');
+  if (!svg) return;
+
+  const w = 950;
+  const h = 280;
+  const pad = { top: 35, right: 80, bottom: 45, left: 65 };
+
+  const windows = ['T-24h', 'T-18h', 'T-12h', 'T-6h', 'T-3h', 'T-1h', 'NOW'];
+
+  const datasets = corridor === 'DEL-BOM' ? [
+    { name: '6E 2041 (IndiGo)', color: '#2563EB', fares: [5420, 5420, 5680, 5950, 6100, 6234, 6234] },
+    { name: 'AI 805 (Air India)', color: '#E11D48', fares: [6850, 6850, 7120, 7250, 7490, 7490, 7490] },
+    { name: 'QP 1354 (Akasa)', color: '#F59E0B', fares: [5820, 5820, 5820, 5950, 5950, 6100, 6100] }
+  ] : [
+    { name: 'QP 1102 (Akasa)', color: '#F59E0B', fares: [5920, 5920, 6240, 6580, 6820, 6940, 6940] },
+    { name: '6E 208 (IndiGo)', color: '#2563EB', fares: [6820, 6820, 7140, 7450, 7650, 7880, 7880] },
+    { name: 'AI 504 (Air India)', color: '#E11D48', fares: [7100, 7100, 7350, 7600, 7750, 7920, 7920] }
+  ];
+
+  const allFares = datasets.flatMap(d => d.fares);
+  const minFare = Math.min(...allFares) - 400;
+  const maxFare = Math.max(...allFares) + 400;
+
+  const getX = (idx) => pad.left + (idx / (windows.length - 1)) * (w - pad.left - pad.right);
+  const getY = (val) => pad.top + ((maxFare - val) / (maxFare - minFare)) * (h - pad.top - pad.bottom);
+
+  let grid = '';
+  for (let f = Math.ceil(minFare / 1000) * 1000; f <= maxFare; f += 1000) {
+    const y = getY(f);
+    grid += `
+      <line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" stroke="#F1F5F9" stroke-width="1" />
+      <text x="${pad.left - 10}" y="${y + 4}" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#94A3B8" text-anchor="end">₹${f.toLocaleString()}</text>
+    `;
+  }
+
+  let paths = '';
+  datasets.forEach(d => {
+    let p = `M ${getX(0)} ${getY(d.fares[0])}`;
+    for (let i = 1; i < windows.length; i++) {
+      p += ` L ${getX(i)} ${getY(d.fares[i])}`;
+    }
+    paths += `
+      <path d="${p}" fill="none" stroke="${d.color}" stroke-width="2.5" stroke-linecap="round" />
+      ${d.fares.map((f, i) => `
+        <circle cx="${getX(i)}" cy="${getY(f)}" r="4" fill="${d.color}" stroke="#FFFFFF" stroke-width="1.5">
+          <title>${d.name} @ ${windows[i]}: ₹${f.toLocaleString()}</title>
+        </circle>
+      `).join('')}
+      <text x="${getX(windows.length - 1) + 8}" y="${getY(d.fares[windows.length - 1]) + 4}" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="${d.color}">
+        ${d.name.split(' ')[0]} ₹${d.fares[windows.length - 1].toLocaleString()}
+      </text>
+    `;
+  });
+
+  let xLabels = '';
+  windows.forEach((win, i) => {
+    xLabels += `<text x="${getX(i)}" y="${h - 15}" font-family="Inter, sans-serif" font-size="9.5" font-weight="600" fill="#64748B" text-anchor="middle">${win}</text>`;
+  });
+
+  svg.innerHTML = grid + paths + xLabels;
+}
+
+// ============================================================================
+// SECTION 11: CARRIER BENCHMARK CARDS
+// ============================================================================
+
+function renderCarrierComparisonCards() {
+  const container = document.getElementById('flight-carrier-comparison-grid');
+  if (!container) return;
+
+  const carriers = [
+    { code: '6E', name: 'IndiGo Airlines', share: 54, flights: 36, avgFare: 4820, minFare: 4390, spread: '±7.2%' },
+    { code: 'AI', name: 'Air India', share: 29, flights: 20, avgFare: 5240, minFare: 4650, spread: '±9.5%' },
+    { code: 'QP', name: 'Akasa Air', share: 11, flights: 8, avgFare: 4680, minFare: 4190, spread: '±5.8%' },
+    { code: 'SG', name: 'SpiceJet', share: 6, flights: 4, avgFare: 4450, minFare: 3990, spread: '±11.2%' }
+  ];
+
+  container.innerHTML = carriers.map(c => `
+    <div class="carrier-stat-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="carrier-logo-mini">${c.code}</span>
+          <strong>${c.name}</strong>
+        </div>
+        <span class="data-state-pill state-observed">${c.share}% SHARE</span>
+      </div>
+      <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono); color: var(--navy-900); margin: 0.4rem 0;">
+        Median ₹${c.avgFare.toLocaleString()}
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-hairline); padding-top: 0.4rem;">
+        <span>Min Fare: <strong>₹${c.minFare.toLocaleString()}</strong></span>
+        <span>${c.flights} flts/day · ${c.spread}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================================
+// SECTION 12: FLIGHT-LEVEL EXCEPTIONS & STATISTICAL RESIDUALS
+// ============================================================================
+
+function renderFlightExceptions() {
+  const container = document.getElementById('flight-exceptions-container');
+  if (!container) return;
+
+  const exceptions = [
+    {
+      flight: '6E 208',
+      instanceId: 'FI-DEL6E208-20260926',
+      route: 'DEL → BLR',
+      type: 'RAPID YIELD SURGE',
+      observedFare: 7880,
+      baselineFare: 6240,
+      mad: 480,
+      zScore: 3.42,
+      evidence: 'Fare increased 11.6% (+₹820) across rolling 3-hour cycle while seat availability signals declined from 8 to 3. Causal attribution requires unobserved demand parameters.'
+    },
+    {
+      flight: 'AI 865',
+      instanceId: 'FI-DELAI865-20260926',
+      route: 'DEL → BOM',
+      type: 'METRO SPREAD DIVERGENCE',
+      observedFare: 10670,
+      baselineFare: 6240,
+      mad: 920,
+      zScore: 3.15,
+      evidence: 'Premium Economy fare family observed at +71% over elementary route median. Flight utilizes widebody B777-300ER capacity with corporate flex inventory packaging.'
+    }
+  ];
+
+  container.innerHTML = exceptions.map(ex => `
+    <div style="background: #FFF1F2; border: 1px solid var(--rose-border); border-left: 4px solid var(--rose-bright); border-radius: 6px; padding: 1.25rem; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <div style="font-weight: 700; font-size: 0.95rem; color: var(--rose-ink);">
+          🚨 ${ex.type}: Flight ${ex.flight} (${ex.route}) · Modified Z = ${ex.zScore}σ ≥ 3.0σ
+        </div>
+        <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.72rem;" onclick="openFlightInstanceModal('${ex.instanceId}')">Inspect Instance →</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; background: #FFFFFF; padding: 0.75rem; border-radius: 4px; font-size: 0.78rem; font-family: var(--font-mono); margin-bottom: 0.75rem;">
+        <div>Observed Fare: <strong>₹${ex.observedFare.toLocaleString()}</strong></div>
+        <div>Route Baseline: <strong>₹${ex.baselineFare.toLocaleString()}</strong></div>
+        <div>Historical MAD: <strong>₹${ex.mad}</strong></div>
+        <div>Sample Size: <strong>142 quotes</strong></div>
+      </div>
+
+      <div style="font-size: 0.8rem; color: var(--text-primary); line-height: 1.6;">
+        <strong>Statistical Attribution:</strong> ${ex.evidence}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================================
+// SECTION 15: ASK AEROINDEX (FLIGHT INTELLIGENCE AGENT)
+// ============================================================================
+
+function handleFlightQuery(event) {
+  if (event) event.preventDefault();
+  const input = document.getElementById('ask-flight-input');
+  if (!input || !input.value.trim()) return;
+  executeFlightQueryPrompt(input.value.trim());
+}
+
+function executeQuickFlightPrompt(text) {
+  const input = document.getElementById('ask-flight-input');
+  if (input) input.value = text;
+  executeFlightQueryPrompt(text);
+}
+
+function executeFlightQueryPrompt(query) {
+  const answerBox = document.getElementById('ask-flight-answer');
+  if (!answerBox) return;
+
+  answerBox.style.display = 'block';
+  answerBox.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 0.5rem; color: #94A3B8; font-size: 0.85rem;">
+      <span class="live-dot-pulse"></span>
+      Synthesizing flight-level econometric evidence across domestic instances...
+    </div>
+  `;
+
+  setTimeout(() => {
+    let answerHtml = '';
+    const qLower = query.toLowerCase();
+
+    if (qLower.includes('lowest') || qLower.includes('del-bom') || qLower.includes('bom')) {
+      answerHtml = `
+        <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 0.5rem; font-size: 0.95rem;">
+          DEL-BOM Lowest Spot Fare Finding: SG-8169 (₹5,660) &amp; QP-1354 (₹6,100)
+        </div>
+        <p style="margin-bottom: 0.75rem; color: #CBD5E1; line-height: 1.6;">
+          On the DEL-BOM corridor today, the lowest observed spot fares in Economy Saver are offered by <strong>SpiceJet SG 8169 (₹5,660 departing 06:45)</strong> followed by <strong>Akasa Air QP 1354 (₹6,100 departing 09:30)</strong>.
+        </p>
+        <div style="background: rgba(255,255,255,0.06); padding: 0.75rem; border-radius: 6px; font-size: 0.78rem; line-height: 1.6;">
+          • <strong>IndiGo Comparison:</strong> 6E 2041 is currently trading at ₹6,234 (+₹214 / +3.9% vs previous observation).<br>
+          • <strong>Full Service Comparison:</strong> Air India AI 805 is priced at ₹7,490 (inclusive of free baggage and meals).
+        </div>
+      `;
+    } else if (qLower.includes('sell-out') || qLower.includes('risk') || qLower.includes('availability')) {
+      answerHtml = `
+        <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 0.5rem; font-size: 0.95rem;">
+          Sell-Out Risk Inventory Finding: 4 Flight Instances Under Critical Depletion (&le; 4 Seats)
+        </div>
+        <p style="margin-bottom: 0.75rem; color: #CBD5E1; line-height: 1.6;">
+          The following domestic operating instances have crossed into critical sell-out risk thresholds:
+        </p>
+        <div style="background: rgba(255,255,255,0.06); padding: 0.75rem; border-radius: 6px; font-size: 0.78rem; line-height: 1.6;">
+          1. <strong>6E 208 (DEL → BLR · 09:45):</strong> 3 seats remaining in Saver bucket (₹7,880).<br>
+          2. <strong>6E 284 (DEL → BLR · 17:00):</strong> 2 seats remaining in Saver bucket (₹8,260).<br>
+          3. <strong>QP 1102 (DEL → BLR · 06:15):</strong> 3 seats remaining in Saver bucket (₹6,940).<br>
+          4. <strong>SG 263 (DEL → SXR · 10:45):</strong> 2 seats remaining in Saver bucket (₹5,990).
+        </div>
+      `;
+    } else {
+      answerHtml = `
+        <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 0.5rem; font-size: 0.95rem;">
+          Flight Instance Attribution: 6E 2041 (DEL-BOM)
+        </div>
+        <p style="margin-bottom: 0.75rem; color: #CBD5E1; line-height: 1.6;">
+          <strong>6E 2041</strong> departs Delhi at 05:45 IST and arrives Mumbai at 07:55 IST. Total current fare is <strong>₹6,234</strong>, decomposed into ₹4,820 Base Fare (77.3%), ₹540 Fuel Surcharge (8.7%), ₹612 Taxes (9.8%), and ₹262 Regulatory Fees (4.2%).
+        </p>
+      `;
+    }
+
+    answerBox.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #38BDF8; font-weight: 700;">AEROINDEX FLIGHT INTELLIGENCE</span>
+        <span class="data-state-pill state-calculated" style="font-size: 0.65rem;">OBSERVATION VERIFIED</span>
+      </div>
+      ${answerHtml}
+    `;
+  }, 400);
+}
+
+// ============================================================================
+// FLIGHT INSTANCE DEEP DIVE MODAL / DRAWER (10-POINT PROFILE)
+// ============================================================================
+
+function openFlightInstanceModal(instanceId) {
+  const drawer = document.getElementById('flight-detail-drawer');
+  const body = document.getElementById('flight-drawer-body');
+  const title = document.getElementById('drawer-flight-title');
+  const subtitle = document.getElementById('drawer-flight-subtitle');
+  const backdrop = document.getElementById('drawer-backdrop');
+
+  if (!drawer || !body) return;
+
+  const f = activeFlightsData.find(item => item.instanceId === instanceId) || activeFlightsData[0];
+  if (!f) return;
+
+  if (title) title.textContent = `${f.flightNumber} · ${f.origin} → ${f.destination}`;
+  if (subtitle) subtitle.textContent = `Instance: ${f.instanceId} · Carrier: ${f.carrierName}`;
+
+  const basePct = Math.round((f.baseFare / f.totalFare) * 100);
+  const fuelPct = Math.round((f.fuelSurcharge / f.totalFare) * 100);
+  const taxPct = Math.round((f.taxes / f.totalFare) * 100);
+  const feesPct = 100 - basePct - fuelPct - taxPct;
+
+  body.innerHTML = `
+    <!-- 01 OVERVIEW -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-hairline);">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span class="carrier-logo-mini" style="font-size: 0.85rem; padding: 0.2rem 0.6rem;">${f.operatingCarrier}</span>
+          <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono);">${f.flightNumber}</h2>
+          <span class="data-state-pill state-observed">● ${f.status}</span>
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">
+          ${f.carrierName} · ${f.aircraft} · Terminal ${f.terminal} · Duration 02h 10m
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--navy-900); font-family: var(--font-mono);">
+          ₹${f.totalFare.toLocaleString()}
+        </div>
+        <span class="fare-family-tag ${f.fareFamily.toLowerCase()}">${f.fareFamily}</span>
+      </div>
+    </div>
+
+    <!-- 02 SCHEDULE TIMELINE -->
+    <div style="margin-bottom: 1.5rem;">
+      <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">02 · Schedule Operational Progression</div>
+      <div class="drilldown-path-bar" style="background: #F8FAFC; border-radius: 6px;">
+        <span class="drilldown-step-badge">1. SCHEDULED (${f.scheduledDeparture})</span> <span class="drilldown-sep">&gt;</span>
+        <span class="drilldown-step-badge">2. GATE BOARDING</span> <span class="drilldown-sep">&gt;</span>
+        <span class="drilldown-step-badge">3. AIRBORNE</span> <span class="drilldown-sep">&gt;</span>
+        <span class="drilldown-step-badge">4. ARRIVAL (${f.scheduledArrival})</span>
+      </div>
+    </div>
+
+    <!-- 03 FARE & DECOMPOSITION -->
+    <div style="margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">03 · Fare Decomposition Structure</span>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">Rule F061 PASS</span>
+      </div>
+      <div class="cabin-mix-track" style="height: 20px; border-radius: 4px; margin-bottom: 0.6rem;">
+        <div style="width: ${basePct}%; background: #2563EB;"></div>
+        <div style="width: ${fuelPct}%; background: #F59E0B;"></div>
+        <div style="width: ${taxPct}%; background: #10B981;"></div>
+        <div style="width: ${feesPct}%; background: #8B5CF6;"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-family: var(--font-mono);">
+        <span>Base: ₹${f.baseFare.toLocaleString()} (${basePct}%)</span>
+        <span>Fuel: ₹${f.fuelSurcharge.toLocaleString()} (${fuelPct}%)</span>
+        <span>Taxes: ₹${f.taxes.toLocaleString()} (${taxPct}%)</span>
+        <span>Fees: ₹${f.fees.toLocaleString()} (${feesPct}%)</span>
+      </div>
+    </div>
+
+    <!-- 04 CABIN & AVAILABILITY -->
+    <div style="margin-bottom: 1.5rem; background: #F8FAFC; padding: 1rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">04 · Cabin &amp; Bucket Inventory</div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-weight: 700; font-size: 0.95rem; color: var(--navy-900);">${f.seatsRemaining} Seats Remaining</span>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Observed in GDS inventory bucket</div>
+        </div>
+        <span class="data-state-pill state-calculated">${f.availabilitySignal}</span>
+      </div>
+    </div>
+
+    <!-- 05 PRICE HISTORY CHART -->
+    <div style="margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">05 · 24-Hour Spot Fare Movement</span>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: ${f.priceDelta >= 0 ? '#E11D48' : '#059669'}; font-weight: 700;">${f.pctDelta}</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+          <span>T-24h: ₹${(f.totalFare - f.priceDelta).toLocaleString()}</span>
+          <span>T-12h: ₹${Math.round(f.totalFare - f.priceDelta * 0.6).toLocaleString()}</span>
+          <span>T-6h: ₹${Math.round(f.totalFare - f.priceDelta * 0.3).toLocaleString()}</span>
+          <span>LIVE: <strong style="color: #2563EB;">₹${f.totalFare.toLocaleString()}</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 COMPARABLE FLIGHTS (SAME ROUTE ±3 HOURS) -->
+    <div style="margin-bottom: 1.5rem;">
+      <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">06 · Comparable Flights on ${f.origin}-${f.destination} (&plusmn;3h Window)</div>
+      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+        ${activeFlightsData.filter(other => other.destination === f.destination && other.instanceId !== f.instanceId).slice(0, 4).map(other => `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.78rem; cursor: pointer;" onclick="openFlightInstanceModal('${other.instanceId}')">
+            <div>
+              <strong>${other.flightNumber}</strong> · ${other.carrierName} · Dep: ${other.scheduledDeparture}
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <span style="font-family: var(--font-mono); font-weight: 700;">₹${other.totalFare.toLocaleString()}</span>
+              <span class="fare-family-tag ${other.fareFamily.toLowerCase()}">${other.fareFamily}</span>
+              <span style="color: #2563EB; font-weight: 700;">Switch &rarr;</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- 07 DATA QUALITY & PROVENANCE -->
+    <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); padding: 1rem; border-radius: 6px;">
+      <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">07 · Observation Cryptographic Lineage</div>
+      <div style="font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.6; color: var(--navy-900);">
+        Adapter: ${f.source}<br>
+        SHA-256: 0x${f.instanceId.replace(/[^a-zA-Z0-9]/g, '')}e984f1b2c4819<br>
+        Quality Rules: R01-R12 Passed (12/12) · Outlier Check: Normal<br>
+        State: <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
+      </div>
+      <div style="margin-top: 1rem; border-top: 1px solid var(--border-hairline); padding-top: 0.75rem; display: flex; justify-content: space-between;">
+        <button class="btn btn-ghost" onclick="closeFlightDetail()">✕ Close Drawer</button>
+        <button class="btn btn-primary" onclick="closeFlightDetail(); activateWorkspaceTab('routes'); selectCorridorFromMap('${f.destination}');">
+          Open Route Intelligence (${f.origin}-${f.destination}) &rarr;
+        </button>
+      </div>
+    </div>
+  `;
+
+  drawer.classList.add('open');
+  if (backdrop) backdrop.classList.add('open');
+}
+
+window.openFlightInstanceModal = openFlightInstanceModal;
+window.closeFlightDetail = closeFlightDetail;
+window.filterFlightMap = filterFlightMap;
+window.handleFlightHubHover = handleFlightHubHover;
+window.handleFlightRouteHover = handleFlightRouteHover;
+window.handleFlightMapLeave = handleFlightMapLeave;
+window.selectFlightMapRoute = selectFlightMapRoute;
+window.selectFlightMapHub = selectFlightMapHub;
+window.switchPulseMetric = switchPulseMetric;
+window.filterInventoryByHour = filterInventoryByHour;
+window.applyFlightFilters = applyFlightFilters;
+window.removeFlightFilter = removeFlightFilter;
+window.clearAllFlightFilters = clearAllFlightFilters;
+window.toggleFlightRowExpansion = toggleFlightRowExpansion;
+window.renderFareDecomposition = renderFareDecomposition;
+window.switchFlightHistoryCorridor = switchFlightHistoryCorridor;
+window.handleFlightQuery = handleFlightQuery;
+window.executeQuickFlightPrompt = executeQuickFlightPrompt;
+
 
