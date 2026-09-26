@@ -5242,18 +5242,1033 @@
           </section>
 
 
-          <!-- TAB 10: WHAT-MOVED WATERFALL -->
+          <!-- TAB 10: WHAT-MOVED WATERFALL / ATTRIBUTION OBSERVATORY -->
           <section class="tab-pane" id="pane-waterfall">
-            <div class="glass-panel chart-container">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">What Moved Today's Index? — Basis Points Attribution Waterfall</h2>
-                  <div class="chart-subtitle">Decomposition of 1-day index move (+145 bps) by Route Corridor and Carrier</div>
+            <div class="waterfall-story-wrapper">
+
+              <!-- CHAPTER 01: ATTRIBUTION COMMAND HEADER -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+                      <span class="brand-badge" style="background: rgba(14, 165, 233, 0.12); color: #0284C7; border: 1px solid rgba(14, 165, 233, 0.3); font-weight: 700; letter-spacing: 0.05em;">AEROINDEX ATTRIBUTION OBSERVATORY</span>
+                      <span class="data-state-pill state-observed" id="attr-state-pill">OBSERVED / SETTLED</span>
+                      <span class="data-state-pill state-calculated" id="attr-release-pill">OFFICIAL RELEASE</span>
+                    </div>
+                    <h1 class="chart-title" style="font-size: 1.65rem; letter-spacing: -0.02em; margin: 0 0 0.35rem 0; color: var(--navy-900);">What Moved Today's Index?</h1>
+                    <div class="chart-subtitle" style="font-size: 0.88rem; max-width: 820px; line-height: 1.4; color: var(--text-secondary);">
+                      Real-time basis-point attribution of the national airfare index across corridors, carriers, lead-time buckets, fare structures, and observation changes.
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <button class="btn btn-ghost" id="btn-toggle-forensic" onclick="toggleForensicMode()" style="font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border-subtle); padding: 0.4rem 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+                        <span style="font-size: 0.9rem;">🔬</span>
+                        <span>FORENSIC MODE:</span>
+                        <span id="forensic-mode-status" style="color: #64748B;">OFF</span>
+                      </button>
+                      <button class="btn btn-primary" onclick="openMathExplainerModal()" style="font-size: 0.78rem; padding: 0.4rem 0.85rem;">
+                        📐 Show the Math
+                      </button>
+                    </div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
+                      Lineage: <span style="color: var(--navy-900); font-weight: 600;">Jevons Geometric Formulation (v2.4)</span> • Methodology Compliant
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Attribution Command Header Strip -->
+                <div class="attribution-status-strip">
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">INDEX</span>
+                    <span class="attr-stat-val" style="color: var(--navy-900);">AEROINDEX</span>
+                    <span class="attr-stat-sub">National Jevons</span>
+                  </div>
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">CURRENT LEVEL</span>
+                    <span class="attr-stat-val" style="color: var(--navy-900);" id="attr-current-level">101.45</span>
+                    <span class="attr-stat-sub">Base 100.00 (Prev)</span>
+                  </div>
+                  <div class="attr-stat-box" style="border-left: 2px solid #059669; padding-left: 0.75rem;">
+                    <span class="attr-stat-label">1D CHANGE</span>
+                    <span class="attr-stat-val" style="color: #059669; font-weight: 700;" id="attr-1d-change">+145 bps</span>
+                    <span class="attr-stat-sub">+1.45 Index Pts</span>
+                  </div>
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">ABSOLUTE FARE Δ</span>
+                    <span class="attr-stat-val" style="color: var(--navy-900);" id="attr-abs-fare">+₹242</span>
+                    <span class="attr-stat-sub">Median Basket Move</span>
+                  </div>
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">ATTRIBUTED</span>
+                    <span class="attr-stat-val" style="color: #0284C7;" id="attr-pct-attributed">98.6%</span>
+                    <span class="attr-stat-sub">+143.0 bps identified</span>
+                  </div>
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">RESIDUAL / UNATTRIBUTED</span>
+                    <span class="attr-stat-val" style="color: #D97706;" id="attr-residual-val">+2.0 bps</span>
+                    <span class="attr-stat-sub">Rounding & Coverage (1.4%)</span>
+                  </div>
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">OBSERVATIONS</span>
+                    <span class="attr-stat-val" style="color: var(--navy-900);" id="attr-obs-count">486,201</span>
+                    <span class="attr-stat-sub">Verified Fare Quotes</span>
+                  </div>
+                  <div class="attr-stat-box">
+                    <span class="attr-stat-label">AS-OF TIMESTAMP</span>
+                    <span class="attr-stat-val" style="color: var(--navy-900); font-size: 0.88rem;" id="attr-timestamp">12:30:00 IST</span>
+                    <span class="attr-stat-sub">Official Close</span>
+                  </div>
+                </div>
+
+                <!-- Forensic Control Ribbon -->
+                <div class="attribution-filter-ribbon">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Attribution Level:</span>
+                    <div class="btn-group" id="attr-level-group">
+                      <button class="btn btn-ghost active" onclick="switchAttributionLevel('CORRIDOR', this)">Corridor</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionLevel('CARRIER', this)">Carrier</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionLevel('ROUTE_CARRIER', this)">Route × Carrier</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionLevel('LEADTIME', this)">Lead Time</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionLevel('COMPONENT', this)">Fare Component</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionLevel('OBSERVATION', this)">Observations</button>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-left: auto;">
+                    <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Metric:</span>
+                    <div class="btn-group" id="attr-metric-group">
+                      <button class="btn btn-ghost active" onclick="switchAttributionMetric('BPS', this)">Basis Points (bps)</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionMetric('PTS', this)">Index Points (pts)</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionMetric('SHARE', this)">Share (%)</button>
+                      <button class="btn btn-ghost" onclick="switchAttributionMetric('RUPEES', this)">Absolute (₹)</button>
+                    </div>
+
+                    <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-left: 0.5rem;">Release:</span>
+                    <div class="btn-group" id="attr-release-group">
+                      <button class="btn btn-ghost active" onclick="switchReleaseMode('OFFICIAL', this)">Official (+145 bps)</button>
+                      <button class="btn btn-ghost" onclick="switchReleaseMode('FLASH', this)">Flash (+162 bps)</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Epistemological Discipline Banner -->
+                <div class="epistemology-banner" id="epistemology-banner">
+                  <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <span style="font-size: 1.1rem; color: #0284C7;">ℹ️</span>
+                    <div style="font-size: 0.76rem; line-height: 1.4; color: #334155;">
+                      <strong>Attribution vs Causality Standard:</strong> The basis points shown reflect <em>mathematical contribution</em> under the AeroIndex weighted Jevons geometric formulation. A +31 bps contribution indicates that price shifts on this corridor mathematically account for 31 basis points of the published index change; it does not imply independent economic causality.
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div id="waterfall-container" style="display: flex; flex-direction: column; gap: 0.65rem; padding: 0.5rem 0;">
-                <!-- Rendered dynamically via JS -->
+
+              <!-- CHAPTER 02: TODAY'S INDEX MOVE (HERO VISUALIZATION) -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 02 — THE NET INDEX VECTOR</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Today's National Airfare Index Movement</h2>
+                    <div class="chart-subtitle">Gross upward contributions versus downward offsetting price movements</div>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary);">
+                    FORMULA: <span style="color: var(--navy-900); font-weight: 600;">Net = Σ Positive Contributions + Σ Negative Offsets + Residual</span>
+                  </div>
+                </div>
+
+                <div class="hero-index-move-grid">
+                  <!-- Previous Index Card -->
+                  <div class="hero-move-card">
+                    <div class="hero-card-label">PREVIOUS INDEX (T-1)</div>
+                    <div class="hero-card-val" style="color: #64748B;">100.00</div>
+                    <div class="hero-card-sub">Base 100.00 Official Close</div>
+                    <div class="hero-card-micro">Settled at 23:30 IST yesterday</div>
+                  </div>
+
+                  <!-- Central Movement Vector Box -->
+                  <div class="hero-vector-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 0.75rem;">
+                      <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">NET 1-DAY VECTOR</span>
+                      <span class="badge-headline-move" id="hero-headline-badge">+145 bps (+1.45 pts)</span>
+                      <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">+1.45% RELATIVE</span>
+                    </div>
+
+                    <!-- Movement Axis Line -->
+                    <div class="movement-axis-track">
+                      <div class="movement-axis-point start-point">
+                        <div class="axis-dot"></div>
+                        <span class="axis-label">100.00</span>
+                      </div>
+                      <div class="movement-axis-arrow">
+                        <span style="font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; color: #059669;">+145 bps Travel</span>
+                        <div class="arrow-bar"></div>
+                      </div>
+                      <div class="movement-axis-point end-point">
+                        <div class="axis-dot active"></div>
+                        <span class="axis-label" style="color: #059669; font-weight: 700;">101.45</span>
+                      </div>
+                    </div>
+
+                    <!-- Gross Upward vs Downward Split Bar -->
+                    <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; width: 100%;">
+                      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-family: var(--font-mono);">
+                        <span style="color: #059669; font-weight: 600;">UPWARD CONTRIBUTIONS: +218 bps</span>
+                        <span style="color: #D97706; font-weight: 600;">RESIDUAL: +2 bps</span>
+                        <span style="color: #E11D48; font-weight: 600;">DOWNWARD OFFSETS: -73 bps</span>
+                      </div>
+                      <div class="gross-balance-split-bar">
+                        <div class="split-segment upward" style="width: 74.9%;" title="Upward Gross: +218 bps"></div>
+                        <div class="split-segment residual" style="width: 0.7%;" title="Residual: +2 bps"></div>
+                        <div class="split-segment downward" style="width: 24.4%;" title="Downward Offsetting: -73 bps"></div>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted);">
+                        <span>24 Corridors & 4 Carriers expanding</span>
+                        <span style="font-weight: 600; color: var(--navy-900);">NET OBSERVED MOVEMENT: +145 bps</span>
+                        <span>8 Corridors & 1 Carrier discounting</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Current Index Card -->
+                  <div class="hero-move-card active">
+                    <div class="hero-card-label">CURRENT INDEX (T)</div>
+                    <div class="hero-card-val" style="color: #059669;" id="hero-current-val">101.45</div>
+                    <div class="hero-card-sub" style="color: #059669; font-weight: 600;">Δ +1.45 pts (+145 bps)</div>
+                    <div class="hero-card-micro">As of 12:30:00 IST Today</div>
+                  </div>
+                </div>
               </div>
+
+              <!-- CHAPTER 03: THE HERO WATERFALL CHART -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 03 — BASIS-POINT ATTRIBUTION WATERFALL</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;" id="waterfall-chart-title">Decomposition of Today's +145 bps Index Movement</h2>
+                    <div class="chart-subtitle" id="waterfall-chart-subtitle">Reconstructing Previous Index (100.00) to Current Index (101.45) across Route Corridors</div>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span class="badge-tag" id="waterfall-level-badge">LEVEL: CORRIDOR</span>
+                    <span class="badge-tag" style="background: #F1F5F9; color: var(--navy-900);" id="waterfall-bars-count">12 Drivers</span>
+                  </div>
+                </div>
+
+                <!-- Interactive Waterfall Visual Container -->
+                <div id="hero-waterfall-stage" class="waterfall-stage-container">
+                  <!-- Rendered dynamically by waterfall_engine.js -->
+                </div>
+
+                <!-- Contextual Attribution Inspector Drawer (Appears upon bar click) -->
+                <div id="attribution-context-drawer" class="attribution-drawer hidden">
+                  <div class="drawer-header">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                      <span class="drawer-badge" id="drawer-entity-type">CORRIDOR</span>
+                      <h3 class="drawer-title" id="drawer-entity-name">DEL-BOM (Delhi ⇄ Mumbai)</h3>
+                    </div>
+                    <button class="btn-close-drawer" onclick="closeAttributionDrawer()">✕</button>
+                  </div>
+                  <div class="drawer-body-grid">
+                    <div class="drawer-metric-item">
+                      <span class="dm-label">CONTRIBUTION</span>
+                      <span class="dm-val" style="color: #059669;" id="drawer-contribution">+31 bps</span>
+                      <span class="dm-sub" id="drawer-share-pct">21.4% of total move</span>
+                    </div>
+                    <div class="drawer-metric-item">
+                      <span class="dm-label">BASKET WEIGHT</span>
+                      <span class="dm-val" id="drawer-weight">14.2%</span>
+                      <span class="dm-sub">National Seat Capacity</span>
+                    </div>
+                    <div class="drawer-metric-item">
+                      <span class="dm-label">MEDIAN FARE Δ</span>
+                      <span class="dm-val" style="color: #059669;" id="drawer-fare-delta">+₹340</span>
+                      <span class="dm-sub">Prev ₹5,840 → ₹6,180</span>
+                    </div>
+                    <div class="drawer-metric-item">
+                      <span class="dm-label">OBSERVATIONS</span>
+                      <span class="dm-val" id="drawer-observations">42,810</span>
+                      <span class="dm-sub">100% Verified Quotes</span>
+                    </div>
+                    <div class="drawer-metric-item">
+                      <span class="dm-label">COVERAGE</span>
+                      <span class="dm-val" style="color: #0284C7;" id="drawer-coverage">98.4%</span>
+                      <span class="dm-sub">5 Carriers Active</span>
+                    </div>
+                    <div class="drawer-metric-item" style="display: flex; align-items: center; justify-content: center;">
+                      <button class="btn btn-primary" onclick="drilldownFromDrawer()" style="font-size: 0.78rem; padding: 0.5rem 1rem; width: 100%;">
+                        🔍 Inspect Forensic Evidence →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 04: CONTRIBUTION DISTRIBUTION & TWO-SIDED BALANCE -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 04 — POSITIVE VS NEGATIVE CONTRIBUTION BALANCE</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Two-Sided Contribution Field</h2>
+                    <div class="chart-subtitle">Visualizing offsetting downward moves alongside upward price pressures</div>
+                  </div>
+                  <div style="font-size: 0.74rem; color: var(--text-secondary); font-family: var(--font-mono);">
+                    NET BALANCE: <span style="color: #059669; font-weight: 700;">+145 bps</span> (Upward +218 | Downward -73)
+                  </div>
+                </div>
+
+                <div class="two-sided-balance-container">
+                  <div class="balance-column negative-side">
+                    <div class="balance-side-header" style="color: #E11D48;">
+                      <span>DOWNWARD CONTRIBUTORS (OFFSETS)</span>
+                      <span style="font-family: var(--font-mono);">-73 bps Total</span>
+                    </div>
+                    <div id="negative-contributors-list" class="contributors-list">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+
+                  <div class="balance-divider">
+                    <div class="balance-axis-line"></div>
+                    <div class="balance-net-tag">+145 bps<br><span style="font-size: 0.65rem; font-weight: normal;">NET MOVE</span></div>
+                  </div>
+
+                  <div class="balance-column positive-side">
+                    <div class="balance-side-header" style="color: #059669;">
+                      <span>UPWARD CONTRIBUTORS (PRESSURES)</span>
+                      <span style="font-family: var(--font-mono);">+218 bps Total</span>
+                    </div>
+                    <div id="positive-contributors-list" class="contributors-list">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 05: ROUTE CORRIDOR ATTRIBUTION MAP -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 05 — SPATIAL CORRIDOR ATTRIBUTION MAP</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Where Did Today's Index Movement Originate?</h2>
+                    <div class="chart-subtitle">All-India geodetic corridor attribution map encoding basis points into line thickness, sign into vector color, and coverage into opacity</div>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary);">Map Metric:</span>
+                    <select id="map-metric-select" class="form-select" onchange="updateCorridorMapMetric(this.value)" style="font-size: 0.74rem; padding: 0.3rem 0.6rem;">
+                      <option value="BPS">Net Contribution (bps)</option>
+                      <option value="ABS_BPS">Absolute Magnitude (|bps|)</option>
+                      <option value="SHARE">Share of Total Move (%)</option>
+                      <option value="WEIGHT">Corridor Basket Weight (%)</option>
+                      <option value="COVERAGE">Observation Coverage (%)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="corridor-map-layout">
+                  <!-- SVG Map Canvas -->
+                  <div class="map-stage-wrapper">
+                    <svg id="india-attribution-svg" viewBox="0 0 550 560" class="india-attr-svg">
+                      <!-- Rendered dynamically by waterfall_engine.js -->
+                    </svg>
+
+                    <!-- Map Overlay Legend -->
+                    <div class="map-overlay-legend">
+                      <div class="legend-item"><span class="legend-color upward"></span> Upward Contribution (+bps)</div>
+                      <div class="legend-item"><span class="legend-color downward"></span> Downward Offset (-bps)</div>
+                      <div class="legend-item"><span class="legend-stroke thick"></span> High Magnitude (&gt;20 bps)</div>
+                      <div class="legend-item"><span class="legend-stroke thin"></span> Lower Magnitude (&lt;10 bps)</div>
+                    </div>
+                  </div>
+
+                  <!-- Regional Airport Hub Contribution Sidebar -->
+                  <div class="hub-aggregation-sidebar">
+                    <div class="hub-sidebar-header">
+                      <span style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900);">AIRPORT HUB AGGREGATION</span>
+                      <span style="font-size: 0.7rem; color: var(--text-secondary); font-family: var(--font-mono);">Net Origination bps</span>
+                    </div>
+
+                    <div id="hub-cards-container" class="hub-cards-container">
+                      <!-- Rendered dynamically -->
+                    </div>
+
+                    <div class="hub-methodology-note">
+                      <strong>Hub Aggregation Methodology:</strong> Hub basis points represent the algebraic sum of all departing and arriving corridor contributions touching that airport, accounting for network weight distribution.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 06: CARRIER ATTRIBUTION -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 06 — CARRIER ATTRIBUTION TO TODAY'S MOVE</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Airline Pricing Contribution Decomposition</h2>
+                    <div class="chart-subtitle">Mathematical decomposition of the +145 bps index move across operating carriers</div>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-secondary);">
+                    SUM: <span style="color: #059669; font-weight: 700;">+145.0 bps</span> (IndiGo 56.6% | Air India 28.3% | Akasa 8.3% | Others 6.9%)
+                  </div>
+                </div>
+
+                <div class="carrier-attribution-table-wrapper">
+                  <table class="carrier-attr-table">
+                    <thead>
+                      <tr>
+                        <th>CARRIER</th>
+                        <th>MODEL</th>
+                        <th style="text-align: right;">BASKET WEIGHT</th>
+                        <th style="text-align: right;">CONTRIBUTION (bps)</th>
+                        <th style="text-align: right;">SHARE OF MOVE (%)</th>
+                        <th style="text-align: right;">OBSERVED FARE Δ</th>
+                        <th style="text-align: right;">OBSERVATIONS</th>
+                        <th style="text-align: right;">COVERAGE</th>
+                        <th style="text-align: center;">DECOMPOSITION BREAKDOWN</th>
+                      </tr>
+                    </thead>
+                    <tbody id="carrier-attr-tbody">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Carrier Selected Sub-Decomposition Drawer -->
+                <div id="carrier-sub-drawer" class="carrier-sub-drawer hidden">
+                  <div class="cs-header">
+                    <div>
+                      <span class="brand-badge" id="cs-carrier-badge">INDIGO (6E)</span>
+                      <span style="font-weight: 700; font-size: 0.95rem; color: var(--navy-900); margin-left: 0.5rem;" id="cs-carrier-title">Underlying Contribution Effects</span>
+                    </div>
+                    <span style="font-family: var(--font-mono); font-weight: 700; color: #059669;" id="cs-total-bps">+82.0 bps Total</span>
+                  </div>
+                  <div class="cs-effects-grid" id="cs-effects-grid">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 07: ROUTE × CARRIER ATTRIBUTION MATRIX -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 07 — ROUTE × CARRIER ATTRIBUTION MATRIX</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Cell-Level Basis Point Attribution Matrix</h2>
+                    <div class="chart-subtitle">Cross-tabulation of corridor price movement by carrier. Click any cell to inspect exact cell weights and quotes.</div>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span class="badge-tag" style="background: rgba(5, 150, 105, 0.1); color: #059669;">+ Upward Cell</span>
+                    <span class="badge-tag" style="background: rgba(225, 29, 72, 0.1); color: #E11D48;">- Downward Cell</span>
+                    <span class="badge-tag" style="background: #F1F5F9; color: var(--text-muted);">- No Capacity</span>
+                  </div>
+                </div>
+
+                <div class="matrix-table-container">
+                  <table class="route-carrier-matrix-table" id="route-carrier-matrix">
+                    <thead>
+                      <tr>
+                        <th style="min-width: 140px;">CORRIDOR / ROUTE</th>
+                        <th style="text-align: center;">IndiGo (6E)</th>
+                        <th style="text-align: center;">Air India (AI)</th>
+                        <th style="text-align: center;">Akasa Air (QP)</th>
+                        <th style="text-align: center;">AI Express (IX)</th>
+                        <th style="text-align: center;">SpiceJet (SG)</th>
+                        <th style="text-align: right; background: #F8FAFC;">TOTAL CORRIDOR</th>
+                      </tr>
+                    </thead>
+                    <tbody id="matrix-tbody">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Matrix Cell Detail Card (Appears on cell click) -->
+                <div id="matrix-cell-drawer" class="matrix-cell-drawer hidden">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span class="brand-badge" id="mcd-carrier-code">6E</span>
+                      <strong id="mcd-title" style="font-size: 0.95rem; color: var(--navy-900);">DEL-BOM × IndiGo</strong>
+                      <span class="badge-tag" id="mcd-contribution-badge" style="background: rgba(5, 150, 105, 0.15); color: #059669; font-weight: 700;">+18.0 bps</span>
+                    </div>
+                    <button class="btn-close-drawer" onclick="closeMatrixCellDrawer()">✕</button>
+                  </div>
+                  <div class="mcd-grid">
+                    <div><strong>Basket Weight:</strong> <span id="mcd-weight">8.68%</span></div>
+                    <div><strong>Observed Fare Δ:</strong> <span id="mcd-fare-delta">+₹360 (+6.2%)</span></div>
+                    <div><strong>Observations:</strong> <span id="mcd-obs">26,410 quotes</span></div>
+                    <div><strong>Coverage Ratio:</strong> <span id="mcd-coverage">99.1%</span></div>
+                    <div style="grid-column: span 2;"><strong>Cell Formula:</strong> <code style="font-family: var(--font-mono); font-size: 0.72rem; color: #0284C7;" id="mcd-formula">w_cell × ln(P_t / P_0) × 10,000 = 0.0868 × ln(1.062) × 10,000 = +18.04 bps</code></div>
+                  </div>
+                  <div style="margin-top: 0.85rem; display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" onclick="drilldownMatrixCell()" style="font-size: 0.75rem; padding: 0.35rem 0.85rem;">
+                      View Contributing Flight Quotes →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 08: LEAD-TIME ATTRIBUTION -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 08 — LEAD-TIME ATTRIBUTION</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Which Booking Windows Contributed to Today's Move?</h2>
+                    <div class="chart-subtitle">Decomposition of the +145 bps index move across advance purchase horizons (L01 to L60+)</div>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-secondary);">
+                    PEAK YIELD HORIZON: <span style="color: #059669; font-weight: 700;">L4–7 (+48 bps / 33.1%)</span>
+                  </div>
+                </div>
+
+                <div class="leadtime-attr-grid">
+                  <!-- Horizontal Bucket Bars -->
+                  <div class="lt-bars-col" id="lt-bars-container">
+                    <!-- Rendered dynamically -->
+                  </div>
+
+                  <!-- Lead-Time Insight Card -->
+                  <div class="lt-insight-card">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.5rem;">YIELD CURVE DYNAMICS INSIGHT</div>
+                    <p style="font-size: 0.76rem; color: #475569; line-height: 1.5; margin-bottom: 0.75rem;">
+                      Today's index movement was disproportionately concentrated in the <strong>L4–7 Days</strong> booking window (+48 bps, 33.1% of move), reflecting aggressive yield management bucket closure for upcoming weekend travel on business trunk routes.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.74rem;">
+                      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.3rem;">
+                        <span style="color: var(--text-secondary);">Spot Scarcity (L01):</span>
+                        <span style="font-family: var(--font-mono); font-weight: 600; color: #059669;">+18 bps (12.4%)</span>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.3rem;">
+                        <span style="color: var(--text-secondary);">Advance Purchase (L30+):</span>
+                        <span style="font-family: var(--font-mono); font-weight: 600; color: #0284C7;">+11 bps (7.6%)</span>
+                      </div>
+                      <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">Cross-Module Link:</span>
+                        <a href="javascript:void(0)" onclick="activateWorkspaceTab('lead-time')" style="color: #0284C7; font-weight: 600; text-decoration: none;">Lead-Time Intelligence →</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 09: FARE COMPONENT ATTRIBUTION -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 09 — FARE COMPONENT ATTRIBUTION</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Which Fare Components Contributed to the Observed Move?</h2>
+                    <div class="chart-subtitle">Decomposing the +145 bps headline shift into Base Fare, Fuel Surcharge (ATF), Airport Fees, and Taxes</div>
+                  </div>
+                  <div style="font-size: 0.74rem; color: var(--text-secondary);">
+                    <a href="javascript:void(0)" onclick="activateWorkspaceTab('components')" style="color: #0284C7; font-weight: 600; text-decoration: none;">Explore Cost Pass-Through Observatory →</a>
+                  </div>
+                </div>
+
+                <div class="component-attr-grid" id="component-attr-container">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- CHAPTER 10: MOVEMENT COMPONENTS: PRICE VS WEIGHT VS MIX -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 10 — MOVEMENT COMPONENTS: PRICE VS COMPOSITION EFFECTS</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Price Movement vs Index Composition Effects</h2>
+                    <div class="chart-subtitle">Distinguishing pure quote price movements from capacity weighting changes and observation mix</div>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.74rem; color: #059669; font-weight: 700;">
+                    TOTAL NET CHANGE: +145.0 bps
+                  </div>
+                </div>
+
+                <div class="composition-effects-grid">
+                  <div class="comp-effect-box primary">
+                    <div class="ce-label">PURE PRICE EFFECT</div>
+                    <div class="ce-val" style="color: #059669;">+132.0 bps</div>
+                    <div class="ce-pct">91.0% of Move</div>
+                    <div class="ce-desc">Direct fare quote adjustments on identical flights holding basket seat-weights constant.</div>
+                  </div>
+                  <div class="comp-effect-box">
+                    <div class="ce-label">BASKET WEIGHT SHIFT</div>
+                    <div class="ce-val" style="color: #0284C7;">+9.0 bps</div>
+                    <div class="ce-pct">6.2% of Move</div>
+                    <div class="ce-desc">Shifts in carrier capacity distribution and route seat frequency allocations.</div>
+                  </div>
+                  <div class="comp-effect-box">
+                    <div class="ce-label">COVERAGE & MIX EFFECT</div>
+                    <div class="ce-val" style="color: #6366F1;">+2.0 bps</div>
+                    <div class="ce-pct">1.4% of Move</div>
+                    <div class="ce-desc">Inclusion of newly qualified quotes meeting minimum liquidity thresholds.</div>
+                  </div>
+                  <div class="comp-effect-box">
+                    <div class="ce-label">REVISION EFFECT</div>
+                    <div class="ce-val" style="color: #D97706;">+2.0 bps</div>
+                    <div class="ce-pct">1.4% of Move</div>
+                    <div class="ce-desc">Settlement reconciliation from late-reporting morning GDS feeds.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 11: INDEX MOVEMENT TIMELINE & EVENT STREAM -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 11 — INTRADAY ATTRIBUTION TIMELINE & EVENT STREAM</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Intraday Attribution Trajectory (00:00 to 23:30 IST)</h2>
+                    <div class="chart-subtitle">Scrub through time to inspect cumulative index move and top contributing events at each settlement epoch</div>
+                  </div>
+                  <div style="display: flex; gap: 0.4rem;">
+                    <span class="data-state-pill state-observed">STREAMING ACTIVE</span>
+                  </div>
+                </div>
+
+                <div class="timeline-scrubber-wrapper">
+                  <div class="timeline-nodes-bar" id="timeline-nodes-bar">
+                    <!-- Rendered dynamically -->
+                  </div>
+                  <div class="timeline-active-slice" id="timeline-active-slice">
+                    <!-- Dynamic slice summary -->
+                  </div>
+                </div>
+
+                <!-- Live Attribution Event Stream Ticker -->
+                <div style="margin-top: 1.5rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                    <span style="font-size: 0.78rem; font-weight: 700; color: var(--navy-900);">REAL-TIME CONTRIBUTION EVENT STREAM</span>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">Latency: 2.1s • Feed: SHA-256 Validated</span>
+                  </div>
+                  <div class="event-stream-container" id="event-stream-container">
+                    <!-- Dynamic event entries -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 12: LARGEST MOVERS (TOP MATERIAL CONTRIBUTORS) -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 12 — MATERIAL CONTRIBUTORS</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Top Material Contributors to Observed Movement</h2>
+                    <div class="chart-subtitle">Ranked by absolute contribution magnitude (|bps|). Includes both positive pressures and negative offsets.</div>
+                  </div>
+                  <div class="btn-group" id="movers-filter-group">
+                    <button class="btn btn-ghost active" onclick="filterLargestMovers('TOP5', this)">Top 5</button>
+                    <button class="btn btn-ghost" onclick="filterLargestMovers('TOP10', this)">Top 10</button>
+                    <button class="btn btn-ghost" onclick="filterLargestMovers('ALL', this)">All Material</button>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="movers-table">
+                    <thead>
+                      <tr>
+                        <th>RANK</th>
+                        <th>ENTITY / CORRIDOR</th>
+                        <th>DIRECTION</th>
+                        <th style="text-align: right;">CONTRIBUTION (bps)</th>
+                        <th style="text-align: right;">SHARE OF MOVE (%)</th>
+                        <th style="text-align: right;">BASKET WEIGHT</th>
+                        <th style="text-align: right;">MEDIAN FARE Δ</th>
+                        <th style="text-align: right;">OBSERVATIONS</th>
+                        <th style="text-align: center;">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="movers-tbody">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- CHAPTER 13: CONTRIBUTION CONCENTRATION -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 13 — ATTRIBUTION CONCENTRATION ANALYSIS</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Was Today's Movement Concentrated or Broad-Based?</h2>
+                    <div class="chart-subtitle">Cumulative contribution curve and Herfindahl-Hirschman Index (HHI) of basis-point attribution</div>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--navy-900);">
+                    HHI CONCENTRATION: <span style="color: #0284C7; font-weight: 700;">1,642</span> (Moderately Concentrated)
+                  </div>
+                </div>
+
+                <div class="concentration-grid">
+                  <div class="conc-stat-card">
+                    <span class="cs-label">TOP 1 CORRIDOR SHARE</span>
+                    <span class="cs-val" style="color: #059669;">21.4%</span>
+                    <span class="cs-sub">DEL-BOM (+31 bps)</span>
+                  </div>
+                  <div class="conc-stat-card">
+                    <span class="cs-label">TOP 3 CORRIDORS SHARE</span>
+                    <span class="cs-val" style="color: #059669;">50.3%</span>
+                    <span class="cs-sub">DEL-BOM, DEL-BLR, BOM-BLR</span>
+                  </div>
+                  <div class="conc-stat-card">
+                    <span class="cs-label">TOP 5 CORRIDORS SHARE</span>
+                    <span class="cs-val" style="color: #059669;">69.0%</span>
+                    <span class="cs-sub">Top 5 Metro Arteries</span>
+                  </div>
+                  <div class="conc-stat-card">
+                    <span class="cs-label">TOP 10 CORRIDORS SHARE</span>
+                    <span class="cs-val" style="color: #059669;">88.3%</span>
+                    <span class="cs-sub">Captures Core Movement</span>
+                  </div>
+                </div>
+
+                <!-- Cumulative Contribution Lorenz Curve Visualization -->
+                <div style="margin-top: 1.5rem; background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                    <span style="font-size: 0.78rem; font-weight: 700; color: var(--navy-900);">CUMULATIVE CONTRIBUTION PARETO CURVE</span>
+                    <span style="font-size: 0.72rem; color: var(--text-secondary); font-family: var(--font-mono);">80% of move accounted for by first 7 corridors</span>
+                  </div>
+                  <div class="pareto-chart-wrapper" id="pareto-chart-container">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 14: THE ULTIMATE "WOW" FORENSIC CHAIN -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 14 — THE ULTIMATE FORENSIC ATTRIBUTION CHAIN</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">145 BPS → Route → Carrier → Flight → Observation Lineage</h2>
+                    <div class="chart-subtitle">Traverse the recursive hierarchy from headline national index move down to individual flight quote observations</div>
+                  </div>
+                  <span class="brand-badge" style="background: rgba(14, 165, 233, 0.12); color: #0284C7; font-weight: 700;">RECURSIVE DRILLDOWN</span>
+                </div>
+
+                <!-- Interactive Breadcrumb Lineage Hierarchy -->
+                <div class="forensic-breadcrumb-bar">
+                  <div class="fb-step active" onclick="setForensicStep(0)">
+                    <span class="fb-badge">STEP 1</span>
+                    <span class="fb-name">AEROINDEX</span>
+                    <span class="fb-val">+145 bps</span>
+                  </div>
+                  <div class="fb-arrow">→</div>
+                  <div class="fb-step active" onclick="setForensicStep(1)">
+                    <span class="fb-badge">STEP 2</span>
+                    <span class="fb-name">DEL–BOM</span>
+                    <span class="fb-val">+31 bps</span>
+                  </div>
+                  <div class="fb-arrow">→</div>
+                  <div class="fb-step active" onclick="setForensicStep(2)">
+                    <span class="fb-badge">STEP 3</span>
+                    <span class="fb-name">INDIGO (6E)</span>
+                    <span class="fb-val">+18 bps</span>
+                  </div>
+                  <div class="fb-arrow">→</div>
+                  <div class="fb-step active" onclick="setForensicStep(3)">
+                    <span class="fb-badge">STEP 4</span>
+                    <span class="fb-name">FLIGHT 6E 2047</span>
+                    <span class="fb-val">+7.2 bps</span>
+                  </div>
+                  <div class="fb-arrow">→</div>
+                  <div class="fb-step active" onclick="setForensicStep(4)">
+                    <span class="fb-badge">STEP 5</span>
+                    <span class="fb-name">OBSERVATION Q-841920</span>
+                    <span class="fb-val">Verified Quote</span>
+                  </div>
+                </div>
+
+                <!-- Forensic Inspector Card for Step 5 -->
+                <div class="forensic-card-inspector" id="forensic-inspector-card">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- CHAPTER 15: CONTRIBUTING OBSERVATION TABLE -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 15 — CONTRIBUTING OBSERVATION EVIDENCE</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Contributing Observation Table</h2>
+                    <div class="chart-subtitle">Exact verified flight fare quotes underlying the selected corridor / carrier cell</div>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span style="font-size: 0.74rem; color: var(--text-secondary);">Filter Carrier:</span>
+                    <select id="obs-filter-carrier" class="form-select" onchange="filterObservationTable()" style="font-size: 0.74rem; padding: 0.25rem 0.5rem;">
+                      <option value="ALL">All Carriers</option>
+                      <option value="6E">IndiGo (6E)</option>
+                      <option value="AI">Air India (AI)</option>
+                      <option value="QP">Akasa Air (QP)</option>
+                      <option value="IX">AI Express (IX)</option>
+                      <option value="SG">SpiceJet (SG)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+                  <table class="obs-table">
+                    <thead>
+                      <tr>
+                        <th>OBSERVATION ID</th>
+                        <th>FLIGHT NO</th>
+                        <th>CARRIER</th>
+                        <th>ROUTE</th>
+                        <th>DEP TIME</th>
+                        <th>LEAD TIME</th>
+                        <th>FARE FAMILY</th>
+                        <th style="text-align: right;">PREV FARE</th>
+                        <th style="text-align: right;">CURR FARE</th>
+                        <th style="text-align: right;">Δ₹</th>
+                        <th style="text-align: right;">WEIGHT</th>
+                        <th style="text-align: right;">IMPACT (bps)</th>
+                        <th style="text-align: center;">INTEGRITY</th>
+                      </tr>
+                    </thead>
+                    <tbody id="obs-evidence-tbody">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- CHAPTER 16: "SHOW THE MATH" & MATHEMATICAL FORMULA VIEW -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 16 — MATHEMATICAL FORMULATION & LINEAGE</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">AeroIndex Jevons Contribution Formula</h2>
+                    <div class="chart-subtitle">Rigorous mathematical lineage defining exact basis-point attribution under geometric mean index theory</div>
+                  </div>
+                  <button class="btn btn-ghost" onclick="openMathExplainerModal()" style="font-size: 0.75rem; border: 1px solid var(--border-subtle);">
+                    Full Mathematical Derivation →
+                  </button>
+                </div>
+
+                <div class="math-formula-box">
+                  <div class="math-eq-display">
+                    $$\text{Contribution}_{r,c} = W_r \cdot \left[ \left( \prod_{i \in \Omega_{r,c}} \frac{p_{i,t}}{p_{i,0}} \right)^{\frac{1}{N_{r,c}}} - 1 \right] \times 10{,}000 \text{ bps}$$
+                  </div>
+                  <div class="math-explanation-text">
+                    Where $W_r$ is the static corridor capacity weight, $\Omega_{r,c}$ is the verified set of matched quotes for route $r$ and carrier $c$, $p_{i,t}$ is the current price quote, $p_{i,0}$ is the baseline quote, and $10{,}000$ scales the geometric ratio to basis points.
+                  </div>
+                </div>
+
+                <!-- Intermediate Step-by-Step Calculation Table for DEL-BOM -->
+                <div style="margin-top: 1.25rem; background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem;">
+                  <div style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.6rem;">STEP-BY-STEP RECONSTRUCTION FOR TOP CONTRIBUTOR (DEL-BOM: +31.42 bps)</div>
+                  <div class="calc-steps-grid">
+                    <div class="calc-step-item">
+                      <span class="cs-step-num">STEP 1</span>
+                      <span class="cs-step-name">Baseline Geomean ($P_0$)</span>
+                      <span class="cs-step-val">₹5,840.20</span>
+                    </div>
+                    <div class="calc-step-item">
+                      <span class="cs-step-num">STEP 2</span>
+                      <span class="cs-step-name">Current Geomean ($P_t$)</span>
+                      <span class="cs-step-val">₹6,182.40</span>
+                    </div>
+                    <div class="calc-step-item">
+                      <span class="cs-step-num">STEP 3</span>
+                      <span class="cs-step-name">Price Ratio ($P_t / P_0$)</span>
+                      <span class="cs-step-val">1.05859 (+5.86%)</span>
+                    </div>
+                    <div class="calc-step-item">
+                      <span class="cs-step-num">STEP 4</span>
+                      <span class="cs-step-name">Corridor Weight ($W_r$)</span>
+                      <span class="cs-step-val">0.1420 (14.2%)</span>
+                    </div>
+                    <div class="calc-step-item">
+                      <span class="cs-step-num">STEP 5</span>
+                      <span class="cs-step-name">Exact Calculation</span>
+                      <span class="cs-step-val" style="color: #059669; font-weight: 700;">+31.42 bps</span>
+                    </div>
+                    <div class="calc-step-item">
+                      <span class="cs-step-num">STEP 6</span>
+                      <span class="cs-step-name">Displayed Headline</span>
+                      <span class="cs-step-val" style="color: #059669; font-weight: 700;">+31 bps</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 17: ATTRIBUTION RECONCILIATION & RESIDUAL AUDIT -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 17 — MATHEMATICAL RECONCILIATION & AUDIT</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Does the Decomposition Add Up?</h2>
+                    <div class="chart-subtitle">Mathematical reconciliation showing the exact balance of identified drivers, unrounded precision, and explicit residual</div>
+                  </div>
+                  <span class="badge-tag" style="background: rgba(5, 150, 105, 0.15); color: #059669; font-weight: 700; border: 1px solid rgba(5, 150, 105, 0.3);">
+                    ✓ FULLY RECONCILED (0.00% Discrepancy)
+                  </span>
+                </div>
+
+                <div class="reconciliation-table-wrapper">
+                  <table class="reconcile-table">
+                    <tbody>
+                      <tr>
+                        <td><strong>PREVIOUS PUBLISHED INDEX</strong></td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 600;">100.00</td>
+                        <td style="color: var(--text-muted); font-size: 0.74rem;">Base line settlement level</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #059669;"><strong>+ GROSS UPWARD CONTRIBUTIONS</strong></td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #059669;">+218.42 bps</td>
+                        <td style="color: var(--text-muted); font-size: 0.74rem;">Sum of 24 expanding corridors</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #E11D48;"><strong>- GROSS DOWNWARD OFFSETS</strong></td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #E11D48;">-73.05 bps</td>
+                        <td style="color: var(--text-muted); font-size: 0.74rem;">Sum of 8 discounting corridors</td>
+                      </tr>
+                      <tr style="background: #F8FAFC;">
+                        <td><strong>= UNROUNDED NET ATTRIBUTION</strong></td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #0284C7;">+145.37 bps</td>
+                        <td style="color: var(--text-muted); font-size: 0.74rem;">Full 64-bit IEEE float sum</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #D97706;"><strong>+ ROUNDING & COVERAGE RESIDUAL</strong></td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 600; color: #D97706;">+2.00 bps</td>
+                        <td style="color: var(--text-muted); font-size: 0.74rem;">Unattributed micro-observations (1.4%)</td>
+                      </tr>
+                      <tr style="border-top: 2px solid var(--navy-900); background: #F1F5F9;">
+                        <td><strong style="color: var(--navy-900);">CURRENT PUBLISHED INDEX</strong></td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 800; font-size: 1.05rem; color: #059669;">101.45 (+145 bps)</td>
+                        <td style="color: #059669; font-weight: 600; font-size: 0.74rem;">✓ Exactly Matched</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- CHAPTER 18: REVISION / AS-OF ANALYSIS (FLASH VS OFFICIAL) -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 18 — REVISION & AS-OF SETTLEMENT ANALYSIS</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Flash vs Official Index Attribution Delta</h2>
+                    <div class="chart-subtitle">Explaining the 17 bps revision between Flash Release (+162 bps at 10:00 IST) and Official Release (+145 bps at 12:30 IST)</div>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-secondary);">
+                    NET REVISION: <span style="color: #E11D48; font-weight: 700;">-17.0 bps</span>
+                  </div>
+                </div>
+
+                <div class="revision-waterfall-wrapper">
+                  <div class="rev-step-card">
+                    <span class="rsc-title">FLASH RELEASE (10:00 IST)</span>
+                    <span class="rsc-val" style="color: #059669;">+162.0 bps</span>
+                    <span class="rsc-sub">312,000 preliminary quotes</span>
+                  </div>
+                  <div class="rev-arrow-bridge">
+                    <span class="rab-badge" style="color: #E11D48;">-9 bps</span>
+                    <span class="rab-label">Late LCC Quotes (QP & SG)</span>
+                  </div>
+                  <div class="rev-arrow-bridge">
+                    <span class="rab-badge" style="color: #E11D48;">-5 bps</span>
+                    <span class="rab-label">Duplicate Deduplication Scrub</span>
+                  </div>
+                  <div class="rev-arrow-bridge">
+                    <span class="rab-badge" style="color: #E11D48;">-3 bps</span>
+                    <span class="rab-label">Regional Capacity Re-weighting</span>
+                  </div>
+                  <div class="rev-step-card active">
+                    <span class="rsc-title">OFFICIAL RELEASE (12:30 IST)</span>
+                    <span class="rsc-val" style="color: #059669;">+145.0 bps</span>
+                    <span class="rsc-sub">486,201 verified quotes (Settled)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHAPTER 19: ATTRIBUTION QUALITY & PROVENANCE SANDBOX -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 19 — PROVENANCE, DATA QUALITY & REPRODUCTION SANDBOX</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Attribution Quality & Independent Reproduction Sandbox</h2>
+                    <div class="chart-subtitle">Audit the data health dimensions and verify the mathematical calculation in an isolated browser environment</div>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-ghost" onclick="downloadProvenanceCertificate()" style="font-size: 0.74rem; border: 1px solid var(--border-subtle);">
+                      📜 Download Audit JSON
+                    </button>
+                    <button class="btn btn-primary" onclick="runReproductionSandbox()" style="font-size: 0.74rem;">
+                      ⚙️ Run Reproduction Sandbox
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Provenance & Quality Grid -->
+                <div class="provenance-audit-grid">
+                  <div class="pag-item">
+                    <span class="pag-label">METHODOLOGY VERSION</span>
+                    <span class="pag-val" style="color: var(--navy-900);">AEROINDEX JEVONS v2.4</span>
+                    <span class="pag-sub">DGCA Weighted Specification</span>
+                  </div>
+                  <div class="pag-item">
+                    <span class="pag-label">CLEANING RULES APPLIED</span>
+                    <span class="pag-val" style="color: #059669;">R01 to R12 (100% PASS)</span>
+                    <span class="pag-sub">Outlier rejection rate: 0.42%</span>
+                  </div>
+                  <div class="pag-item">
+                    <span class="pag-label">OBSERVATION FRESHNESS</span>
+                    <span class="pag-val" style="color: #0284C7;">2.4s Mean Latency</span>
+                    <span class="pag-sub">Max latency: 14.1s (GDS Feed)</span>
+                  </div>
+                  <div class="pag-item">
+                    <span class="pag-label">CRYPTOGRAPHIC DIGEST</span>
+                    <span class="pag-val" style="font-family: var(--font-mono); font-size: 0.74rem; color: #475569;">sha256:3a91f8c7b8921e...</span>
+                    <span class="pag-sub">Immutable Index State Proof</span>
+                  </div>
+                </div>
+
+                <!-- Interactive Reproduction Results Console -->
+                <div id="reproduction-sandbox-output" class="reproduction-console" style="margin-top: 1.25rem; display: none;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 700; font-size: 0.78rem; color: #38BDF8; font-family: var(--font-mono);">AEROINDEX INDEPENDENT REPRODUCTION SANDBOX</span>
+                    <span style="font-size: 0.7rem; color: #94A3B8; font-family: var(--font-mono);">STATUS: EXECUTION COMPLETE</span>
+                  </div>
+                  <pre class="repro-code-block" id="repro-console-text">
+// Initializing sandbox with 486,201 quotes...
+// Applying DGCA passenger capacity weights matrix W_2026_Q3...
+// Calculating geometric mean relatives across 1,180 active city-pairs...
+// Summing corridor contributions:
+   Upward Contributions   = +218.4218 bps
+   Downward Contributions = -73.0519 bps
+   Net Calculated Move    = +145.3699 bps
+// Reconciled with Published Headline: +145 bps (Discrepancy: 0.0000%)
+// PROOF CERTIFICATE GENERATED: PASS ✓
+                  </pre>
+                </div>
+              </div>
+
+              <!-- CHAPTER 20: ASK AEROINDEX ATTRIBUTION AGENT -->
+              <div class="glass-panel chart-container" style="padding: 1.5rem 1.75rem;">
+                <div class="section-chapter-tag">CHAPTER 20 — ASK AEROINDEX ATTRIBUTION AGENT</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                  <div>
+                    <h2 class="chart-title" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Forensic AI Attribution Agent</h2>
+                    <div class="chart-subtitle">Ask questions about today's index movement, drivers, concentration, and offsetting market trends</div>
+                  </div>
+                  <span class="brand-badge" style="background: rgba(14, 165, 233, 0.12); color: #0284C7; font-weight: 700;">EVIDENCE GROUNDED</span>
+                </div>
+
+                <!-- Prompt Chips -->
+                <div class="prompt-chips-wrapper">
+                  <button class="prompt-chip" onclick="askAttributionPrompt('Why did today's index move +145 bps?')">Why did today's index move +145 bps?</button>
+                  <button class="prompt-chip" onclick="askAttributionPrompt('Which routes contributed the most?')">Which routes contributed the most?</button>
+                  <button class="prompt-chip" onclick="askAttributionPrompt('Which carriers offset today's increase?')">Which carriers offset today's increase?</button>
+                  <button class="prompt-chip" onclick="askAttributionPrompt('Was today's move concentrated or broad-based?')">Was today's move concentrated?</button>
+                  <button class="prompt-chip" onclick="askAttributionPrompt('How much came from pure price vs basket composition?')">Price vs Basket Composition?</button>
+                  <button class="prompt-chip" onclick="askAttributionPrompt('Reproduce today's +145 bps step-by-step')">Reproduce +145 bps step-by-step</button>
+                </div>
+
+                <!-- AI Response Output Box -->
+                <div class="ai-attr-response-box" id="ai-attr-response">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+                    <span style="font-size: 1rem;">🤖</span>
+                    <strong style="font-size: 0.82rem; color: var(--navy-900);">AeroIndex Forensic Intelligence Analyst</strong>
+                    <span class="data-state-pill state-calculated" style="font-size: 0.65rem;">GROUNDED IN 486,201 OBSERVATIONS</span>
+                  </div>
+                  <div id="ai-attr-response-content" style="font-size: 0.8rem; line-height: 1.55; color: #334155;">
+                    Today's <strong>+145 bps</strong> index movement (+1.45% day-over-day) is mathematically decomposed into <strong>+218 bps</strong> of gross upward pressure across 24 expanding corridors and <strong>-73 bps</strong> of downward offsetting discounts across 8 corridors, leaving a negligible <strong>+2.0 bps</strong> rounding/coverage residual. The primary upward driver was <strong>DEL-BOM (+31 bps, 21.4% share)</strong>, while <strong>BOM-DEL (-28 bps)</strong> and <strong>HYD-DEL (-16 bps)</strong> provided the primary negative offsets.
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
 

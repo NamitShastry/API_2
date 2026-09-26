@@ -4383,3 +4383,1321 @@ html, body {
   padding: 0.85rem 1.25rem;
   margin-top: 1rem;
 }
+
+/* ============================================================================
+   AEROINDEX ATTRIBUTION OBSERVATORY (TAB 10: WHAT MOVED TODAY'S INDEX?)
+   ============================================================================ */
+
+.waterfall-story-wrapper {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1rem 0 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.section-chapter-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #0284C7;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+/* Status Strip */
+.attribution-status-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.attr-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.attr-stat-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.attr-stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.attr-stat-sub {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+}
+
+/* Filter Ribbon */
+.attribution-filter-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.85rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.epistemology-banner {
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  margin-top: 0.85rem;
+}
+
+/* Chapter 02: Hero Index Move */
+.hero-index-move-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .hero-index-move-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-move-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+}
+
+.hero-move-card.active {
+  background: rgba(5, 150, 105, 0.04);
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+.hero-card-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.hero-card-val {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.hero-card-sub {
+  font-size: 0.78rem;
+  color: var(--navy-900);
+}
+
+.hero-card-micro {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.hero-vector-box {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.badge-headline-move {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #059669;
+  background: rgba(5, 150, 105, 0.1);
+  padding: 0.3rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid rgba(5, 150, 105, 0.25);
+}
+
+.movement-axis-track {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+  position: relative;
+}
+
+.movement-axis-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.axis-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #94A3B8;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 0 2px #CBD5E1;
+}
+
+.axis-dot.active {
+  background: #059669;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.4);
+}
+
+.axis-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.movement-axis-arrow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 1rem;
+}
+
+.arrow-bar {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #94A3B8, #059669);
+  border-radius: 2px;
+  position: relative;
+}
+
+.gross-balance-split-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #E2E8F0;
+}
+
+.split-segment.upward {
+  background: #059669;
+}
+
+.split-segment.residual {
+  background: #D97706;
+}
+
+.split-segment.downward {
+  background: #E11D48;
+}
+
+/* Chapter 03: Waterfall Visuals */
+.waterfall-stage-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.wf-row {
+  display: grid;
+  grid-template-columns: 240px 1fr 100px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.wf-row:hover {
+  background: #F8FAFC;
+  border-color: var(--border-subtle);
+}
+
+.wf-row.selected {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.wf-label-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.wf-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+.wf-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.wf-track {
+  width: 100%;
+  height: 20px;
+  background: #F1F5F9;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wf-fill {
+  height: 100%;
+  border-radius: 4px;
+  position: absolute;
+  transition: width 0.3s ease;
+}
+
+.wf-fill.upward {
+  background: #059669;
+}
+
+.wf-fill.downward {
+  background: #E11D48;
+}
+
+.wf-fill.total {
+  background: var(--navy-900);
+}
+
+.wf-fill.residual {
+  background: #D97706;
+}
+
+.wf-val-col {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+/* Contextual Attribution Drawer */
+.attribution-drawer {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.attribution-drawer.hidden {
+  display: none;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.drawer-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  background: var(--navy-900);
+  color: #FFFFFF;
+  border-radius: 4px;
+}
+
+.drawer-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.btn-close-drawer {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.btn-close-drawer:hover {
+  color: var(--navy-900);
+}
+
+.drawer-body-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  align-items: center;
+}
+
+.drawer-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dm-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.dm-val {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.dm-sub {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* Chapter 04: Two-Sided Balance */
+.two-sided-balance-container {
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .two-sided-balance-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.balance-column {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.balance-side-header {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.contributors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.contributor-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+}
+
+.contributor-item:hover {
+  background: #FFFFFF;
+}
+
+.balance-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.balance-axis-line {
+  width: 2px;
+  height: 100%;
+  background: var(--border-subtle);
+  position: absolute;
+}
+
+.balance-net-tag {
+  background: #059669;
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+  text-align: center;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Chapter 05: Map Layout */
+.corridor-map-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 992px) {
+  .corridor-map-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-stage-wrapper {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem;
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.india-attr-svg {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+}
+
+.map-overlay-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-color.upward {
+  width: 10px;
+  height: 10px;
+  background: #059669;
+  border-radius: 2px;
+}
+
+.legend-color.downward {
+  width: 10px;
+  height: 10px;
+  background: #E11D48;
+  border-radius: 2px;
+}
+
+.legend-stroke.thick {
+  width: 16px;
+  height: 4px;
+  background: #059669;
+  border-radius: 2px;
+}
+
+.legend-stroke.thin {
+  width: 16px;
+  height: 1.5px;
+  background: #059669;
+  border-radius: 1px;
+}
+
+.hub-aggregation-sidebar {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hub-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.hub-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.hub-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hub-card:hover {
+  border-color: #0284C7;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.hub-methodology-note {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 0.65rem;
+}
+
+/* Chapter 06: Carrier Attribution */
+.carrier-attribution-table-wrapper {
+  overflow-x: auto;
+}
+
+.carrier-attr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.carrier-attr-table th {
+  background: #F8FAFC;
+  border-bottom: 2px solid var(--border-subtle);
+  padding: 0.65rem 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.carrier-attr-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.carrier-attr-table tr:hover {
+  background: #F8FAFC;
+  cursor: pointer;
+}
+
+.carrier-sub-drawer {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 1.25rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.carrier-sub-drawer.hidden {
+  display: none;
+}
+
+.cs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.cs-effects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+.cs-effect-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Chapter 07: Matrix */
+.matrix-table-container {
+  overflow-x: auto;
+}
+
+.route-carrier-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.route-carrier-matrix-table th {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  padding: 0.65rem 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+
+.route-carrier-matrix-table td {
+  border: 1px solid var(--border-subtle);
+  padding: 0.55rem 0.75rem;
+  text-align: center;
+}
+
+.matrix-cell {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0.25rem 0.4rem;
+  display: inline-block;
+  min-width: 60px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.matrix-cell:hover {
+  transform: scale(1.08);
+}
+
+.matrix-cell.upward-strong {
+  background: rgba(5, 150, 105, 0.2);
+  color: #047857;
+}
+
+.matrix-cell.upward-mod {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+
+.matrix-cell.downward-mod {
+  background: rgba(225, 29, 72, 0.1);
+  color: #E11D48;
+}
+
+.matrix-cell.empty {
+  color: var(--text-muted);
+}
+
+.matrix-cell-drawer {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+
+.matrix-cell-drawer.hidden {
+  display: none;
+}
+
+.mcd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+  font-size: 0.78rem;
+}
+
+/* Chapter 08: Lead-Time Attribution */
+.leadtime-attr-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 992px) {
+  .leadtime-attr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lt-bars-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lt-bar-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 90px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+}
+
+.lt-insight-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Chapter 09: Fare Component */
+.component-attr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.comp-attr-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Chapter 10: Composition Effects */
+.composition-effects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.comp-effect-box {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.comp-effect-box.primary {
+  background: rgba(5, 150, 105, 0.04);
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+.ce-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.ce-val {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.ce-pct {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+.ce-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 0.25rem;
+}
+
+/* Chapter 11: Timeline & Event Stream */
+.timeline-scrubber-wrapper {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.timeline-nodes-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.tl-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.tl-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #CBD5E1;
+  border: 2px solid #FFFFFF;
+  transition: all 0.15s ease;
+}
+
+.tl-node.active .tl-dot {
+  background: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.3);
+}
+
+.tl-time {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.timeline-active-slice {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+}
+
+.event-stream-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 180px;
+  overflow-y: auto;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Chapter 12: Largest Movers Table */
+.movers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.movers-table th {
+  background: #F8FAFC;
+  border-bottom: 2px solid var(--border-subtle);
+  padding: 0.65rem 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.movers-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Chapter 13: Concentration */
+.concentration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.conc-stat-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cs-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.cs-val {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.cs-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.pareto-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Chapter 14: Forensic Chain */
+.forensic-breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.85rem 1.25rem;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+}
+
+.fb-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.5rem 0.85rem;
+  min-width: 140px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fb-step.active {
+  border-color: #0284C7;
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.fb-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.fb-name {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--navy-900);
+}
+
+.fb-val {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #059669;
+  font-weight: 600;
+}
+
+.fb-arrow {
+  color: #94A3B8;
+  font-size: 1rem;
+}
+
+.forensic-card-inspector {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+/* Chapter 15: Observation Evidence */
+.obs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.obs-table th {
+  background: #F8FAFC;
+  border-bottom: 2px solid var(--border-subtle);
+  padding: 0.55rem 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.obs-table td {
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+/* Chapter 16: Math Formulation */
+.math-formula-box {
+  background: #0F172A;
+  color: #F8FAFC;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+}
+
+.math-eq-display {
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  color: #38BDF8;
+}
+
+.math-explanation-text {
+  font-size: 0.74rem;
+  color: #94A3B8;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 0.65rem;
+}
+
+.calc-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.85rem;
+}
+
+.calc-step-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.6rem;
+}
+
+.cs-step-num {
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.cs-step-name {
+  font-size: 0.72rem;
+  color: var(--navy-900);
+}
+
+.cs-step-val {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+/* Chapter 17: Reconciliation Table */
+.reconcile-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.reconcile-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Chapter 18: Revision Waterfall */
+.revision-waterfall-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.rev-step-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 200px;
+}
+
+.rev-step-card.active {
+  background: rgba(5, 150, 105, 0.04);
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+.rsc-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.rsc-val {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.rsc-sub {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.rev-arrow-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  text-align: center;
+}
+
+.rab-badge {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(225, 29, 72, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.rab-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  max-width: 120px;
+}
+
+/* Chapter 19: Provenance & Sandbox */
+.provenance-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.pag-item {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pag-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.pag-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.pag-sub {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.reproduction-console {
+  background: #0F172A;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.repro-code-block {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #38BDF8;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Chapter 20: Ask AeroIndex */
+.prompt-chips-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.prompt-chip {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.74rem;
+  color: var(--navy-900);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.prompt-chip:hover {
+  background: #0284C7;
+  color: #FFFFFF;
+  border-color: #0284C7;
+}
+
+.ai-attr-response-box {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+/* Forensic Mode Highlights */
+body.forensic-active .attribution-status-strip {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+}
+
+body.forensic-active .attr-stat-label {
+  color: #94A3B8 !important;
+}
+
+body.forensic-active .attr-stat-val {
+  color: #38BDF8 !important;
+}
+
+body.forensic-active .attr-stat-sub {
+  color: #CBD5E1 !important;
+}
+

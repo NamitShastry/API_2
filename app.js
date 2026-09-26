@@ -348,7 +348,7 @@ function activateWorkspaceTab(tabId) {
     renderTimelineHistory(7);
     fetchAndRenderDelNetwork();
   }
-  if (tabId === 'waterfall') renderWaterfall();
+  if (tabId === 'waterfall') initAttributionWorkspace();
   if (tabId === 'forecast') toggleForecastGate(28);
   if (tabId === 'anomalies') fetchAndRenderAnomalies();
   if (tabId === 'reproduce') executeReproduceCalculation();
@@ -2324,31 +2324,7 @@ function updateStoryMetrics(metric) {
 }
 
 function renderWaterfall() {
-  if (!dom.waterfallContainer) return;
-
-  const drivers = [
-    { name: 'DEL-BOM Corridor Spike (Festive Surge)', bps: '+48 bps', pct: 85, color: '#E11D48', type: 'UP' },
-    { name: 'DEL-BLR High-Yield Tech Route', bps: '+35 bps', pct: 65, color: '#E11D48', type: 'UP' },
-    { name: 'IndiGo (6E) Capacity Rationalization', bps: '+32 bps', pct: 60, color: '#E11D48', type: 'UP' },
-    { name: 'Air India (AI) Metro Corporate Pricing', bps: '+22 bps', pct: 45, color: '#E11D48', type: 'UP' },
-    { name: 'BOM-BLR Weekend Low-Load Discount', bps: '-18 bps', pct: 38, color: '#059669', type: 'DOWN' },
-    { name: 'SpiceJet (SG) Flash Sale Clearance', bps: '-10 bps', pct: 22, color: '#059669', type: 'DOWN' },
-  ];
-
-  let html = '';
-  drivers.forEach(d => {
-    html += `
-      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem;">
-        <span style="width: 290px; font-weight: 500; color: var(--navy-900);">${d.name}</span>
-        <div style="flex: 1; margin: 0 1.5rem; background: #F1F5F9; height: 16px; border-radius: 4px; overflow: hidden; position: relative;">
-          <div style="width: ${d.pct}%; height: 100%; background: ${d.color}; border-radius: 4px;"></div>
-        </div>
-        <span style="font-family: var(--font-mono); font-weight: 600; color: ${d.color}; width: 75px; text-align: right;">${d.bps}</span>
-      </div>
-    `;
-  });
-
-  dom.waterfallContainer.innerHTML = html;
+  initAttributionWorkspace();
 }
 
 // ============================================================================
@@ -10519,3 +10495,949 @@ window.reproduceFareEconomicsNumber = reproduceFareEconomicsNumber;
 window.downloadFareEconomicsCertificate = downloadFareEconomicsCertificate;
 window.handleFareEconomicsQuery = handleFareEconomicsQuery;
 window.executeFareEconomicsQuickPrompt = executeFareEconomicsQuickPrompt;
+
+// ============================================================================
+// AEROINDEX ATTRIBUTION OBSERVATORY — TAB 10 WHAT MOVED TODAY'S INDEX?
+// ============================================================================
+
+const attributionState = {
+  forensicMode: false,
+  level: 'CORRIDOR',
+  metric: 'BPS',
+  release: 'OFFICIAL',
+  mapMetric: 'BPS',
+  selectedEntityIndex: 0,
+  forensicStep: 4,
+  activeTimeSlice: '12:30',
+  moversFilter: 'TOP5'
+};
+
+// 1. DATASETS
+const CORRIDOR_ATTRIBUTION_DATA = [
+  { name: 'DEL–BOM', fullName: 'Delhi ⇄ Mumbai', bps: 31.42, displayBps: '+31', share: 21.4, weight: 14.2, fareDelta: 340, prevFare: 5840, currFare: 6180, obs: 42810, coverage: '98.4%', dir: 'UP', from: 'DEL', to: 'BOM' },
+  { name: 'DEL–BLR', fullName: 'Delhi ⇄ Bengaluru', bps: 24.10, displayBps: '+24', share: 16.6, weight: 11.8, fareDelta: 290, prevFare: 6120, currFare: 6410, obs: 38420, coverage: '97.8%', dir: 'UP', from: 'DEL', to: 'BLR' },
+  { name: 'BOM–BLR', fullName: 'Mumbai ⇄ Bengaluru', bps: 18.25, displayBps: '+18', share: 12.6, weight: 9.4, fareDelta: 240, prevFare: 4890, currFare: 5130, obs: 31200, coverage: '96.9%', dir: 'UP', from: 'BOM', to: 'BLR' },
+  { name: 'DEL–HYD', fullName: 'Delhi ⇄ Hyderabad', bps: 15.10, displayBps: '+15', share: 10.4, weight: 7.8, fareDelta: 210, prevFare: 5100, currFare: 5310, obs: 27900, coverage: '96.2%', dir: 'UP', from: 'DEL', to: 'HYD' },
+  { name: 'DEL–CCU', fullName: 'Delhi ⇄ Kolkata', bps: 12.00, displayBps: '+12', share: 8.3, weight: 6.9, fareDelta: 190, prevFare: 5450, currFare: 5640, obs: 24100, coverage: '95.5%', dir: 'UP', from: 'DEL', to: 'CCU' },
+  { name: 'BLR–HYD', fullName: 'Bengaluru ⇄ Hyderabad', bps: 9.15, displayBps: '+9', share: 6.3, weight: 5.2, fareDelta: 160, prevFare: 3650, currFare: 3810, obs: 19800, coverage: '94.8%', dir: 'UP', from: 'BLR', to: 'HYD' },
+  { name: 'BOM–MAA', fullName: 'Mumbai ⇄ Chennai', bps: 7.20, displayBps: '+7', share: 5.0, weight: 4.8, fareDelta: 150, prevFare: 4720, currFare: 4870, obs: 18400, coverage: '94.2%', dir: 'UP', from: 'BOM', to: 'MAA' },
+  { name: 'Other Upward', fullName: '17 Other Expanding Corridors', bps: 101.20, displayBps: '+102', share: 70.3, weight: 26.5, fareDelta: 145, prevFare: 4620, currFare: 4765, obs: 182100, coverage: '93.5%', dir: 'UP' },
+  { name: 'BOM–DEL', fullName: 'Mumbai ⇄ Delhi (Southbound)', bps: -28.10, displayBps: '-28', share: -19.4, weight: 13.9, fareDelta: -310, prevFare: 6150, currFare: 5840, obs: 41200, coverage: '98.1%', dir: 'DOWN', from: 'BOM', to: 'DEL' },
+  { name: 'HYD–DEL', fullName: 'Hyderabad ⇄ Delhi', bps: -16.20, displayBps: '-16', share: -11.2, weight: 7.6, fareDelta: -220, prevFare: 5320, currFare: 5100, obs: 26800, coverage: '95.8%', dir: 'DOWN', from: 'HYD', to: 'DEL' },
+  { name: 'MAA–BLR', fullName: 'Chennai ⇄ Bengaluru', bps: -11.00, displayBps: '-11', share: -7.6, weight: 4.2, fareDelta: -180, prevFare: 3200, currFare: 3020, obs: 15400, coverage: '93.2%', dir: 'DOWN', from: 'MAA', to: 'BLR' },
+  { name: 'Other Downward', fullName: '5 Other Discounting Corridors', bps: -17.75, displayBps: '-18', share: -12.2, weight: 9.8, fareDelta: -130, prevFare: 4400, currFare: 4270, obs: 38071, coverage: '92.4%', dir: 'DOWN' },
+  { name: 'Unattributed Residual', fullName: 'Rounding & Micro-Coverage Residual', bps: 2.00, displayBps: '+2', share: 1.4, weight: 0.0, fareDelta: 0, prevFare: 0, currFare: 0, obs: 0, coverage: '100%', dir: 'RESIDUAL' }
+];
+
+const CARRIER_ATTRIBUTION_DATA = [
+  { code: '6E', name: 'IndiGo', model: 'LCC Ultra-Fleet', weight: 61.2, bps: 82.0, share: 56.6, fareDelta: '+₹265', obs: '298,400', coverage: '98.6%', effects: { routeMove: '+74.2 bps', weightEffect: '+5.4 bps', mixEffect: '+1.6 bps', coverage: '+0.8 bps' } },
+  { code: 'AI', name: 'Air India', model: 'FSC Premium / Metro', weight: 24.1, bps: 41.0, share: 28.3, fareDelta: '+₹280', obs: '117,100', coverage: '97.2%', effects: { routeMove: '+36.8 bps', weightEffect: '+2.9 bps', mixEffect: '+1.0 bps', coverage: '+0.3 bps' } },
+  { code: 'QP', name: 'Akasa Air', model: 'LCC Challenger', weight: 7.4, bps: 12.0, share: 8.3, fareDelta: '+₹190', obs: '36,000', coverage: '94.5%', effects: { routeMove: '+10.5 bps', weightEffect: '+0.9 bps', mixEffect: '+0.4 bps', coverage: '+0.2 bps' } },
+  { code: 'IX', name: 'AI Express', model: 'Value Carrier', weight: 4.8, bps: 6.0, share: 4.1, fareDelta: '+₹140', obs: '23,300', coverage: '93.8%', effects: { routeMove: '+5.1 bps', weightEffect: '+0.5 bps', mixEffect: '+0.3 bps', coverage: '+0.1 bps' } },
+  { code: 'SG', name: 'SpiceJet', model: 'Legacy LCC', weight: 2.5, bps: 4.0, share: 2.8, fareDelta: '+₹110', obs: '11,401', coverage: '91.2%', effects: { routeMove: '+3.4 bps', weightEffect: '+0.3 bps', mixEffect: '+0.2 bps', coverage: '+0.1 bps' } }
+];
+
+const ROUTE_CARRIER_MATRIX = [
+  { corridor: 'DEL–BOM', c6E: 18.0, cAI: 8.4, cQP: 3.2, cIX: 1.8, cSG: 0.0, total: 31.4 },
+  { corridor: 'DEL–BLR', c6E: 14.2, cAI: 7.1, cQP: 2.8, cIX: 0.0, cSG: 0.0, total: 24.1 },
+  { corridor: 'BOM–BLR', c6E: 11.5, cAI: 4.5, cQP: 2.2, cIX: 0.0, cSG: 0.0, total: 18.2 },
+  { corridor: 'DEL–HYD', c6E: 9.2, cAI: 4.1, cQP: 1.8, cIX: 0.0, cSG: 0.0, total: 15.1 },
+  { corridor: 'DEL–CCU', c6E: 7.8, cAI: 3.2, cQP: 1.0, cIX: 0.0, cSG: 0.0, total: 12.0 },
+  { corridor: 'BLR–HYD', c6E: 5.8, cAI: 2.1, cQP: 1.2, cIX: 0.0, cSG: 0.0, total: 9.1 },
+  { corridor: 'BOM–MAA', c6E: 4.5, cAI: 2.0, cQP: 0.7, cIX: 0.0, cSG: 0.0, total: 7.2 },
+  { corridor: 'BOM–DEL', c6E: -16.5, cAI: -8.2, cQP: -2.4, cIX: -1.0, cSG: 0.0, total: -28.1 }
+];
+
+const LEADTIME_ATTRIBUTION_DATA = [
+  { bucket: 'L60+ Days', span: 'Far Advance', bps: 3.0, share: 2.1, weight: 4.2, fareDelta: '+₹45', obs: 34100 },
+  { bucket: 'L31–60 Days', span: 'Advance Purchase', bps: 8.0, share: 5.5, weight: 8.1, fareDelta: '+₹80', obs: 58200 },
+  { bucket: 'L15–30 Days', span: 'Planned Travel', bps: 12.0, share: 8.3, weight: 14.5, fareDelta: '+₹140', obs: 84600 },
+  { bucket: 'L8–14 Days', span: 'Mid Horizon', bps: 24.0, share: 16.6, weight: 22.4, fareDelta: '+₹220', obs: 112400 },
+  { bucket: 'L4–7 Days', span: 'Peak Yield Window', bps: 48.0, share: 33.1, weight: 28.6, fareDelta: '+₹410', obs: 124800, highlight: true },
+  { bucket: 'L0–3 Days', span: 'Last-Minute Scarcity', bps: 32.0, share: 22.1, weight: 16.8, fareDelta: '+₹520', obs: 52101 },
+  { bucket: 'L01 (Spot)', span: 'Departure Eve', bps: 18.0, share: 12.4, weight: 5.4, fareDelta: '+₹680', obs: 20000 }
+];
+
+const COMPONENT_ATTRIBUTION_DATA = [
+  { name: 'Base Fare', bps: 98.0, share: 67.6, fareDelta: '+₹168', desc: 'Direct airline yield management baseline fare adjustments.' },
+  { name: 'Fuel Surcharge (ATF)', bps: 31.0, share: 21.4, fareDelta: '+₹53', desc: 'OMC ATF indexation pass-through on domestic sectors.' },
+  { name: 'GST & Statutory Taxes', bps: 12.0, share: 8.3, fareDelta: '+₹21', desc: 'Statutory 5% GST flow-through on higher gross fares.' },
+  { name: 'Airport Fees (UDF/PSF)', bps: 4.0, share: 2.8, fareDelta: '+₹7', desc: 'Regulated aeronautical passenger facilitation tariffs.' }
+];
+
+const AIRPORT_HUBS = [
+  { code: 'DEL', name: "Indira Gandhi Int'l (Delhi)", netBps: '+74 bps', upward: '+106 bps', downward: '-32 bps', topCorridors: 'DEL-BOM (+31), DEL-BLR (+24), DEL-HYD (+15)' },
+  { code: 'BOM', name: "Chhatrapati Shivaji Maharaj (Mumbai)", netBps: '+28 bps', upward: '+56 bps', downward: '-28 bps', topCorridors: 'BOM-BLR (+18), BOM-MAA (+7), BOM-DEL (-28)' },
+  { code: 'BLR', name: "Kempegowda Int'l (Bengaluru)", netBps: '+21 bps', upward: '+51 bps', downward: '-30 bps', topCorridors: 'DEL-BLR (+24), BOM-BLR (+18), BLR-HYD (+9)' },
+  { code: 'HYD', name: "Rajiv Gandhi Int'l (Hyderabad)", netBps: '+8 bps', upward: '+24 bps', downward: '-16 bps', topCorridors: 'DEL-HYD (+15), BLR-HYD (+9), HYD-DEL (-16)' },
+  { code: 'CCU', name: "Netaji Subhash Chandra Bose (Kolkata)", netBps: '+14 bps', upward: '+18 bps', downward: '-4 bps', topCorridors: 'DEL-CCU (+12), CCU-BLR (+6)' },
+  { code: 'MAA', name: "Chennai Int'l (Chennai)", netBps: '-4 bps', upward: '+7 bps', downward: '-11 bps', topCorridors: 'BOM-MAA (+7), MAA-BLR (-11)' }
+];
+
+const TIMELINE_SLICES = [
+  { time: '00:00', index: '100.00', moveBps: '+0 bps', topDriver: 'Baseline Settlement (Overnight)' },
+  { time: '06:00', index: '100.18', moveBps: '+18 bps', topDriver: 'Early Morning Departures (DEL-BOM +8 bps)' },
+  { time: '09:30', index: '100.64', moveBps: '+64 bps', topDriver: 'Morning Business Surge (DEL-BLR +16 bps)' },
+  { time: '12:30', index: '101.45', moveBps: '+145 bps', topDriver: 'Official Midday Close (DEL-BOM +31 bps)' },
+  { time: '16:00', index: '101.24', moveBps: '+124 bps', topDriver: 'Off-Peak Midday Moderation (HYD-DEL -8 bps)' },
+  { time: '20:00', index: '101.38', moveBps: '+138 bps', topDriver: 'Evening Peak Demand Recovery (+14 bps)' },
+  { time: '23:30', index: '101.45', moveBps: '+145 bps', topDriver: 'Final Day Settlement (+145 bps settled)' }
+];
+
+const OBSERVATIONS_SAMPLE = [
+  { id: 'Q-841920', flight: '6E 2047', carrier: 'IndiGo (6E)', route: 'DEL-BOM', depTime: '18:30 IST', leadTime: 'L05', family: 'Saver', prevFare: 5850, currFare: 6420, delta: '+₹570', weight: '0.00284', impactBps: '+7.20', integrity: 'VERIFIED' },
+  { id: 'Q-841921', flight: '6E 2112', carrier: 'IndiGo (6E)', route: 'DEL-BOM', depTime: '07:15 IST', leadTime: 'L04', family: 'Flexi Plus', prevFare: 6200, currFare: 6680, delta: '+₹480', weight: '0.00241', impactBps: '+5.40', integrity: 'VERIFIED' },
+  { id: 'Q-841924', flight: 'AI 887', carrier: 'Air India (AI)', route: 'DEL-BOM', depTime: '08:00 IST', leadTime: 'L06', family: 'Comfort', prevFare: 6900, currFare: 7450, delta: '+₹550', weight: '0.00195', impactBps: '+4.80', integrity: 'VERIFIED' },
+  { id: 'Q-841929', flight: 'QP 1302', carrier: 'Akasa Air (QP)', route: 'DEL-BOM', depTime: '11:45 IST', leadTime: 'L07', family: 'Saver', prevFare: 5200, currFare: 5540, delta: '+₹340', weight: '0.00120', impactBps: '+2.10', integrity: 'VERIFIED' },
+  { id: 'Q-841935', flight: '6E 5014', carrier: 'IndiGo (6E)', route: 'DEL-BLR', depTime: '14:20 IST', leadTime: 'L05', family: 'Saver', prevFare: 6100, currFare: 6580, delta: '+₹480', weight: '0.00262', impactBps: '+6.10', integrity: 'VERIFIED' },
+  { id: 'Q-841940', flight: 'AI 506', carrier: 'Air India (AI)', route: 'DEL-BLR', depTime: '09:30 IST', leadTime: 'L04', family: 'Flex', prevFare: 7100, currFare: 7620, delta: '+₹520', weight: '0.00180', impactBps: '+4.20', integrity: 'VERIFIED' },
+  { id: 'Q-841945', flight: '6E 6102', carrier: 'IndiGo (6E)', route: 'BOM-BLR', depTime: '17:00 IST', leadTime: 'L06', family: 'Saver', prevFare: 4900, currFare: 5260, delta: '+₹360', weight: '0.00210', impactBps: '+4.50', integrity: 'VERIFIED' },
+  { id: 'Q-841951', flight: '6E 2048', carrier: 'IndiGo (6E)', route: 'BOM-DEL', depTime: '21:15 IST', leadTime: 'L14', family: 'Super Saver', prevFare: 6300, currFare: 5780, delta: '-₹520', weight: '0.00270', impactBps: '-6.40', integrity: 'VERIFIED' },
+  { id: 'Q-841955', flight: 'AI 888', carrier: 'Air India (AI)', route: 'BOM-DEL', depTime: '19:45 IST', leadTime: 'L21', family: 'Economy Lite', prevFare: 6800, currFare: 6350, delta: '-₹450', weight: '0.00185', impactBps: '-4.10', integrity: 'VERIFIED' },
+  { id: 'Q-841960', flight: '6E 534', carrier: 'IndiGo (6E)', route: 'HYD-DEL', depTime: '13:10 IST', leadTime: 'L10', family: 'Saver', prevFare: 5400, currFare: 5050, delta: '-₹350', weight: '0.00170', impactBps: '-3.20', integrity: 'VERIFIED' }
+];
+
+const REALTIME_EVENT_STREAM = [
+  { time: '12:31:04', route: 'DEL–BOM', bps: '+4.2 bps', carrier: '6E', horizon: 'L07', type: 'NEW OBSERVATION' },
+  { time: '12:31:09', route: 'DEL–BLR', bps: '-1.8 bps', carrier: 'AI', horizon: 'L14', type: 'REVISED OBSERVATION' },
+  { time: '12:31:14', route: 'BOM–BLR', bps: '+2.4 bps', carrier: 'QP', horizon: 'L03', type: 'NEW OBSERVATION' },
+  { time: '12:31:22', route: 'BOM–DEL', bps: '-3.1 bps', carrier: '6E', horizon: 'L21', type: 'INVENTORY UPDATE' },
+  { time: '12:31:29', route: 'DEL–HYD', bps: '+1.9 bps', carrier: 'AI', horizon: 'L05', type: 'NEW OBSERVATION' }
+];
+
+// 2. PRIMARY INITIALIZER
+function initAttributionWorkspace() {
+  renderHeroWaterfall();
+  renderTwoSidedBalance();
+  renderCorridorMap();
+  renderCarrierTable();
+  renderRouteCarrierMatrix();
+  renderLeadTimeAttribution();
+  renderComponentAttribution();
+  renderLargestMovers();
+  renderConcentrationPareto();
+  renderForensicInspector();
+  renderObservationTable();
+  renderTimeline();
+  renderEventStream();
+  renderHubCards();
+}
+
+// 3. CHAPTER 03: HERO WATERFALL RENDERER
+function renderHeroWaterfall() {
+  const container = document.getElementById('hero-waterfall-stage');
+  if (!container) return;
+
+  let dataset = [];
+  const level = attributionState.level;
+
+  if (level === 'CORRIDOR') {
+    dataset = CORRIDOR_ATTRIBUTION_DATA;
+  } else if (level === 'CARRIER') {
+    dataset = CARRIER_ATTRIBUTION_DATA.map(c => ({
+      name: c.name,
+      fullName: `${c.name} (${c.code}) — ${c.model}`,
+      bps: c.bps,
+      displayBps: `+${c.bps}`,
+      share: c.share,
+      weight: c.weight,
+      fareDelta: c.fareDelta,
+      obs: c.obs,
+      coverage: c.coverage,
+      dir: 'UP'
+    }));
+  } else if (level === 'LEADTIME') {
+    dataset = LEADTIME_ATTRIBUTION_DATA.map(l => ({
+      name: l.bucket,
+      fullName: `${l.bucket} — ${l.span}`,
+      bps: l.bps,
+      displayBps: `+${l.bps}`,
+      share: l.share,
+      weight: l.weight,
+      fareDelta: l.fareDelta,
+      obs: l.obs.toLocaleString(),
+      coverage: '96.4%',
+      dir: 'UP'
+    }));
+  } else if (level === 'COMPONENT') {
+    dataset = COMPONENT_ATTRIBUTION_DATA.map(cp => ({
+      name: cp.name,
+      fullName: cp.name,
+      bps: cp.bps,
+      displayBps: `+${cp.bps}`,
+      share: cp.share,
+      weight: cp.share,
+      fareDelta: cp.fareDelta,
+      obs: '486,201',
+      coverage: '100%',
+      dir: 'UP'
+    }));
+  } else {
+    dataset = CORRIDOR_ATTRIBUTION_DATA;
+  }
+
+  const maxBps = Math.max(...dataset.map(d => Math.abs(d.bps)), 35);
+
+  let html = `
+    <!-- Previous Index Baseline Row -->
+    <div class="wf-row" onclick="selectWaterfallBar(-1)" style="border-bottom: 1px dashed var(--border-subtle); margin-bottom: 0.25rem;">
+      <div class="wf-label-col">
+        <span class="wf-name">PREVIOUS INDEX (T-1)</span>
+        <span class="wf-sub">Baseline Settlement</span>
+      </div>
+      <div class="wf-track">
+        <div class="wf-fill total" style="left: 0; width: 100%;"></div>
+      </div>
+      <div class="wf-val-col" style="color: #64748B;">100.00 pts</div>
+    </div>
+  `;
+
+  dataset.forEach((item, idx) => {
+    const isSelected = attributionState.selectedEntityIndex === idx;
+    const widthPct = Math.min(100, (Math.abs(item.bps) / maxBps) * 85);
+    const isUp = item.dir === 'UP';
+    const isResidual = item.dir === 'RESIDUAL';
+    const color = isResidual ? '#D97706' : (isUp ? '#059669' : '#E11D48');
+    const fillClass = isResidual ? 'residual' : (isUp ? 'upward' : 'downward');
+
+    let metricValue = item.displayBps + ' bps';
+    if (attributionState.metric === 'PTS') {
+      metricValue = (item.bps / 100).toFixed(2) + ' pts';
+    } else if (attributionState.metric === 'SHARE') {
+      metricValue = item.share + '%';
+    } else if (attributionState.metric === 'RUPEES') {
+      metricValue = (item.fareDelta > 0 ? '+₹' : '₹') + item.fareDelta;
+    }
+
+    html += `
+      <div class="wf-row ${isSelected ? 'selected' : ''}" onclick="selectWaterfallBar(${idx})">
+        <div class="wf-label-col">
+          <span class="wf-name">${item.name}</span>
+          <span class="wf-sub">${item.fullName || ''}</span>
+        </div>
+        <div class="wf-track">
+          <div class="wf-fill ${fillClass}" style="left: 0; width: ${widthPct}%;"></div>
+        </div>
+        <div class="wf-val-col" style="color: ${color};">${metricValue}</div>
+      </div>
+    `;
+  });
+
+  html += `
+    <!-- Current Index Final Row -->
+    <div class="wf-row" onclick="selectWaterfallBar(-2)" style="border-top: 2px solid var(--navy-900); margin-top: 0.35rem; background: #F8FAFC;">
+      <div class="wf-label-col">
+        <strong class="wf-name" style="color: var(--navy-900);">CURRENT INDEX (T)</strong>
+        <span class="wf-sub">Net Reconciled Level</span>
+      </div>
+      <div class="wf-track">
+        <div class="wf-fill total" style="left: 0; width: 100%; background: #059669;"></div>
+      </div>
+      <div class="wf-val-col" style="color: #059669; font-size: 0.95rem;">101.45 (+145 bps)</div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Update Chapter Title and badge
+  const titleEl = document.getElementById('waterfall-chart-title');
+  const levelBadge = document.getElementById('waterfall-level-badge');
+  const countBadge = document.getElementById('waterfall-bars-count');
+  if (titleEl) titleEl.innerText = `Decomposition of Today's +145 bps Index Movement (${level})`;
+  if (levelBadge) levelBadge.innerText = `LEVEL: ${level}`;
+  if (countBadge) countBadge.innerText = `${dataset.length} Components`;
+}
+
+function selectWaterfallBar(index) {
+  attributionState.selectedEntityIndex = index;
+  const drawer = document.getElementById('attribution-context-drawer');
+  if (!drawer) return;
+
+  if (index < 0) {
+    drawer.classList.add('hidden');
+    renderHeroWaterfall();
+    return;
+  }
+
+  const dataset = (attributionState.level === 'CARRIER') ? CARRIER_ATTRIBUTION_DATA : CORRIDOR_ATTRIBUTION_DATA;
+  const item = dataset[index] || dataset[0];
+
+  document.getElementById('drawer-entity-type').innerText = attributionState.level;
+  document.getElementById('drawer-entity-name').innerText = item.fullName || item.name;
+  document.getElementById('drawer-contribution').innerText = (item.bps > 0 ? '+' : '') + item.bps + ' bps';
+  document.getElementById('drawer-share-pct').innerText = item.share + '% of total move';
+  document.getElementById('drawer-weight').innerText = item.weight + '%';
+  document.getElementById('drawer-fare-delta').innerText = (item.fareDelta > 0 ? '+₹' : '₹') + item.fareDelta;
+  document.getElementById('drawer-observations').innerText = (item.obs || 42810).toLocaleString();
+  document.getElementById('drawer-coverage').innerText = item.coverage || '98.0%';
+
+  drawer.classList.remove('hidden');
+  renderHeroWaterfall();
+}
+
+function closeAttributionDrawer() {
+  const drawer = document.getElementById('attribution-context-drawer');
+  if (drawer) drawer.classList.add('hidden');
+  attributionState.selectedEntityIndex = null;
+  renderHeroWaterfall();
+}
+
+function drilldownFromDrawer() {
+  setForensicStep(4);
+  const element = document.getElementById('forensic-inspector-card');
+  if (element) element.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 4. CHAPTER 04: TWO-SIDED BALANCE
+function renderTwoSidedBalance() {
+  const posContainer = document.getElementById('positive-contributors-list');
+  const negContainer = document.getElementById('negative-contributors-list');
+  if (!posContainer || !negContainer) return;
+
+  const upContributors = CORRIDOR_ATTRIBUTION_DATA.filter(d => d.dir === 'UP');
+  const downContributors = CORRIDOR_ATTRIBUTION_DATA.filter(d => d.dir === 'DOWN');
+
+  let posHtml = '';
+  upContributors.forEach(c => {
+    posHtml += `
+      <div class="contributor-item">
+        <span style="color: var(--navy-900); font-weight: 500;">${c.name}</span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.7rem; color: var(--text-muted);">${c.share}%</span>
+          <span style="font-family: var(--font-mono); font-weight: 700; color: #059669; width: 60px; text-align: right;">${c.displayBps} bps</span>
+        </div>
+      </div>
+    `;
+  });
+  posContainer.innerHTML = posHtml;
+
+  let negHtml = '';
+  downContributors.forEach(c => {
+    negHtml += `
+      <div class="contributor-item">
+        <span style="color: var(--navy-900); font-weight: 500;">${c.name}</span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.7rem; color: var(--text-muted);">${c.share}%</span>
+          <span style="font-family: var(--font-mono); font-weight: 700; color: #E11D48; width: 60px; text-align: right;">${c.displayBps} bps</span>
+        </div>
+      </div>
+    `;
+  });
+  negContainer.innerHTML = negHtml;
+}
+
+// 5. CHAPTER 05: CORRIDOR MAP & HUBS
+function renderCorridorMap() {
+  const svg = document.getElementById('india-attribution-svg');
+  if (!svg) return;
+
+  const hubCoords = {
+    DEL: { x: 230, y: 160, label: 'Delhi (DEL)' },
+    BOM: { x: 170, y: 340, label: 'Mumbai (BOM)' },
+    BLR: { x: 235, y: 440, label: 'Bengaluru (BLR)' },
+    HYD: { x: 250, y: 350, label: 'Hyderabad (HYD)' },
+    CCU: { x: 410, y: 250, label: 'Kolkata (CCU)' },
+    MAA: { x: 275, y: 450, label: 'Chennai (MAA)' }
+  };
+
+  const routes = [
+    { from: 'DEL', to: 'BOM', bps: 31, color: '#059669', width: 4.5 },
+    { from: 'DEL', to: 'BLR', bps: 24, color: '#059669', width: 3.8 },
+    { from: 'BOM', to: 'BLR', bps: 18, color: '#059669', width: 3.2 },
+    { from: 'DEL', to: 'HYD', bps: 15, color: '#059669', width: 2.8 },
+    { from: 'DEL', to: 'CCU', bps: 12, color: '#059669', width: 2.4 },
+    { from: 'BLR', to: 'HYD', bps: 9, color: '#059669', width: 2.0 },
+    { from: 'BOM', to: 'MAA', bps: 7, color: '#059669', width: 1.8 },
+    { from: 'BOM', to: 'DEL', bps: -28, color: '#E11D48', width: 4.2 },
+    { from: 'HYD', to: 'DEL', bps: -16, color: '#E11D48', width: 3.0 },
+    { from: 'MAA', to: 'BLR', bps: -11, color: '#E11D48', width: 2.2 }
+  ];
+
+  let svgContent = `
+    <!-- Background Outlines -->
+    <path d="M 230 60 L 290 90 L 330 150 L 400 170 L 450 200 L 460 250 L 420 280 L 340 330 L 300 420 L 260 510 L 210 440 L 160 360 L 140 270 L 150 200 Z" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5" />
+  `;
+
+  // Draw Corridor Vector Lines
+  routes.forEach(r => {
+    const p1 = hubCoords[r.from];
+    const p2 = hubCoords[r.to];
+    if (p1 && p2) {
+      svgContent += `
+        <line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${r.color}" stroke-width="${r.width}" stroke-linecap="round" opacity="0.85">
+          <title>${r.from} ⇄ ${r.to}: ${r.bps > 0 ? '+' : ''}${r.bps} bps</title>
+        </line>
+      `;
+    }
+  });
+
+  // Draw Hub Circles
+  Object.keys(hubCoords).forEach(k => {
+    const h = hubCoords[k];
+    svgContent += `
+      <g transform="translate(${h.x}, ${h.y})" style="cursor: pointer;">
+        <circle r="7" fill="#0F172A" stroke="#FFFFFF" stroke-width="2" />
+        <circle r="14" fill="rgba(14, 165, 233, 0.2)" />
+        <text x="10" y="4" font-size="11" font-weight="700" fill="#0F172A" font-family="sans-serif">${k}</text>
+      </g>
+    `;
+  });
+
+  svg.innerHTML = svgContent;
+}
+
+function renderHubCards() {
+  const container = document.getElementById('hub-cards-container');
+  if (!container) return;
+
+  let html = '';
+  AIRPORT_HUBS.forEach(hub => {
+    const isUp = !hub.netBps.startsWith('-');
+    html += `
+      <div class="hub-card" onclick="alert('Hub Detail: ${hub.name}\nNet Movement: ${hub.netBps}\nKey Corridors: ${hub.topCorridors}')">
+        <div>
+          <strong style="font-size: 0.82rem; color: var(--navy-900);">${hub.code}</strong>
+          <span style="font-size: 0.72rem; color: var(--text-secondary); margin-left: 0.4rem;">${hub.name.split('(')[0]}</span>
+        </div>
+        <span style="font-family: var(--font-mono); font-weight: 700; color: ${isUp ? '#059669' : '#E11D48'};">${hub.netBps}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function updateCorridorMapMetric(metric) {
+  attributionState.mapMetric = metric;
+  renderCorridorMap();
+}
+
+// 6. CHAPTER 06: CARRIER ATTRIBUTION TABLE
+function renderCarrierTable() {
+  const tbody = document.getElementById('carrier-attr-tbody');
+  if (!tbody) return;
+
+  let html = '';
+  CARRIER_ATTRIBUTION_DATA.forEach(c => {
+    html += `
+      <tr onclick="selectCarrierDecomposition('${c.code}')">
+        <td>
+          <div style="display: flex; align-items: center; gap: 0.45rem;">
+            <span class="brand-badge">${c.code}</span>
+            <strong style="color: var(--navy-900);">${c.name}</strong>
+          </div>
+        </td>
+        <td><span style="font-size: 0.72rem; color: var(--text-muted);">${c.model}</span></td>
+        <td style="text-align: right; font-family: var(--font-mono);">${c.weight}%</td>
+        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #059669;">+${c.bps.toFixed(1)} bps</td>
+        <td style="text-align: right; font-family: var(--font-mono);">${c.share}%</td>
+        <td style="text-align: right; font-family: var(--font-mono); color: #059669;">${c.fareDelta}</td>
+        <td style="text-align: right; font-family: var(--font-mono);">${c.obs}</td>
+        <td style="text-align: right; font-family: var(--font-mono); color: #0284C7;">${c.coverage}</td>
+        <td style="text-align: center;">
+          <span style="font-size: 0.7rem; color: #0284C7; font-weight: 600;">Inspect Effects →</span>
+        </td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function selectCarrierDecomposition(carrierCode) {
+  const carrier = CARRIER_ATTRIBUTION_DATA.find(c => c.code === carrierCode) || CARRIER_ATTRIBUTION_DATA[0];
+  const drawer = document.getElementById('carrier-sub-drawer');
+  if (!drawer) return;
+
+  document.getElementById('cs-carrier-badge').innerText = `${carrier.name} (${carrier.code})`;
+  document.getElementById('cs-carrier-title').innerText = `${carrier.name} Effect Decomposition`;
+  document.getElementById('cs-total-bps').innerText = `+${carrier.bps.toFixed(1)} bps Total`;
+
+  const grid = document.getElementById('cs-effects-grid');
+  grid.innerHTML = `
+    <div class="cs-effect-card">
+      <span class="dm-label">ROUTE MOVEMENT EFFECT</span>
+      <span class="dm-val" style="color: #059669;">${carrier.effects.routeMove}</span>
+      <span class="dm-sub">Fare price shifts on constant network</span>
+    </div>
+    <div class="cs-effect-card">
+      <span class="dm-label">WEIGHT SHIFT EFFECT</span>
+      <span class="dm-val" style="color: #0284C7;">${carrier.effects.weightEffect}</span>
+      <span class="dm-sub">Capacity frequency changes</span>
+    </div>
+    <div class="cs-effect-card">
+      <span class="dm-label">OBSERVATION MIX EFFECT</span>
+      <span class="dm-val" style="color: #6366F1;">${carrier.effects.mixEffect}</span>
+      <span class="dm-sub">Seat family quote dispersion</span>
+    </div>
+    <div class="cs-effect-card">
+      <span class="dm-label">COVERAGE DELTA</span>
+      <span class="dm-val" style="color: #D97706;">${carrier.effects.coverage}</span>
+      <span class="dm-sub">Liquidity threshold additions</span>
+    </div>
+  `;
+
+  drawer.classList.remove('hidden');
+}
+
+// 7. CHAPTER 07: ROUTE × CARRIER ATTRIBUTION MATRIX
+function renderRouteCarrierMatrix() {
+  const tbody = document.getElementById('matrix-tbody');
+  if (!tbody) return;
+
+  let html = '';
+  ROUTE_CARRIER_MATRIX.forEach(row => {
+    html += `
+      <tr>
+        <td style="font-weight: 600; color: var(--navy-900); background: #F8FAFC;">${row.corridor}</td>
+        <td>${formatMatrixCell(row.corridor, '6E', row.c6E)}</td>
+        <td>${formatMatrixCell(row.corridor, 'AI', row.cAI)}</td>
+        <td>${formatMatrixCell(row.corridor, 'QP', row.cQP)}</td>
+        <td>${formatMatrixCell(row.corridor, 'IX', row.cIX)}</td>
+        <td>${formatMatrixCell(row.corridor, 'SG', row.cSG)}</td>
+        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: ${row.total > 0 ? '#059669' : '#E11D48'}; background: #F8FAFC;">
+          ${row.total > 0 ? '+' : ''}${row.total.toFixed(1)}
+        </td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function formatMatrixCell(corridor, carrier, val) {
+  if (val === 0.0) {
+    return `<span class="matrix-cell empty">-</span>`;
+  }
+  let cls = 'matrix-cell';
+  let prefix = val > 0 ? '+' : '';
+  if (val >= 10.0) cls += ' upward-strong';
+  else if (val > 0) cls += ' upward-mod';
+  else cls += ' downward-mod';
+
+  return `<span class="${cls}" onclick="selectMatrixCell('${corridor}', '${carrier}', ${val})">${prefix}${val.toFixed(1)}</span>`;
+}
+
+function selectMatrixCell(corridor, carrier, val) {
+  const drawer = document.getElementById('matrix-cell-drawer');
+  if (!drawer) return;
+
+  document.getElementById('mcd-carrier-code').innerText = carrier;
+  document.getElementById('mcd-title').innerText = `${corridor} × ${carrier}`;
+  document.getElementById('mcd-contribution-badge').innerText = (val > 0 ? '+' : '') + val.toFixed(1) + ' bps';
+  drawer.classList.remove('hidden');
+}
+
+function closeMatrixCellDrawer() {
+  const drawer = document.getElementById('matrix-cell-drawer');
+  if (drawer) drawer.classList.add('hidden');
+}
+
+function drilldownMatrixCell() {
+  setForensicStep(4);
+  const element = document.getElementById('forensic-inspector-card');
+  if (element) element.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 8. CHAPTER 08: LEAD-TIME ATTRIBUTION
+function renderLeadTimeAttribution() {
+  const container = document.getElementById('lt-bars-container');
+  if (!container) return;
+
+  let html = '';
+  LEADTIME_ATTRIBUTION_DATA.forEach(lt => {
+    const widthPct = (lt.bps / 50) * 100;
+    html += `
+      <div class="lt-bar-row" style="${lt.highlight ? 'background: rgba(5, 150, 105, 0.06); font-weight: 600;' : ''}">
+        <span style="font-size: 0.78rem; color: var(--navy-900);">${lt.bucket}</span>
+        <div class="wf-track">
+          <div class="wf-fill upward" style="width: ${widthPct}%;"></div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: #059669; text-align: right;">
+          +${lt.bps} bps
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// 9. CHAPTER 09: FARE COMPONENT ATTRIBUTION
+function renderComponentAttribution() {
+  const container = document.getElementById('component-attr-container');
+  if (!container) return;
+
+  let html = '';
+  COMPONENT_ATTRIBUTION_DATA.forEach(cp => {
+    html += `
+      <div class="comp-attr-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 0.88rem; color: var(--navy-900);">${cp.name}</strong>
+          <span style="font-family: var(--font-mono); font-weight: 800; font-size: 1.15rem; color: #059669;">+${cp.bps} bps</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-secondary);">
+          <span>Share: <strong>${cp.share}%</strong></span>
+          <span>Avg Move: <strong>${cp.fareDelta}</strong></span>
+        </div>
+        <p style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; margin: 0.25rem 0 0 0;">
+          ${cp.desc}
+        </p>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// 10. CHAPTER 12: LARGEST MOVERS
+function renderLargestMovers() {
+  const tbody = document.getElementById('movers-tbody');
+  if (!tbody) return;
+
+  let data = [...CORRIDOR_ATTRIBUTION_DATA.filter(d => d.dir !== 'RESIDUAL')];
+  data.sort((a, b) => Math.abs(b.bps) - Math.abs(a.bps));
+
+  if (attributionState.moversFilter === 'TOP5') data = data.slice(0, 5);
+  else if (attributionState.moversFilter === 'TOP10') data = data.slice(0, 10);
+
+  let html = '';
+  data.forEach((d, idx) => {
+    const isUp = d.dir === 'UP';
+    html += `
+      <tr>
+        <td style="font-weight: 700; color: var(--text-muted); font-size: 0.75rem;">#${idx + 1}</td>
+        <td>
+          <div style="display: flex; flex-direction: column;">
+            <strong style="color: var(--navy-900);">${d.name}</strong>
+            <span style="font-size: 0.68rem; color: var(--text-muted);">${d.fullName}</span>
+          </div>
+        </td>
+        <td>
+          <span class="badge-tag" style="background: ${isUp ? 'rgba(5, 150, 105, 0.1)' : 'rgba(225, 29, 72, 0.1)'}; color: ${isUp ? '#059669' : '#E11D48'};">
+            ${isUp ? '▲ UPWARD' : '▼ DOWNWARD'}
+          </span>
+        </td>
+        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: ${isUp ? '#059669' : '#E11D48'};">
+          ${d.displayBps} bps
+        </td>
+        <td style="text-align: right; font-family: var(--font-mono);">${d.share}%</td>
+        <td style="text-align: right; font-family: var(--font-mono);">${d.weight}%</td>
+        <td style="text-align: right; font-family: var(--font-mono); color: ${isUp ? '#059669' : '#E11D48'};">
+          ${d.fareDelta > 0 ? '+₹' : '₹'}${d.fareDelta}
+        </td>
+        <td style="text-align: right; font-family: var(--font-mono);">${d.obs.toLocaleString()}</td>
+        <td style="text-align: center;">
+          <button class="btn btn-ghost" onclick="inspectMoverDetail('${d.name}')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+            Inspect →
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function filterLargestMovers(filter, btn) {
+  attributionState.moversFilter = filter;
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderLargestMovers();
+}
+
+function inspectMoverDetail(name) {
+  const index = CORRIDOR_ATTRIBUTION_DATA.findIndex(d => d.name === name);
+  if (index >= 0) selectWaterfallBar(index);
+}
+
+// 11. CHAPTER 13: CONCENTRATION PARETO CURVE
+function renderConcentrationPareto() {
+  const container = document.getElementById('pareto-chart-container');
+  if (!container) return;
+
+  const points = [
+    { rank: 1, name: 'DEL-BOM', cumPct: 21.4 },
+    { rank: 2, name: 'DEL-BLR', cumPct: 38.0 },
+    { rank: 3, name: 'BOM-BLR', cumPct: 50.3 },
+    { rank: 4, name: 'DEL-HYD', cumPct: 60.7 },
+    { rank: 5, name: 'DEL-CCU', cumPct: 69.0 },
+    { rank: 7, name: 'Top 7', cumPct: 80.2 },
+    { rank: 10, name: 'Top 10', cumPct: 88.3 },
+    { rank: 24, name: 'All 24 Upward', cumPct: 100.0 }
+  ];
+
+  let html = `<div style="display: flex; align-items: flex-end; gap: 0.5rem; height: 90px; padding: 0.5rem 0;">`;
+  points.forEach(p => {
+    html += `
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
+        <span style="font-size: 0.65rem; font-family: var(--font-mono); color: #0284C7; font-weight: 700;">${p.cumPct}%</span>
+        <div style="width: 100%; height: ${p.cumPct * 0.7}px; background: linear-gradient(180deg, #0284C7, #38BDF8); border-radius: 3px;"></div>
+        <span style="font-size: 0.64rem; color: var(--text-muted);">${p.name}</span>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+// 12. CHAPTER 14: FORENSIC CHAIN INSPECTOR
+function renderForensicInspector() {
+  const card = document.getElementById('forensic-inspector-card');
+  if (!card) return;
+
+  card.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+          <span class="brand-badge" style="background: #0284C7; color: #FFF;">QUOTE ID: Q-841920</span>
+          <span class="data-state-pill state-observed">VERIFIED LIVE QUOTE</span>
+        </div>
+        <strong style="font-size: 1.1rem; color: var(--navy-900);">IndiGo Flight 6E 2047 (DEL → BOM)</strong>
+        <div style="font-size: 0.74rem; color: var(--text-muted);">Departure: 18:30 IST • Boeing 737 / A321neo • Lead Time: L05 Days (Saver Family)</div>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 0.68rem; color: var(--text-muted);">MATHEMATICAL IMPACT</span>
+        <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 800; color: #059669;">+7.20 bps</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.85rem; font-size: 0.78rem;">
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.68rem;">PREVIOUS FARE (T-1)</div>
+        <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: #64748B;">₹5,850</div>
+      </div>
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.68rem;">CURRENT FARE (T)</div>
+        <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: #059669;">₹6,420</div>
+      </div>
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.68rem;">ABSOLUTE DELTA</div>
+        <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: #059669;">+₹570 (+9.74%)</div>
+      </div>
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.68rem;">SAMPLE WEIGHT (w_i)</div>
+        <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: #0284C7;">0.00284</div>
+      </div>
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.68rem;">CLEANING AUDIT</div>
+        <div style="font-weight: 700; color: #059669;">Rules R01–R12 Passed</div>
+      </div>
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.68rem;">PROVENANCE HASH</div>
+        <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--navy-900);">sha256:d8a1c9...</div>
+      </div>
+    </div>
+  `;
+}
+
+function setForensicStep(step) {
+  attributionState.forensicStep = step;
+  const steps = document.querySelectorAll('.fb-step');
+  steps.forEach((s, idx) => {
+    if (idx <= step) s.classList.add('active');
+    else s.classList.remove('active');
+  });
+}
+
+// 13. CHAPTER 15: OBSERVATIONS TABLE
+function renderObservationTable() {
+  const tbody = document.getElementById('obs-evidence-tbody');
+  if (!tbody) return;
+
+  let html = '';
+  OBSERVATIONS_SAMPLE.forEach(obs => {
+    const isUp = !obs.delta.startsWith('-');
+    html += `
+      <tr>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: #0284C7;">${obs.id}</td>
+        <td style="font-weight: 600; color: var(--navy-900);">${obs.flight}</td>
+        <td>${obs.carrier}</td>
+        <td><strong>${obs.route}</strong></td>
+        <td>${obs.depTime}</td>
+        <td><span class="badge-tag">${obs.leadTime}</span></td>
+        <td>${obs.family}</td>
+        <td style="text-align: right; font-family: var(--font-mono);">₹${obs.prevFare.toLocaleString()}</td>
+        <td style="text-align: right; font-family: var(--font-mono); font-weight: 600; color: ${isUp ? '#059669' : '#E11D48'};">₹${obs.currFare.toLocaleString()}</td>
+        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: ${isUp ? '#059669' : '#E11D48'};">${obs.delta}</td>
+        <td style="text-align: right; font-family: var(--font-mono);">${obs.weight}</td>
+        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: ${isUp ? '#059669' : '#E11D48'};">${obs.impactBps}</td>
+        <td style="text-align: center;"><span class="badge-tag" style="background: rgba(5, 150, 105, 0.1); color: #059669;">✓ ${obs.integrity}</span></td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function filterObservationTable() {
+  const val = document.getElementById('obs-filter-carrier').value;
+  // If filtered, re-render sample subset
+  renderObservationTable();
+}
+
+// 14. CHAPTER 11: TIMELINE & EVENT STREAM
+function renderTimeline() {
+  const bar = document.getElementById('timeline-nodes-bar');
+  if (!bar) return;
+
+  let html = `<div style="position: absolute; width: 100%; height: 2px; background: var(--border-subtle); top: 7px; z-index: 1;"></div>`;
+  TIMELINE_SLICES.forEach(slice => {
+    const isActive = slice.time === attributionState.activeTimeSlice;
+    html += `
+      <div class="tl-node ${isActive ? 'active' : ''}" onclick="selectTimelineNode('${slice.time}')">
+        <div class="tl-dot"></div>
+        <span class="tl-time">${slice.time}</span>
+      </div>
+    `;
+  });
+  bar.innerHTML = html;
+
+  updateTimelineActiveSlice();
+}
+
+function selectTimelineNode(time) {
+  attributionState.activeTimeSlice = time;
+  renderTimeline();
+}
+
+function updateTimelineActiveSlice() {
+  const container = document.getElementById('timeline-active-slice');
+  if (!container) return;
+
+  const slice = TIMELINE_SLICES.find(s => s.time === attributionState.activeTimeSlice) || TIMELINE_SLICES[3];
+  container.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <strong style="color: var(--navy-900); font-size: 0.88rem;">INTRADAY SETTLEMENT EPOCH: ${slice.time} IST</strong>
+        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.2rem;">Primary Driver: ${slice.topDriver}</div>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div>
+          <span style="font-size: 0.68rem; color: var(--text-muted);">INDEX AT ${slice.time}</span>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: var(--navy-900);">${slice.index}</div>
+        </div>
+        <div>
+          <span style="font-size: 0.68rem; color: var(--text-muted);">MOVE SINCE 00:00</span>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: #059669;">${slice.moveBps}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEventStream() {
+  const container = document.getElementById('event-stream-container');
+  if (!container) return;
+
+  let html = '';
+  REALTIME_EVENT_STREAM.forEach(ev => {
+    const isUp = !ev.bps.startsWith('-');
+    html += `
+      <div class="event-item">
+        <span style="color: #64748B;">${ev.time} IST</span>
+        <strong style="color: var(--navy-900);">${ev.route}</strong>
+        <span style="color: ${isUp ? '#059669' : '#E11D48'}; font-weight: 700;">${ev.bps}</span>
+        <span>${ev.carrier}</span>
+        <span class="badge-tag">${ev.horizon}</span>
+        <span style="color: #0284C7; font-size: 0.68rem;">${ev.type}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// 15. SWITCHERS & CONTROLS
+function switchAttributionLevel(level, btn) {
+  attributionState.level = level;
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderHeroWaterfall();
+}
+
+function switchAttributionMetric(metric, btn) {
+  attributionState.metric = metric;
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderHeroWaterfall();
+}
+
+function switchReleaseMode(mode, btn) {
+  attributionState.release = mode;
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const relPill = document.getElementById('attr-release-pill');
+  if (relPill) relPill.innerText = mode === 'FLASH' ? 'FLASH RELEASE' : 'OFFICIAL RELEASE';
+  renderHeroWaterfall();
+}
+
+function toggleForensicMode() {
+  attributionState.forensicMode = !attributionState.forensicMode;
+  const statusEl = document.getElementById('forensic-mode-status');
+  if (statusEl) {
+    statusEl.innerText = attributionState.forensicMode ? 'ON' : 'OFF';
+    statusEl.style.color = attributionState.forensicMode ? '#059669' : '#64748B';
+  }
+  if (attributionState.forensicMode) {
+    document.body.classList.add('forensic-active');
+  } else {
+    document.body.classList.remove('forensic-active');
+  }
+}
+
+// 16. PROVENANCE & SANDBOX
+function runReproductionSandbox() {
+  const consoleEl = document.getElementById('reproduction-sandbox-output');
+  if (consoleEl) {
+    consoleEl.style.display = 'block';
+    consoleEl.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function downloadProvenanceCertificate() {
+  const cert = {
+    index: 'AeroIndex',
+    version: '2.4',
+    asOf: '2026-09-26T12:30:00+05:30',
+    headlineBps: 145,
+    grossUpwardBps: 218.42,
+    grossDownwardBps: -73.05,
+    residualBps: 2.00,
+    unroundedNet: 145.37,
+    observationsVerified: 486201,
+    sha256: '3a91f8c7b8921e0d49f5a7c29e18b45f94d21e83ab82901c01e23f99014ab12e',
+    status: 'VERIFIED_RECONCILED'
+  };
+  const blob = new Blob([JSON.stringify(cert, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'AeroIndex_Attribution_Audit_Certificate_20260926.json';
+  a.click();
+}
+
+// 17. ASK AEROINDEX
+function askAttributionPrompt(query) {
+  const content = document.getElementById('ai-attr-response-content');
+  if (!content) return;
+
+  if (query.includes('Why did today')) {
+    content.innerHTML = `Today's <strong>+145 bps</strong> index movement (+1.45% day-over-day) is mathematically decomposed into <strong>+218 bps</strong> of gross upward pressure across 24 expanding corridors and <strong>-73 bps</strong> of downward offsetting discounts across 8 corridors, leaving a negligible <strong>+2.0 bps</strong> rounding/coverage residual. The primary upward driver was <strong>DEL-BOM (+31 bps, 21.4% share)</strong>, while <strong>BOM-DEL (-28 bps)</strong> and <strong>HYD-DEL (-16 bps)</strong> provided the primary negative offsets.`;
+  } else if (query.includes('routes contributed the most')) {
+    content.innerHTML = `The top 3 positive contributors to today's movement are <strong>DEL-BOM (+31 bps / 21.4% share)</strong>, <strong>DEL-BLR (+24 bps / 16.6% share)</strong>, and <strong>BOM-BLR (+18 bps / 12.6% share)</strong>. Together, these three metro trunk arteries account for <strong>50.3%</strong> of the net index move.`;
+  } else if (query.includes('carriers offset')) {
+    content.innerHTML = `Negative offsetting contributions were primarily concentrated on southbound and return metro flights: <strong>BOM-DEL (-28 bps)</strong> and <strong>HYD-DEL (-16 bps)</strong>, where carriers ran mid-week promotional fare buckets. Carrier-wise, <strong>IndiGo (6E)</strong> accounted for -42 bps of downward offsets and +124 bps of upward pressure, yielding a net contribution of <strong>+82.0 bps</strong>.`;
+  } else if (query.includes('concentrated')) {
+    content.innerHTML = `Today's movement was <strong>moderately concentrated</strong> with an attribution Herfindahl-Hirschman Index (HHI) of <strong>1,642</strong>. The top 5 corridors accounted for <strong>69.0%</strong> of the net move, and 80% was accounted for by 7 corridors.`;
+  } else if (query.includes('Price vs Basket')) {
+    content.innerHTML = `Decomposing the movement components shows that <strong>+132.0 bps (91.0%)</strong> was pure price quote inflation holding seat weights constant, <strong>+9.0 bps (6.2%)</strong> was due to route frequency capacity weighting shifts, <strong>+2.0 bps (1.4%)</strong> came from observation mix expansion, and <strong>+2.0 bps (1.4%)</strong> from late settlement revisions.`;
+  } else if (query.includes('Reproduce')) {
+    content.innerHTML = `To reproduce today's +145 bps: Start with Baseline Geometric Mean $P_0 = 100.00$. Ingest 486,201 verified quotes across 1,180 city-pairs. Compute weighted log-price changes under DGCA Q3 capacity matrix: Gross Upward = +218.42 bps, Gross Downward = -73.05 bps, Residual = +2.00 bps. Exact Float Sum = <strong>+145.37 bps</strong>. Displayed Headline = <strong>+145 bps</strong>. Status: PASS ✓.`;
+  }
+}
+
+function openMathExplainerModal() {
+  alert('AeroIndex Mathematical Lineage:\n\nContribution(r, c) = W_r * [(Geomean(P_t) / Geomean(P_0)) - 1] * 10,000 bps\n\nStrictly follows the Jevons elementary index aggregation standard approved by national statistical agencies for geometric mean price indexation.');
+}
+
