@@ -4043,4 +4043,239 @@ html, body {
   border-radius: 4px;
 }
 
+/* ============================================================================
+   CARRIER INTELLIGENCE (DOMESTIC MARKET STRUCTURE OBSERVATORY) STYLING
+   ============================================================================ */
+
+.carrier-story-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1rem 0 3.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+/* Carrier Global Filter Ribbon */
+.carrier-filter-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.85rem 1.25rem;
+  margin-top: 1rem;
+}
+
+/* Share vs Basket Weight Slope/Connected Comparison */
+.share-weight-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.share-weight-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 140px 180px;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.share-weight-bar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dual-progress-track {
+  height: 8px;
+  background: #E2E8F0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.dual-progress-fill-share {
+  height: 100%;
+  border-radius: 4px;
+  background: #2563EB;
+}
+
+.dual-progress-fill-weight {
+  height: 100%;
+  border-radius: 4px;
+  background: #10B981;
+}
+
+/* Box and Whisker Percentile Dispersion Bars */
+.whisker-row {
+  display: grid;
+  grid-template-columns: 160px 1fr 180px;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.whisker-track-canvas {
+  position: relative;
+  height: 28px;
+  background: #F1F5F9;
+  border-radius: 4px;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+}
+
+.whisker-p10-p90-line {
+  position: absolute;
+  height: 2px;
+  background: #94A3B8;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.whisker-p25-p75-box {
+  position: absolute;
+  height: 18px;
+  background: rgba(37, 99, 235, 0.18);
+  border: 1.5px solid #2563EB;
+  border-radius: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.whisker-median-marker {
+  position: absolute;
+  width: 3px;
+  height: 22px;
+  background: #0F172A;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 1px;
+}
+
+/* Overlap Matrix Cells */
+.overlap-cell {
+  padding: 0.65rem 0.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.overlap-cell:hover {
+  filter: brightness(0.92);
+  transform: scale(1.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.overlap-high { background: rgba(37, 99, 235, 0.18); color: #1E40AF; }
+.overlap-mid { background: rgba(59, 130, 246, 0.1); color: #2563EB; }
+.overlap-low { background: rgba(241, 245, 249, 0.8); color: #64748B; }
+
+/* Concentration Bars & Hub Badges */
+.hub-dep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.hub-dep-tile {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+/* Aircraft spec cards */
+.fleet-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.fleet-spec-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Frequency profile rows */
+.day-profile-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  font-size: 0.76rem;
+}
+
+/* Competitive Co-Movement Node */
+.comovement-node {
+  border-left: 3px solid #2563EB;
+  background: #F8FAFC;
+  padding: 0.75rem 1rem;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.65rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Contribution Waterfall */
+.waterfall-step-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px 120px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+/* Deep Dive Dossier */
+.carrier-dossier-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .carrier-dossier-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dossier-sidebar {
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.carrier-expand-row {
+  background: #F8FAFC;
+  border-top: 1px dashed var(--border-subtle);
+}
+
 

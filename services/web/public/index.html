@@ -3067,33 +3067,671 @@
 
           <!-- TAB 07: CARRIER INTELLIGENCE -->
           <section class="tab-pane" id="pane-carriers">
-            <div class="glass-panel table-card">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">Carrier Pricing Spread & Domestic Market Shares</h2>
-                  <div class="chart-subtitle">Comparative volatility, fleet utilization, and basket weight allocations</div>
+            <div class="carrier-story-wrapper">
+
+              <!-- =========================================================================
+                   CHAPTER 01: CARRIER INTELLIGENCE COMMAND HEADER
+                   ========================================================================= -->
+              <div class="command-header-box">
+                <div class="story-eyebrow">
+                  <span class="eyebrow-dot"></span>
+                  <span>CARRIER INTELLIGENCE / DOMESTIC MARKET STRUCTURE · COMPETITIVE OBSERVATORY</span>
+                </div>
+                <h1 class="story-title">Indian Domestic Carrier Landscape</h1>
+                <p class="story-subtitle">
+                  A carrier-level view of pricing distributions, network presence, fare architecture, competitive overlap, operating activity, and contribution to the AeroIndex market basket.
+                </p>
+
+                <!-- High-Level Real-Time Metrics Strip -->
+                <div class="command-metrics-grid">
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="cstat-carriers-count">6</span>
+                    <span class="command-stat-lbl">Carriers Monitored</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="cstat-airports-count">79</span>
+                    <span class="command-stat-lbl">Airports Covered</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="cstat-routes-count">1,284</span>
+                    <span class="command-stat-lbl">Domestic Routes</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="cstat-instances-count">42,918</span>
+                    <span class="command-stat-lbl">Flight Instances</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="cstat-obs-count">486,201</span>
+                    <span class="command-stat-lbl">Fare Observations</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">98.6%</span>
+                    <span class="command-stat-lbl">Market Coverage</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">100%</span>
+                    <span class="command-stat-lbl">Basket Coverage</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="cstat-last-sync">UPDATED 18s AGO</span>
+                    <span class="command-stat-lbl">Telemetry Clock</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" style="color: #6B21A8; font-size: 1.05rem;">SIMULATED_LIVE</span>
+                    <span class="command-stat-lbl">Data State</span>
+                  </div>
+                </div>
+
+                <!-- Global Analytical Filter Ribbon -->
+                <div class="carrier-filter-ribbon">
+                  <div class="filter-control-item">
+                    <label>Operating Carrier</label>
+                    <select class="filter-select-sleek" id="carrier-filter-airline" onchange="applyCarrierGlobalFilters()">
+                      <option value="ALL" selected>All Domestic Carriers</option>
+                      <option value="6E">IndiGo (6E) · 61.2% DGCA Share</option>
+                      <option value="AI">Air India (AI) · 24.5% DGCA Share</option>
+                      <option value="QP">Akasa Air (QP) · 6.5% DGCA Share</option>
+                      <option value="IX">Air India Express (IX) · 5.4% DGCA Share</option>
+                      <option value="SG">SpiceJet (SG) · 2.4% DGCA Share</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-control-item">
+                    <label>Corridor Archetype</label>
+                    <select class="filter-select-sleek" id="carrier-filter-corridor" onchange="applyCarrierGlobalFilters()">
+                      <option value="ALL" selected>All Domestic Sectors (1,284)</option>
+                      <option value="TRUNK">Commercial Trunks (Metro-to-Metro)</option>
+                      <option value="TECH">Tech Corridors (BLR/HYD/DEL)</option>
+                      <option value="LEISURE">Leisure &amp; Tourism (GOI/IXZ/COK)</option>
+                      <option value="REGIONAL">Regional Feeder &amp; Tier-2 Connectors</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-control-item">
+                    <label>Cabin Tier</label>
+                    <select class="filter-select-sleek" id="carrier-filter-cabin" onchange="applyCarrierGlobalFilters()">
+                      <option value="ALL" selected>All Commercial Cabins</option>
+                      <option value="ECONOMY">Standard Economy</option>
+                      <option value="PREMIUM">Premium Economy</option>
+                      <option value="BUSINESS">Business Class</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-control-item">
+                    <label>Fare Family</label>
+                    <select class="filter-select-sleek" id="carrier-filter-farefamily" onchange="applyCarrierGlobalFilters()">
+                      <option value="ALL" selected>All Quoted Fare Families</option>
+                      <option value="SAVER">Saver Tier (Unbundled)</option>
+                      <option value="STANDARD">Standard Economy</option>
+                      <option value="FLEX">Flexi Plus</option>
+                      <option value="CORPORATE">Corporate &amp; Business</option>
+                    </select>
+                  </div>
+
+                  <button class="btn btn-ghost" style="margin-left: auto; font-size: 0.75rem; padding: 0.35rem 0.75rem;" onclick="resetCarrierGlobalFilters()">Reset Filters</button>
                 </div>
               </div>
-              <table class="heatmap-table">
-                <thead>
-                  <tr>
-                    <th>Airline</th>
-                    <th>Business Model</th>
-                    <th>Fleet Profile</th>
-                    <th>DGCA Market Share</th>
-                    <th>Avg Fare Level</th>
-                    <th>Volatility (σ)</th>
-                    <th>Quality Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td><strong>IndiGo (6E)</strong></td><td>Low-Cost Carrier (LCC)</td><td>A320neo / A321neo</td><td>61.2%</td><td>₹4,890</td><td>±8.0%</td><td><span class="heat-cell heat-low">CLEAN (OK)</span></td></tr>
-                  <tr><td><strong>Air India (AI)</strong></td><td>Full-Service Carrier (FSC)</td><td>A320neo / B777 / B787</td><td>24.5%</td><td>₹6,120</td><td>±10.2%</td><td><span class="heat-cell heat-low">CLEAN (OK)</span></td></tr>
-                  <tr><td><strong>Akasa Air (QP)</strong></td><td>Low-Cost Carrier (LCC)</td><td>B737-MAX8</td><td>6.5%</td><td>₹4,790</td><td>±9.1%</td><td><span class="heat-cell heat-low">CLEAN (OK)</span></td></tr>
-                  <tr><td><strong>Air India Express (IX)</strong></td><td>Low-Cost Carrier (LCC)</td><td>B737-MAX8 / A320</td><td>5.4%</td><td>₹4,650</td><td>±11.4%</td><td><span class="heat-cell heat-low">CLEAN (OK)</span></td></tr>
-                  <tr><td><strong>SpiceJet (SG)</strong></td><td>Low-Cost Carrier (LCC)</td><td>B737-800 / Q400</td><td>2.4%</td><td>₹4,210</td><td>±14.0%</td><td><span class="heat-cell heat-mid">MONITORED</span></td></tr>
-                </tbody>
-              </table>
+
+              <!-- =========================================================================
+                   CHAPTER 02: INDIA DOMESTIC CARRIER LANDSCAPE (HERO VISUAL WOW #1)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">01</span>
+                    <span>MULTI-DIMENSIONAL COMPETITIVE SURFACE · BEYOND A LEADERBOARD</span>
+                  </div>
+                  <h2 class="story-title">The Domestic Carrier Landscape</h2>
+                  <p class="story-subtitle">
+                    A multi-dimensional analytical surface mapping Indian airlines across market footprint, pricing central tendency, and inter-quote volatility. Bubble area represents official DGCA passenger market share, horizontal position reflects median observed fare, and vertical axis measures pricing dispersion (IQR / Median %).
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                      <span style="font-size: 0.78rem; font-weight: 700; color: var(--navy-900); text-transform: uppercase;">Landscape Projection:</span>
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-car-landscape-share" onclick="switchCarrierLandscapeMode('SHARE')">DGCA Share vs Median Fare vs Volatility</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-car-landscape-basket" onclick="switchCarrierLandscapeMode('BASKET')">AeroIndex Weight vs Quoted Share</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-car-landscape-flight" onclick="switchCarrierLandscapeMode('FLIGHT')">Flight Instances vs Route Count</button>
+                    </div>
+                    <span class="data-state-pill state-calculated" id="carrier-landscape-dim-badge">PROJECTION: MARKET SHARE VS MEDIAN FARE</span>
+                  </div>
+
+                  <!-- 2D Landscape Visual Canvas -->
+                  <svg class="svg-chart" id="carrier-landscape-svg" viewBox="0 0 950 360" style="width: 100%; height: auto; max-height: 380px;">
+                    <!-- Rendered dynamically via JS renderCarrierLandscape() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 03: MARKET POSITION & BASKET WEIGHTS
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">02</span>
+                    <span>CRITICAL METHODOLOGICAL DISTINCTION</span>
+                  </div>
+                  <h2 class="story-title">Market Share vs. AeroIndex Basket Weight</h2>
+                  <p class="story-subtitle">
+                    AeroIndex strictly decouples <strong>Industry DGCA Passenger Share</strong> from <strong>Index Basket Weights</strong>. The index basket assigns weights based on passenger consumption expenditure on monitored index corridors rather than raw nationwide seat capacity.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Industry Market Share ↔ AeroIndex Weight Transformation</h4>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Comparing DGCA regulatory share, index basket weight, observed flight share, and quote density</span>
+                    </div>
+                    <span class="brand-badge">JEVONS BASKET FORMULATION</span>
+                  </div>
+
+                  <div id="market-share-basket-weight-container">
+                    <!-- Populated dynamically via JS renderMarketShareVsBasketWeight() -->
+                  </div>
+
+                  <div class="formula-callout" style="margin-top: 1.25rem;">
+                    <span style="color: #38BDF8; font-weight: 700;">// METHODOLOGY NOTE: BASKET WEIGHT DERIVATION</span><br>
+                    DGCA passenger share reflects gross airline ticket volume nationwide. AeroIndex Basket Weights ($w_k$) are calibrated specifically across the 20 primary domestic benchmark corridors using route-level revenue turnover. Differences reflect carrier network focus on major trunks versus regional thin feeder routes.
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 04: PRICING DISTRIBUTION & SPREAD
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">03</span>
+                    <span>EMPIRICAL FARE DISPERSION BEYOND ARITHMETIC AVERAGES</span>
+                  </div>
+                  <h2 class="story-title">Carrier Fare Distributions &amp; Observed Price Spread</h2>
+                  <p class="story-subtitle">
+                    Average fares mask internal pricing strategies. Two carriers with identical average fares can operate radically different pricing distributions. This box-and-whisker structure details P10, P25, Median, P75, P90, and interquartile spread across 486,201 validated quotes.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Percentile Distribution of Observed Fares (P10 to P90 in INR)</h4>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Box represents IQR (P25 to P75); center notch marks median; whiskers extend to P10 and P90</span>
+                    </div>
+                    <span class="data-state-pill state-calculated">PARAMETRIC PERCENTILES</span>
+                  </div>
+
+                  <div id="carrier-fare-distribution-container">
+                    <!-- Populated dynamically via JS renderCarrierPricingDistribution() -->
+                  </div>
+
+                  <!-- Carrier × Route Dispersion Matrix -->
+                  <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-hairline); padding-top: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                      <div>
+                        <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--navy-900);">Carrier × Route Dispersion Surface</h4>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">Evaluates whether an airline prices consistently across its network or varies by corridor</span>
+                      </div>
+                      <div style="display: flex; gap: 0.4rem;">
+                        <button class="btn btn-ghost active" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-disp-median" onclick="switchRouteDispersionMetric('MEDIAN')">Median Fare</button>
+                        <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-disp-spread" onclick="switchRouteDispersionMetric('SPREAD')">P90–P10 Spread</button>
+                        <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-disp-iqr" onclick="switchRouteDispersionMetric('IQR')">IQR</button>
+                        <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-disp-mad" onclick="switchRouteDispersionMetric('MAD')">MAD σ</button>
+                      </div>
+                    </div>
+
+                    <div class="table-scroll-container">
+                      <table class="heatmap-table" id="carrier-route-dispersion-table">
+                        <thead>
+                          <tr>
+                            <th>Operating Airline</th>
+                            <th style="text-align: right;">DEL-BOM</th>
+                            <th style="text-align: right;">DEL-BLR</th>
+                            <th style="text-align: right;">DEL-HYD</th>
+                            <th style="text-align: right;">DEL-GOI</th>
+                            <th style="text-align: right;">DEL-CCU</th>
+                            <th style="text-align: right;">DEL-AMD</th>
+                            <th style="text-align: right;">DEL-PNQ</th>
+                            <th style="text-align: right;">DEL-SXR</th>
+                          </tr>
+                        </thead>
+                        <tbody id="carrier-route-dispersion-tbody">
+                          <!-- Populated dynamically via JS -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 05: CARRIER NETWORK FOOTPRINT
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">04</span>
+                    <span>PHYSICAL OPERATIONAL CONNECTIVITY</span>
+                  </div>
+                  <h2 class="story-title">Carrier Network Footprint</h2>
+                  <p class="story-subtitle">
+                    Examine each carrier's physical network structure. Select an airline to visualize its scheduled domestic connectivity, core hub bases, secondary focus cities, and airport coverage depth.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <span style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900);">Select Operating Airline:</span>
+                      <select class="control-select-sleek" id="carrier-network-selector" onchange="renderCarrierNetworkMap(this.value); renderCarrierConcentration(this.value); renderCarrierFleetProfile(this.value);">
+                        <option value="6E" selected>IndiGo (6E) · 74 Airports · 1,140 Routes</option>
+                        <option value="AI">Air India (AI) · 52 Airports · 780 Routes</option>
+                        <option value="QP">Akasa Air (QP) · 22 Airports · 220 Routes</option>
+                        <option value="IX">Air India Express (IX) · 31 Airports · 290 Routes</option>
+                        <option value="SG">SpiceJet (SG) · 28 Airports · 140 Routes</option>
+                      </select>
+                    </div>
+                    <span class="data-state-pill state-observed" id="carrier-network-stat-badge">74 AIRPORTS · 1,140 MONITORED ROUTES</span>
+                  </div>
+
+                  <!-- Carrier India Route Map SVG -->
+                  <div class="india-map-container" style="background: #FAFAFA; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem;">
+                    <svg class="india-flow-svg" id="carrier-network-svg" viewBox="0 0 900 520" style="width: 100%; height: auto; max-height: 520px;">
+                      <!-- Rendered dynamically via JS renderCarrierNetworkMap() -->
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 06: COMPETITIVE OVERLAP MAP & MATRIX (WOW #2)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">05</span>
+                    <span>WHERE DO CARRIERS DIRECTLY COMPETE?</span>
+                  </div>
+                  <h2 class="story-title">Competitive Overlap Matrix &amp; Route Density</h2>
+                  <p class="story-subtitle">
+                    Where does the Indian domestic market feature single-carrier monopolies versus multi-carrier competitive contestability? This pairwise overlap matrix analyzes shared city-pairs, overlapping quote volume, and median fare differences between operating carriers.
+                  </p>
+                </div>
+
+                <div class="grid-2-col">
+                  <!-- Pairwise Matrix Table -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Pairwise Shared Route Network Matrix</h4>
+                      <span class="brand-badge">INTERSECTION DEPTH</span>
+                    </div>
+                    <table class="heatmap-table" id="competitive-overlap-table">
+                      <thead>
+                        <tr>
+                          <th>Carrier</th>
+                          <th style="text-align: center;">6E</th>
+                          <th style="text-align: center;">AI</th>
+                          <th style="text-align: center;">QP</th>
+                          <th style="text-align: center;">IX</th>
+                          <th style="text-align: center;">SG</th>
+                        </tr>
+                      </thead>
+                      <tbody id="competitive-overlap-tbody">
+                        <!-- Populated dynamically via JS renderCompetitiveOverlapMatrix() -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Pairwise Deep Dive Card -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;" id="overlap-pair-detail-card">
+                    <!-- Populated dynamically on matrix cell click -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 07: ROUTE DEPENDENCE & NETWORK CONCENTRATION
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">06</span>
+                    <span>STRUCTURAL PORTFOLIO CONCENTRATION</span>
+                  </div>
+                  <h2 class="story-title">Route Dependence &amp; Hub Concentration</h2>
+                  <p class="story-subtitle">
+                    How dependent is each carrier on its top revenue corridors? This analysis measures route concentration ratios (Top 5 / Top 10 / Long Tail) and primary hub departures to understand carrier structural resilience.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="carrier-concentration-container">
+                    <!-- Populated dynamically via JS renderCarrierConcentration() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 08: FARE ARCHITECTURE & PRODUCT STRUCTURE
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">07</span>
+                    <span>COMMERCIAL PACKAGING &amp; TIER DIVERSITY</span>
+                  </div>
+                  <h2 class="story-title">Carrier Fare Architecture</h2>
+                  <p class="story-subtitle">
+                    What are airlines actually selling? An empirical hierarchy mapping each carrier's active commercial cabins down to quoted fare families, observed price bands, and route deployment depth.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="carrier-fare-architecture-container">
+                    <!-- Populated dynamically via JS renderCarrierFareArchitecture() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 09: CARRIER LEAD-TIME SIGNATURES
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">08</span>
+                    <span>TEMPORAL HORIZON BEHAVIOR</span>
+                  </div>
+                  <h2 class="story-title">Carrier Lead-Time Horizon Signatures</h2>
+                  <p class="story-subtitle">
+                    How does each operating carrier manage its quotes from 60 days before departure down to departure day? While the Lead-Time Observatory evaluates market regimes, this matrix measures individual carrier persistence, quote density, and dispersion across L60..L01.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="carrier-leadtime-signature-container">
+                    <!-- Populated dynamically via JS renderCarrierLeadTimeSignature() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 10: FLEET PROFILE & DEPLOYMENT
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">09</span>
+                    <span>AIRCRAFT EQUIPMENT &amp; ASSET UTILIZATION</span>
+                  </div>
+                  <h2 class="story-title">Fleet Profile &amp; Aircraft Family Deployment</h2>
+                  <p class="story-subtitle">
+                    Aircraft family representation across observed scheduled operations. Examines how A320neo, A321neo, B737 MAX, B787, and regional turboprop equipment are deployed across domestic sectors.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="carrier-fleet-profile-container">
+                    <!-- Populated dynamically via JS renderCarrierFleetProfile() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 11: CAPACITY & FLIGHT FREQUENCY SIGNALS
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">10</span>
+                    <span>SCHEDULED OPERATING TEMPO</span>
+                  </div>
+                  <h2 class="story-title">Capacity &amp; Flight Frequency Signals</h2>
+                  <p class="story-subtitle">
+                    AeroIndex strictly distinguishes <strong>observable flight frequency</strong> from confidential passenger load factor. This weekly profile reveals scheduled departures by day-of-week and time-of-day banks without manufacturing unobserved seat utilization data.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="carrier-frequency-profile-container">
+                    <!-- Populated dynamically via JS renderCarrierFrequencyProfile() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 12: COMPETITIVE CO-MOVEMENT MATRIX
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">11</span>
+                    <span>SYNCHRONIZED MARKET ADJUSTMENTS</span>
+                  </div>
+                  <h2 class="story-title">Competitive Co-Movement Matrix</h2>
+                  <p class="story-subtitle">
+                    Timestamped observation of pricing movements across competing carriers on major corridors (DEL-BOM, DEL-BLR). Strictly enforcing non-causal epistemology: reported as <strong>“Temporal co-movement observed”</strong> rather than asserting causal competitor response.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="competitive-comovement-container">
+                    <!-- Populated dynamically via JS renderCompetitiveCoMovementTimeline() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 13: CARRIER PRICE CONTRIBUTION TO AEROINDEX (WOW #3)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">12</span>
+                    <span>WHO IS MOVING THE INDEX?</span>
+                  </div>
+                  <h2 class="story-title">Carrier Price Contribution to AeroIndex</h2>
+                  <p class="story-subtitle">
+                    Connects carrier intelligence directly to the core Jevons price index. Decomposes today's net index change (+145 bps / +2.8%) into exact basis-point contributions by each operating carrier based on route weights, basket share, and observed quote revisions.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="carrier-contribution-waterfall-container">
+                    <!-- Populated dynamically via JS renderCarrierIndexContributionWaterfall() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 14: MARKET STRUCTURE OVER TIME
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">13</span>
+                    <span>LONGITUDINAL COMPETITIVE EVOLUTION</span>
+                  </div>
+                  <h2 class="story-title">Market Structure Over Time</h2>
+                  <p class="story-subtitle">
+                    Longitudinal tracking of carrier market presence across 30D, 90D, 6M, and 1Y horizons. Toggle between DGCA Market Share, Observed Flight Share, AeroIndex Basket Weight, and Quote Volume Share.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; gap: 0.4rem; align-items: center;">
+                      <span style="font-size: 0.76rem; font-weight: 700; color: var(--navy-900);">Metric:</span>
+                      <button class="btn btn-ghost active" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-hist-share" onclick="switchHistoricalMetric('SHARE')">DGCA Share</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-hist-flight" onclick="switchHistoricalMetric('FLIGHT')">Flight Share</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-hist-weight" onclick="switchHistoricalMetric('WEIGHT')">Basket Weight</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" id="btn-hist-quote" onclick="switchHistoricalMetric('QUOTE')">Quote Share</button>
+                    </div>
+                    <div style="display: flex; gap: 0.35rem;">
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="switchHistoricalPeriod('30D')">30D</button>
+                      <button class="btn btn-ghost active" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="switchHistoricalPeriod('90D')">90D</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="switchHistoricalPeriod('6M')">6M</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="switchHistoricalPeriod('1Y')">1Y</button>
+                    </div>
+                  </div>
+
+                  <svg class="svg-chart" id="carrier-history-svg" viewBox="0 0 950 280" style="width: 100%; height: auto; max-height: 280px;">
+                    <!-- Rendered dynamically via JS renderMarketStructureTimeline() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 15: CARRIER DEEP DIVE WORKSPACE
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">14</span>
+                    <span>INTERACTIVE CARRIER DOSSIER</span>
+                  </div>
+                  <h2 class="story-title">Carrier Deep Dive Workspace</h2>
+                  <p class="story-subtitle">
+                    Select any carrier to interrogate its complete operational profile, fare dispersion curves, hub concentration, direct overlap peers, and audit history.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;" id="carrier-deep-dive-panel">
+                  <!-- Populated dynamically via JS openCarrierDeepDive() -->
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 16: DEMOTED ANALYTICAL TABLE & DATA QUALITY
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">15</span>
+                    <span>TABULAR AUDIT INSTRUMENT</span>
+                  </div>
+                  <h2 class="story-title">Carrier Analytical Comparison &amp; Data Quality</h2>
+                  <p class="story-subtitle">
+                    The complete domestic airline inventory retaining all primary metrics. Click any row to expand progressive operational intelligence and direct links to Route, Flight, and Lead-Time modules.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div class="table-scroll-container">
+                    <table class="heatmap-table" id="master-carrier-table">
+                      <thead>
+                        <tr>
+                          <th>Airline</th>
+                          <th>Business Model</th>
+                          <th>Fleet Profile</th>
+                          <th style="text-align: right;">DGCA Share</th>
+                          <th style="text-align: right;">Basket Weight</th>
+                          <th style="text-align: right;">Flight Share</th>
+                          <th style="text-align: right;">Avg Fare</th>
+                          <th style="text-align: right;">Median Fare</th>
+                          <th style="text-align: right;">P10–P90 Spread</th>
+                          <th style="text-align: center;">Volatility (σ)</th>
+                          <th style="text-align: center;">Routes</th>
+                          <th style="text-align: center;">Airports</th>
+                          <th style="text-align: right;">Observations</th>
+                          <th style="text-align: center;">Quality</th>
+                          <th style="text-align: center;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="master-carrier-tbody">
+                        <!-- Populated dynamically via JS renderCarrierAnalyticalTable() -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 17: PROVENANCE, EXPORT & ASK AEROINDEX
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">16</span>
+                    <span>AUDITABLE METHODOLOGY &amp; RESEARCH REPRODUCIBILITY</span>
+                  </div>
+                  <h2 class="story-title">Carrier Methodology, Provenance &amp; Agent</h2>
+                  <p class="story-subtitle">
+                    Every carrier metric is grounded in DGCA monthly scheduled air transport reporting and AeroIndex BV-2026.1 governance, cryptographically verifiable with a SHA-256 fingerprint hash.
+                  </p>
+                </div>
+
+                <div class="drilldown-terminal-card" style="margin-bottom: 2rem;">
+                  <div class="drilldown-path-bar">
+                    <span class="drilldown-step-badge">1. DGCA Capacity Returns</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">2. Active Flight Instances</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">3. R01-R12 Clean Quotes</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">4. Geometric Basket Weighting</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">5. Published Carrier Dossier</span>
+                  </div>
+
+                  <div class="drilldown-level-grid">
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Carrier Governance Standards</span>
+                        <span class="data-state-pill state-calculated">BV-2026.1 COMPLIANT</span>
+                      </div>
+                      <div style="font-size: 0.8rem; line-height: 1.8;">
+                        <div><strong>Regulatory Base:</strong> DGCA Domestic Airline Traffic Reports (Monthly)</div>
+                        <div><strong>Basket Integration:</strong> Jevons Relative with corridor expenditure weighting</div>
+                        <div><strong>Data Deduplication:</strong> SHA-256 observation fingerprinting</div>
+                        <div><strong>Audited Quote Base:</strong> 486,201 quotes across 1,284 routes and 79 airports</div>
+                        <div><strong>Verification Timestamp:</strong> 2026-09-26 11:42:00 IST</div>
+                      </div>
+                    </div>
+
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Cryptographic Signature &amp; Export</span>
+                        <span class="data-state-pill state-observed">SHA-256 SIGNED</span>
+                      </div>
+                      <div style="font-family: var(--font-mono); font-size: 0.74rem; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; word-break: break-all; line-height: 1.6; margin-bottom: 0.75rem;">
+                        Audit Signature:<br>
+                        <span style="color: #2563EB; font-weight: 700;">d4a821e89b21f074a382e71c991823ab491207e98a123f8190cbe812739a8ef1</span>
+                      </div>
+                      <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-ghost" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="exportCarrierIntelligenceDataset('CSV')">Export CSV Dataset</button>
+                        <button class="btn btn-ghost" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="exportCarrierIntelligenceDataset('JSON')">Export JSON Schema</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ask AeroIndex Carrier Agent -->
+                <div class="ask-network-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 1rem; color: #FFFFFF;">✦ AeroIndex Carrier Intelligence Agent</div>
+                    <span class="data-state-pill state-calculated" style="background: rgba(255,255,255,0.1); color: #38BDF8; border-color: rgba(56,189,248,0.3);">GROUNDED REASONING</span>
+                  </div>
+
+                  <form class="ask-network-input-box" id="ask-carrier-form" onsubmit="handleCarrierIntelligenceQuery(event)">
+                    <span style="color: #94A3B8; font-size: 1.1rem; line-height: 1.8;">✦</span>
+                    <input type="text" class="ask-network-input" id="ask-carrier-input" placeholder="Ask any carrier intelligence question (e.g. Why is IndiGo's basket weight lower than its DGCA market share?)..." autocomplete="off" />
+                    <button type="submit" class="btn btn-primary" style="padding: 0.4rem 1rem;">Query →</button>
+                  </form>
+
+                  <div class="ask-prompt-pills">
+                    <span style="font-size: 0.72rem; color: #64748B; align-self: center;">Suggested:</span>
+                    <button type="button" class="ask-prompt-pill" onclick="executeCarrierQuickPrompt('Why is IndiGo\'s basket weight lower than its DGCA market share?')">Why is 6E basket weight lower than DGCA share?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeCarrierQuickPrompt('Compare pricing spread between Air India and Akasa Air')">Compare spread: Air India vs Akasa Air</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeCarrierQuickPrompt('Where do IndiGo and Air India have the highest competitive overlap?')">Where do 6E and AI have highest overlap?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeCarrierQuickPrompt('Which carrier contributed most to today\'s +145 bps index movement?')">Who contributed most to +145 bps index move?</button>
+                  </div>
+
+                  <div class="ask-answer-box" id="ask-carrier-answer" style="display: none;">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
 
