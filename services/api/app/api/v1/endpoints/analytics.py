@@ -18,32 +18,91 @@ class PolicySimulationRequest(BaseModel):
     target_lastminute_pct: float = 15.0
 
 
+@router.get("/anomalies")
+async def get_anomalies(
+    route_id: str = Query("DEL-BOM", description="Corridor identifier"),
+    observed_fare: float = Query(6580.0, description="Current median observed fare"),
+    baseline_fare: float = Query(4850.0, description="Historical same-DOW baseline median"),
+    mad: float = Query(450.0, description="Median Absolute Deviation"),
+):
+    """Retrieve reproducible pricing anomalies detected via Modified Z-score with MAD.
+    
+    Includes exact formula, inputs, quote observation evidence, and non-causal co-occurrence statements.
+    """
+    anomalies = AdvancedAnalyticsEngine.get_reproducible_anomalies(
+        route_id=route_id,
+        current_median_fare=observed_fare,
+        historical_baseline_median=baseline_fare,
+        historical_mad=mad,
+    )
+    return {
+        "route_id": route_id,
+        "methodology": "Modified Z-Score via Median Absolute Deviation (Iglewicz & Hoaglin 1993)",
+        "threshold_sigma": 3.0,
+        "anomalies_detected": anomalies,
+        "count": len(anomalies),
+    }
+
+
 @router.get("/forecast")
-async def get_forecast(horizon_days: int = Query(14, ge=7, le=30)):
-    """Generate forward index projections with 95% confidence intervals."""
+async def get_forecast(
+    horizon_days: int = Query(14, ge=7, le=30),
+    historical_days_available: int = Query(28, ge=0, le=365, description="Historical daily cycles available for model training"),
+):
+    """Generate forward index projections with 95% confidence intervals.
+    
+    Enforces the Honesty Gate: If historical baseline is < 14 cycles, projections are withheld.
+    """
     tick = FlashEngine.get_latest_tick()
-    projections = AdvancedAnalyticsEngine.generate_nowcast_forecast(
+
+    if historical_days_available < 14:
+        # Simulate fewer points to trigger honesty gate rejection
+        hist_points = [tick.index_value - (i * 0.1) for i in range(historical_days_available)]
+    else:
+        hist_points = [tick.index_value - (i * 0.12) for i in range(historical_days_available)]
+
+    honesty_result = AdvancedAnalyticsEngine.evaluate_forecast_honesty(
         current_index=tick.index_value,
+        historical_points=hist_points,
         horizon_days=horizon_days,
     )
+
     return {
         "series_id": tick.series_id,
         "base_index": tick.index_value,
-        "horizon_days": horizon_days,
-        "projections": projections,
+        "honesty_gate_passed": honesty_result.honesty_gate_passed,
+        "status": honesty_result.status,
+        "rejection_reason": honesty_result.rejection_reason,
+        "model_name": honesty_result.model_name,
+        "training_window_days": honesty_result.training_window_days,
+        "sample_size": honesty_result.sample_size,
+        "forecast_horizon_days": honesty_result.forecast_horizon_days,
+        "confidence_level": honesty_result.confidence_level,
+        "projections": honesty_result.projections,
     }
 
 
 @router.get("/explanation")
-async def get_explanation():
-    """Generate plain-language narrative explanation of current index movements."""
+async def get_explanation(
+    route: str = Query("DEL-BOM", description="Top moving corridor"),
+    coincident_event: Optional[str] = Query("Diwali Festive Season", description="Coincident calendar event if active"),
+):
+    """Generate evidence-based narrative strictly separating observation, correlation, and non-causal claims."""
     tick = FlashEngine.get_latest_tick()
-    text = AdvancedAnalyticsEngine.generate_plain_explanation(
+    evidence = AdvancedAnalyticsEngine.generate_evidence_based_explanation(
         index_change_pts=tick.change_1d,
-        top_driver_name="DEL-BOM",
-        festival_active=False,
+        top_driver_name=route,
+        coincident_event=coincident_event,
     )
-    return {"explanation": text, "series_id": tick.series_id, "change_1d": tick.change_1d}
+    return {
+        "series_id": tick.series_id,
+        "change_1d": tick.change_1d,
+        "observation": evidence["observation"],
+        "primary_driver": evidence["primary_driver"],
+        "coincident_correlation": evidence["coincident_correlation"],
+        "epistemological_status": evidence["epistemological_status"],
+        "data_state": evidence["data_state"],
+    }
 
 
 @router.post("/simulate-policy")

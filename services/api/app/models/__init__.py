@@ -19,6 +19,7 @@ from app.models.reference import (
     RouteWeight,
     LeadBucket,
     RefSource,
+    DelNetworkDestination,
 )
 from app.models.collection import (
     ScrapeCycle,
@@ -86,6 +87,7 @@ __all__ = [
     "RouteWeight",
     "LeadBucket",
     "RefSource",
+    "DelNetworkDestination",
     # Collection
     "ScrapeCycle",
     "ScrapeTask",

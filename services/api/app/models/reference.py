@@ -104,3 +104,29 @@ class RefSource(Base):
     adapter_class: Mapped[str] = mapped_column(String(120), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     reliability_score: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
+
+
+class DelNetworkDestination(Base):
+    """Comprehensive dynamic domestic network out of Delhi (IGI / DEL).
+
+    Separates the formal 20-route INDEX BASKET from the complete dynamic DEL network.
+    Exposes coverage percentage, unavailable destinations, and scheduled flight frequencies.
+    """
+
+    __tablename__ = "del_network_destination"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    destination_iata: Mapped[str] = mapped_column(String(3), nullable=False, unique=True, index=True)
+    destination_city: Mapped[str] = mapped_column(String(80), nullable=False)
+    destination_state: Mapped[str] = mapped_column(String(80), nullable=False)
+    route_id: Mapped[str] = mapped_column(String(7), nullable=False, index=True)  # e.g. "DEL-BOM"
+    distance_km: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_metro: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_index_basket: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
+    coverage_status: Mapped[str] = mapped_column(String(30), default="COVERED", nullable=False)  # COVERED, PARTIAL, UNAVAILABLE_PROVIDER, SEASONAL
+    daily_scheduled_flights: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    operating_airlines: Mapped[str] = mapped_column(String(120), default="", nullable=False)  # e.g. "6E,AI,SG,QP"
+    current_avg_fare: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    data_state: Mapped[str] = mapped_column(String(20), default="SIMULATED", nullable=False)  # SIMULATED, OBSERVED, UNAVAILABLE
+    last_observed_at: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+

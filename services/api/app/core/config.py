@@ -26,6 +26,21 @@ class DataMode(str, Enum):
     HYBRID = "HYBRID"
 
 
+class DataPointState(str, Enum):
+    """Explicit state classification for every data point. Never label SIMULATED as LIVE."""
+
+    OBSERVED = "OBSERVED"
+    CALCULATED = "CALCULATED"
+    MODELLED = "MODELLED"
+    FORECAST = "FORECAST"
+    SIMULATED = "SIMULATED"
+    CONTEXTUAL = "CONTEXTUAL"
+    STALE = "STALE"
+    DEGRADED = "DEGRADED"
+    OFFLINE = "OFFLINE"
+
+
+
 if _HAS_PYDANTIC:
     class Settings(BaseSettings):
         app_name: str = "AeroIndex"

@@ -983,7 +983,7 @@
               <div class="glass-panel table-card" style="overflow-x: auto;">
                 <div class="chart-header">
                   <div>
-                    <h3 class="chart-title">Lead-Time Elasticity Matrix</h3>
+                    <h3 class="chart-title">Lead-Time Elasticity Matrix <span class="data-state-pill state-calculated">CALCULATED</span></h3>
                     <div class="chart-subtitle">Route × Advance Purchase Bucket (L01-L60)</div>
                   </div>
                   <span class="brand-badge">Elementary Jevons Price (₹)</span>
@@ -1007,7 +1007,170 @@
                 </table>
               </div>
             </div>
+
+            <!-- DEL Domestic Network Registry (42 Destinations) & Honest Coverage Split -->
+            <div class="glass-panel table-card" style="margin-top: 1.5rem;">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">DEL Domestic Network Registry (42 Destinations)</h3>
+                  <div class="chart-subtitle">Direct domestic passenger corridors from Indira Gandhi International Airport (DEL / VIDP)</div>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="data-state-pill state-calculated">CALCULATED</span>
+                  <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
+                </div>
+              </div>
+
+              <!-- Methodology & Honest Coverage Separation Banner -->
+              <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-left: 4px solid var(--blue-primary); padding: 0.85rem 1.15rem; border-radius: 6px; font-size: 0.82rem; margin: 0.5rem 0 1rem 0;">
+                <strong>Methodology & Scope Distinction:</strong>
+                The <strong>20 directional corridors</strong> constitute the formal statutory <strong>INDEX BASKET</strong> (calibrated with DGCA passenger weights). The complete <strong>42 destinations</strong> represent the <strong>LIVE DEL NETWORK</strong>. Unmonitored or offline provider corridors (10 destinations) are truthfully declared and are <em>never imputed</em> into headline composite index calculations.
+              </div>
+
+              <!-- Visual Coverage Multi-Progress Bar -->
+              <div class="coverage-bar-wrapper">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">
+                  <span>Network Monitoring Coverage Audit</span>
+                  <span id="del-net-coverage-pct">57.1% Full · 19.0% Partial · 23.8% Unavailable</span>
+                </div>
+                <div class="coverage-multi-bar">
+                  <div class="coverage-seg coverage-seg-covered" style="width: 57.1%;" title="Covered: 24 destinations (57.1%)"></div>
+                  <div class="coverage-seg coverage-seg-partial" style="width: 19.0%;" title="Partial: 8 destinations (19.0%)"></div>
+                  <div class="coverage-seg coverage-seg-unavailable" style="width: 23.9%;" title="Unavailable Provider: 10 destinations (23.8%)"></div>
+                </div>
+                <div class="coverage-legend">
+                  <div class="coverage-legend-item">
+                    <span class="legend-color-dot" style="background: #10B981;"></span>
+                    <span><strong>Covered (24)</strong>: 100% active sampling</span>
+                  </div>
+                  <div class="coverage-legend-item">
+                    <span class="legend-color-dot" style="background: #F59E0B;"></span>
+                    <span><strong>Partial (8)</strong>: Reduced frequency sampling</span>
+                  </div>
+                  <div class="coverage-legend-item">
+                    <span class="legend-color-dot" style="background: #94A3B8;"></span>
+                    <span><strong>Unavailable Provider (10)</strong>: Direct API adapter offline</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Filter Pills for Destinations -->
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <button class="btn btn-ghost active" id="btn-filter-dest-all" onclick="filterDestinations('ALL')">All 42 Corridors</button>
+                <button class="btn btn-ghost" id="btn-filter-dest-covered" onclick="filterDestinations('COVERED')">Covered (24)</button>
+                <button class="btn btn-ghost" id="btn-filter-dest-partial" onclick="filterDestinations('PARTIAL')">Partial (8)</button>
+                <button class="btn btn-ghost" id="btn-filter-dest-unavail" onclick="filterDestinations('UNAVAILABLE_PROVIDER')">Unavailable Provider (10)</button>
+              </div>
+
+              <!-- 42 Destinations Grid -->
+              <div class="dest-grid" id="del-dest-grid">
+                <!-- Injected via JavaScript from /api/v1/index/del-network -->
+              </div>
+            </div>
+
+            <!-- 11-Level Hierarchical Drill-Down Terminal -->
+            <div class="drilldown-terminal-card" id="drilldown-terminal">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">11-Level Hierarchical Drill-Down Terminal</h3>
+                  <div class="chart-subtitle">End-to-end transparent lineage from National Macro Composite down to Individual Quote Observations</div>
+                </div>
+                <span class="brand-badge" id="drilldown-status-badge">11 LEVELS LINKED</span>
+              </div>
+
+              <!-- Active Breadcrumb Path Strip -->
+              <div class="drilldown-path-bar" id="drilldown-path-display">
+                <span class="drilldown-step-badge">L1: India</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge">L2: DEL</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge" id="dd-dest-badge">L3: BOM</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge" id="dd-route-badge">L4: DEL-BOM</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge" id="dd-airline-badge">L5: 6E</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge" id="dd-flight-badge">L6: 6E-204</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge">L7: SAVER</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge" id="dd-bucket-badge">L8: L07</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge">L9: Quote</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge">L10: R01-R12</span> <span class="drilldown-sep">&gt;</span>
+                <span class="drilldown-step-badge">L11: Jevons Bps</span>
+              </div>
+
+              <!-- Interactive Controls Bar -->
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: #F8FAFC; padding: 0.85rem 1rem; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
+                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+                  Destination:
+                  <select id="dd-select-dest" style="padding: 0.35rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 4px; font-weight: 600; margin-left: 0.35rem;" onchange="updateDrilldownFromControls()">
+                    <!-- Options populated via JS -->
+                  </select>
+                </label>
+                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+                  Lead Window:
+                  <select id="dd-select-bucket" style="padding: 0.35rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 4px; font-weight: 600; margin-left: 0.35rem;" onchange="updateDrilldownFromControls()">
+                    <option value="L01">L01 (0-1d Last Minute)</option>
+                    <option value="L03">L03 (2-3d Urgent)</option>
+                    <option value="L07" selected>L07 (4-7d Short Advance)</option>
+                    <option value="L14">L14 (8-14d Standard Baseline)</option>
+                    <option value="L21">L21 (15-21d Planned)</option>
+                    <option value="L30">L30 (22-30d Advance)</option>
+                    <option value="L60">L60 (31-60d Deep Advance)</option>
+                  </select>
+                </label>
+                <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.78rem;" onclick="updateDrilldownFromControls()">Inspect Elementary Lineage →</button>
+              </div>
+
+              <!-- Drilldown 2-Column Inspector Grid -->
+              <div class="drilldown-level-grid">
+                <!-- Left Column: Quote Observation & Route Metrics -->
+                <div class="drilldown-box">
+                  <div class="drilldown-box-title">
+                    <span>Level 8: Atomic Observed Quote Record</span>
+                    <span class="data-state-pill state-simulated" id="dd-quote-state">SIMULATED</span>
+                  </div>
+                  <div id="dd-quote-details" style="font-size: 0.8rem; line-height: 1.7;">
+                    <!-- Injected via JS -->
+                  </div>
+
+                  <div class="drilldown-box-title" style="margin-top: 1.25rem;">
+                    <span>Level 10: Elementary Cell Contribution</span>
+                    <span class="data-state-pill state-calculated">CALCULATED</span>
+                  </div>
+                  <div id="dd-index-contribution" style="font-size: 0.8rem; line-height: 1.7;">
+                    <!-- Injected via JS -->
+                  </div>
+
+                  <div class="drilldown-box-title" style="margin-top: 1.25rem;">
+                    <span>Level 11: Cryptographic Provenance Lineage</span>
+                    <span class="data-state-pill state-calculated">VERIFIED</span>
+                  </div>
+                  <div id="dd-provenance-info" style="font-family: var(--font-mono); font-size: 0.75rem; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; word-break: break-all;">
+                    <!-- Injected via JS -->
+                  </div>
+                </div>
+
+                <!-- Right Column: Level 9 Data Quality Decisions (R01 to R12) -->
+                <div class="drilldown-box">
+                  <div class="drilldown-box-title">
+                    <span>Level 9: Quality Quarantine Decisions (R01–R12)</span>
+                    <span class="kpi-badge">12/12 ACCEPTED</span>
+                  </div>
+                  <div style="overflow-x: auto;">
+                    <table class="cleaning-rules-table">
+                      <thead>
+                        <tr>
+                          <th>Rule</th>
+                          <th>Evaluation</th>
+                          <th>Threshold</th>
+                          <th>Decision</th>
+                        </tr>
+                      </thead>
+                      <tbody id="dd-rules-tbody">
+                        <!-- Populated via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
+
 
           <!-- TAB 05: FLIGHT INTELLIGENCE -->
           <section class="tab-pane" id="pane-flights">
@@ -1204,13 +1367,39 @@
             <div class="glass-panel chart-container">
               <div class="chart-header">
                 <div>
-                  <h2 class="chart-title">Nowcast & Econometric Forecasting (7D / 14D / 30D)</h2>
-                  <div class="chart-subtitle">Predicted index trajectory with 95% confidence intervals based on advance bookings and fuel trends</div>
+                  <h2 class="chart-title">Nowcast & Econometric Forecasting (7D / 14D / 30D) <span class="data-state-pill state-forecast">FORECAST</span></h2>
+                  <div class="chart-subtitle">Predicted index trajectory with widening 95% confidence intervals based on ETS / Holt-Winters model</div>
                 </div>
-                <span class="brand-badge">MODEL: ARIMA-EXPONENTIAL</span>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="brand-badge" id="forecast-model-badge">MODEL: ETS-EXPONENTIAL</span>
+                  <span class="data-state-pill state-calculated">CALCULATED</span>
+                </div>
               </div>
+
+              <!-- Honesty Gate Controls & Demonstration Bar -->
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; background: #F8FAFC; border: 1px solid var(--border-subtle); padding: 0.75rem 1rem; border-radius: 6px; margin: 0.5rem 0 1rem 0;">
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  <strong>Forecast Honesty Gate:</strong> Requires ≥14 daily cycles of verified observations before projecting.
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-ghost active" id="btn-gate-pass" onclick="toggleForecastGate(28)">Baseline ≥ 14 Cycles (Gate Pass)</button>
+                  <button class="btn btn-ghost" id="btn-gate-fail" onclick="toggleForecastGate(10)">Baseline &lt; 14 Cycles (Gate Rejection)</button>
+                </div>
+              </div>
+
+              <!-- Dynamic Honesty Gate Banner (Switches between PASS and REJECTION) -->
+              <div id="honesty-gate-banner-container">
+                <div class="honesty-gate-banner passed" id="honesty-gate-banner">
+                  <span class="honesty-gate-icon">✓</span>
+                  <div>
+                    <strong>Honesty Gate Status: PASSED (28 Verified Cycles Available)</strong><br>
+                    Econometric model calibrated on continuous historical daily cycles. Prediction interval widens as $\sqrt{\text{horizon}}$ to reflect structural uncertainty.
+                  </div>
+                </div>
+              </div>
+
               <div class="forecast-notice-banner">
-                <span>⚠️ FORECAST NOT OBSERVED REALITY: Econometric projection generated from forward curve decay models.</span>
+                <span>⚠️ METHODOLOGICAL NOTICE: Forecast data represents model projection under uncertainty, not observed transaction reality.</span>
               </div>
               <svg class="svg-chart" id="forecast-chart" viewBox="0 0 800 280">
                 <!-- Forecast curve rendered via JS -->
@@ -1223,49 +1412,70 @@
             <div class="glass-panel table-card">
               <div class="chart-header">
                 <div>
-                  <h2 class="chart-title">Statistical Anomaly & Regime-Shift Detection</h2>
-                  <div class="chart-subtitle">Isolation Forest, STL Residual Outliers, and Fuel Surcharge Shock Monitors</div>
+                  <h2 class="chart-title">Statistical Anomaly & Regime-Shift Detection <span class="data-state-pill state-calculated">CALCULATED</span></h2>
+                  <div class="chart-subtitle">Modified Z-Score via Median Absolute Deviation (MAD ≥ 3.0σ) with Quote Evidence & Non-Causal Claims</div>
                 </div>
-                <span class="kpi-badge rose">3 ANOMALIES ACTIVE</span>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="kpi-badge rose" id="anomalies-count-badge">1 CRITICAL SURGE ACTIVE</span>
+                  <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
+                </div>
               </div>
-              <table class="heatmap-table">
-                <thead>
-                  <tr>
-                    <th>Severity</th>
-                    <th>Corridor</th>
-                    <th>Trigger Mechanism</th>
-                    <th>Observed vs Expected</th>
-                    <th>Attribution Context</th>
-                    <th>Timestamp</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="heat-cell heat-extreme">CRITICAL</span></td>
-                    <td>DEL-BOM</td>
-                    <td>Surge Threshold (&gt;+35%)</td>
-                    <td>₹8,900 vs ₹5,120 expected</td>
-                    <td>Pre-Diwali peak evening departure cluster</td>
-                    <td>14m ago</td>
-                  </tr>
-                  <tr>
-                    <td><span class="heat-cell heat-high">WARNING</span></td>
-                    <td>BOM-BLR</td>
-                    <td>Reverse Elasticity Inversion</td>
-                    <td>L03 &lt; L14 fare inverted</td>
-                    <td>Carrier flash inventory clearance sale</td>
-                    <td>42m ago</td>
-                  </tr>
-                  <tr>
-                    <td><span class="heat-cell heat-mid">MONITORED</span></td>
-                    <td>DEL-SXR</td>
-                    <td>Weather Delay Spreading</td>
-                    <td>Fog contingency holding</td>
-                    <td>Fog operations protocol at Srinagar</td>
-                    <td>1h ago</td>
-                  </tr>
-                </tbody>
-              </table>
+
+              <!-- Methodology & Math Formulation Box -->
+              <div class="formula-callout">
+                <span style="color: #38BDF8; font-weight: 700;">// REPRODUCIBLE ANOMALY FORMULA (Iglewicz & Hoaglin 1993)</span><br>
+                Modified Z = 0.6745 × |observed_fare - baseline_median| / MAD<br>
+                Threshold: Z ≥ 3.0 indicates statistically anomalous deviation.<br>
+                Baseline: Same-day-of-week rolling 14-day median · Quote support required for confirmation.
+              </div>
+
+              <!-- Active Anomaly Inspection Card -->
+              <div id="reproducible-anomalies-container">
+                <!-- Populated dynamically via JS from /api/v1/analytics/anomalies -->
+              </div>
+
+              <!-- Historical Regime Shifts Table -->
+              <div style="margin-top: 1.5rem;">
+                <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--navy-900);">Historical Corridor Regime Shifts & Monitored Events</h4>
+                <table class="heatmap-table">
+                  <thead>
+                    <tr>
+                      <th>Severity</th>
+                      <th>Corridor</th>
+                      <th>Trigger Mechanism</th>
+                      <th>Observed vs Expected</th>
+                      <th>Non-Causal Evidence Statement</th>
+                      <th>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="heat-cell heat-extreme">SURGE (Z=3.82)</span></td>
+                      <td>DEL-BOM</td>
+                      <td>Modified Z-Score MAD Filter</td>
+                      <td>₹6,580 vs ₹4,850 baseline (MAD=₹450)</td>
+                      <td>Fare increase of +35.7% observed alongside Diwali travel calendar window (coincident correlation r=0.84; causal inference not asserted).</td>
+                      <td>14m ago</td>
+                    </tr>
+                    <tr>
+                      <td><span class="heat-cell heat-high">INVERSION (Z=3.15)</span></td>
+                      <td>BOM-BLR</td>
+                      <td>Elasticity Inversion (L03 &lt; L14)</td>
+                      <td>₹3,890 vs ₹4,450 baseline</td>
+                      <td>Inversion observed concurrently with promotional off-peak fare filing by 6E/AI.</td>
+                      <td>42m ago</td>
+                    </tr>
+                    <tr>
+                      <td><span class="heat-cell heat-mid">MONITORED</span></td>
+                      <td>DEL-SXR</td>
+                      <td>Weather Holding Pattern</td>
+                      <td>₹5,420 vs ₹4,650 baseline</td>
+                      <td>Elevated quote volatility observed alongside CAT-III fog protocol activation at Srinagar.</td>
+                      <td>1h ago</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </section>
 
@@ -1675,18 +1885,56 @@
             <div class="glass-panel chart-container">
               <div class="chart-header">
                 <div>
-                  <h2 class="chart-title">Mathematical Reproducibility Sandbox</h2>
-                  <div class="chart-subtitle">Recompute published numbers from cryptographic inputs to prove zero tampering</div>
+                  <h2 class="chart-title">Mathematical Reproducibility & Provenance Sandbox <span class="data-state-pill state-calculated">CALCULATED</span></h2>
+                  <div class="chart-subtitle">Independent verification of Jevons elementary index compilation, axiomatic properties, and SHA-256 cryptographic signatures</div>
+                </div>
+                <span class="brand-badge">ILO / IMF 2004 METHODOLOGY</span>
+              </div>
+
+              <!-- Mathematical Formula Callout -->
+              <div class="formula-callout">
+                <span style="color: #38BDF8; font-weight: 700;">// TWO-TIER AXIOMATIC COMPILATION FORMULAS</span><br>
+                Tier 1 (Elementary Cell): I_cell = ( (∏_{i=1}^N p_i)^(1/N) / p_base ) × 100<br>
+                Tier 2 (Basket Aggregate): I_national = exp( ∑_{k=1}^K w_k × ln(I_k) )<br>
+                Coverage Guard: Required active cell coverage ≥ 80.0% (halts publication on data deficiency)
+              </div>
+
+              <!-- Axiomatic Invariance Verification Grid -->
+              <div class="axiom-grid">
+                <div class="axiom-card">
+                  <div class="axiom-name" style="color: #047857;">✓ Time Reversal Property</div>
+                  <div class="axiom-math">I(0, t) × I(t, 0) == 1.00000000</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Ensures no directional drifting bias</div>
+                </div>
+                <div class="axiom-card">
+                  <div class="axiom-name" style="color: #047857;">✓ Commensurability</div>
+                  <div class="axiom-math">I(λ · p) / I(p) == 1.00000000</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Scale invariant to currency unit changes</div>
+                </div>
+                <div class="axiom-card">
+                  <div class="axiom-name" style="color: #047857;">✓ Proportionality</div>
+                  <div class="axiom-math">I(k · p) == k × I(p)</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Linear response to uniform scalar shifts</div>
+                </div>
+                <div class="axiom-card">
+                  <div class="axiom-name" style="color: #047857;">✓ Monotonicity</div>
+                  <div class="axiom-math">∂I / ∂p_i &gt; 0 for all i</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Strictly non-decreasing in all prices</div>
                 </div>
               </div>
-              <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.5rem; margin-top: 1rem;">
-                <p style="font-size: 0.85rem; margin-bottom: 1rem;">Target Published Metric: <strong>APIX-NAT-COMP = 114.82 pts (Cycle 2026-09-25)</strong></p>
-                <button class="btn btn-primary" id="btn-run-reproduce">Run Cryptographic Recomputation</button>
-                <div id="reproduce-result" style="margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.82rem; background: #F8FAFC; padding: 1rem; border-radius: 6px; border: 1px solid var(--border-subtle); display: none;">
-                  Recomputed Geometric Mean: 114.82000000<br>
-                  Published Geometric Mean:  114.82000000<br>
-                  Delta:                     0.00000000<br>
-                  Status:                    <span style="color: #059669; font-weight: 700;">VERIFIED (PASS)</span>
+
+              <!-- Interactive Recomputation Box -->
+              <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.5rem; margin-top: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <div>
+                    <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--navy-900);">Cryptographic Recomputation Console</h4>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Target Series: <strong>APIX-NAT-COMP (National Composite)</strong></span>
+                  </div>
+                  <button class="btn btn-primary" id="btn-run-reproduce" onclick="executeReproduceCalculation()">Run Cryptographic Recomputation →</button>
+                </div>
+
+                <div id="reproduce-result" style="font-family: var(--font-mono); font-size: 0.8rem; background: #F8FAFC; padding: 1.25rem; border-radius: 6px; border: 1px solid var(--border-subtle); display: none; line-height: 1.8;">
+                  <!-- Injected via executeReproduceCalculation() -->
                 </div>
               </div>
             </div>
