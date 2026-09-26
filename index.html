@@ -4555,39 +4555,692 @@
           </section>
 
 
-          <!-- TAB 09: FARE COMPONENTS -->
+                    <!-- TAB 09: FARE COMPONENT DECOMPOSITION & COST PASS-THROUGH (FARE ECONOMICS OBSERVATORY) -->
           <section class="tab-pane" id="pane-components">
-            <div class="glass-panel chart-container">
-              <div class="chart-header">
-                <div>
-                  <h2 class="chart-title">Fare Component Decomposition & Cost Pass-Through</h2>
-                  <div class="chart-subtitle">Base Fare, Fuel Surcharge (ATF), User Development Fee (UDF), Passenger Service Fee (PSF), and GST</div>
+            <div class="components-story-wrapper">
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 01: FARE ECONOMICS COMMAND HEADER                            -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="border-left: 4px solid #2563EB; padding: 1.5rem 1.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.12em; color: #2563EB; font-weight: 700; margin-bottom: 0.35rem;">
+                      FARE ECONOMICS &amp; COST STRUCTURE OBSERVATORY
+                    </div>
+                    <h1 style="font-size: 2rem; font-weight: 800; color: #0F172A; margin: 0 0 0.4rem 0; letter-spacing: -0.02em;">
+                      Fare Component Decomposition &amp; Cost Pass-Through
+                    </h1>
+                    <div style="font-size: 0.92rem; color: #475569; max-width: 920px; line-height: 1.5;">
+                      Tracing every observed airfare from carrier yield and fuel-linked charges to airport infrastructure fees, statutory taxes, and final passenger price. An institutional laboratory analyzing component stability, fee structures, and empirical cost pass-through.
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.75rem; padding: 0.35rem 0.65rem;">
+                      <span class="pulse-dot green" style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px;"></span>
+                      STREAM: LIVE
+                    </span>
+                    <span class="badge" style="background: rgba(37, 99, 235, 0.1); color: #2563EB; border: 1px solid rgba(37, 99, 235, 0.2); font-size: 0.75rem; padding: 0.35rem 0.65rem;">
+                      STATE: SIMULATED_LIVE
+                    </span>
+                    <button class="btn btn-ghost" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;" onclick="exportFareEconomicsDataset('csv')">
+                      ⬇ Export CSV
+                    </button>
+                    <button class="btn btn-primary" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;" onclick="openFareEconomicsProvenanceModal('global')">
+                      Reproduce Breakdown →
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Live Institutional Status Strip -->
+                <div class="components-status-strip" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.75rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.85rem 1rem;">
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Components Monitored</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #0F172A; font-family: monospace;">5 Primary</div>
+                    <div style="font-size: 0.68rem; color: #059669;">Base · ATF · UDF · PSF · GST</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Total Quotes Ingested</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #0F172A; font-family: monospace;">486,201</div>
+                    <div style="font-size: 0.68rem; color: #64748B;">All domestic corridors</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Decomposable Quotes</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #2563EB; font-family: monospace;" id="comp-strip-decomposable">458,820</div>
+                    <div style="font-size: 0.68rem; color: #059669;">94.4% full lineage</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Active Corridors</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #0F172A; font-family: monospace;">1,284 Routes</div>
+                    <div style="font-size: 0.68rem; color: #64748B;">79 operational airports</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Reconciliation State</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #10B981; font-family: monospace;">100.0%</div>
+                    <div style="font-size: 0.68rem; color: #10B981;">±₹1 rounding tolerance</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Base Yield Share</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #2563EB; font-family: monospace;">68.4%</div>
+                    <div style="font-size: 0.68rem; color: #64748B;">National benchmark</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.68rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Stream Freshness</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #0F172A; font-family: monospace;">2.4s ago</div>
+                    <div style="font-size: 0.68rem; color: #10B981;">Sub-second parser</div>
+                  </div>
+                </div>
+
+                <!-- Sticky Global Filter Ribbon -->
+                <div class="components-filter-ribbon">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase;">Filter Universe:</span>
+                  </div>
+                  <div style="flex: 1; min-width: 170px;">
+                    <input type="text" id="comp-filter-search" placeholder="Search flight, corridor, airline, airport..." 
+                      style="width: 100%; font-size: 0.78rem; padding: 0.4rem 0.65rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;"
+                      oninput="applyFareEconomicsGlobalFilters()">
+                  </div>
+                  <div>
+                    <select id="comp-filter-component" style="font-size: 0.78rem; padding: 0.4rem 0.6rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;" onchange="applyFareEconomicsGlobalFilters()">
+                      <option value="ALL">Component: All (Full Breakdown)</option>
+                      <option value="BASE">Base Fare (Carrier Yield)</option>
+                      <option value="ATF">Fuel Surcharge (ATF)</option>
+                      <option value="UDF">User Development Fee (UDF)</option>
+                      <option value="PSF">Passenger Service Fee (PSF)</option>
+                      <option value="GST">GST / Statutory Tax</option>
+                    </select>
+                  </div>
+                  <div>
+                    <select id="comp-filter-metric-basis" style="font-size: 0.78rem; padding: 0.4rem 0.6rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;" onchange="applyFareEconomicsGlobalFilters()">
+                      <option value="SHARE">Metric: Component Share (%)</option>
+                      <option value="ABS">Metric: Absolute Level (₹ INR)</option>
+                      <option value="DELTA">Metric: Delta Movement (Δ₹)</option>
+                      <option value="GROWTH">Metric: Growth Rate (Δ%)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <select id="comp-filter-carrier" style="font-size: 0.78rem; padding: 0.4rem 0.6rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;" onchange="applyFareEconomicsGlobalFilters()">
+                      <option value="ALL">Carrier: All 5 Monitored</option>
+                      <option value="6E">IndiGo (6E)</option>
+                      <option value="AI">Air India (AI)</option>
+                      <option value="QP">Akasa Air (QP)</option>
+                      <option value="IX">Air India Express (IX)</option>
+                      <option value="SG">SpiceJet (SG)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <select id="comp-filter-route" style="font-size: 0.78rem; padding: 0.4rem 0.6rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;" onchange="applyFareEconomicsGlobalFilters()">
+                      <option value="ALL">Corridor: All Major Trunks</option>
+                      <option value="DEL-BOM">DEL-BOM (Delhi ↔ Mumbai)</option>
+                      <option value="DEL-BLR">DEL-BLR (Delhi ↔ Bengaluru)</option>
+                      <option value="BOM-BLR">BOM-BLR (Mumbai ↔ Bengaluru)</option>
+                      <option value="DEL-HYD">DEL-HYD (Delhi ↔ Hyderabad)</option>
+                      <option value="DEL-CCU">DEL-CCU (Delhi ↔ Kolkata)</option>
+                      <option value="BOM-GOI">BOM-GOI (Mumbai ↔ Goa)</option>
+                      <option value="DEL-MAA">DEL-MAA (Delhi ↔ Chennai)</option>
+                      <option value="BLR-HYD">BLR-HYD (Bengaluru ↔ Hyderabad)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <select id="comp-filter-cabin" style="font-size: 0.78rem; padding: 0.4rem 0.6rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;" onchange="applyFareEconomicsGlobalFilters()">
+                      <option value="ALL">Cabin: All Classes</option>
+                      <option value="ECONOMY">Economy (5% GST Slab)</option>
+                      <option value="BUSINESS">Business (12% GST Slab)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <button class="btn btn-ghost" style="font-size: 0.75rem; padding: 0.4rem 0.65rem;" onclick="resetFareEconomicsGlobalFilters()">Reset</button>
+                  </div>
                 </div>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem;">
-                <div class="kpi-card">
-                  <span class="kpi-label">Base Fare Share</span>
-                  <div class="kpi-value" style="font-size: 1.8rem;">68.4%</div>
-                  <span class="kpi-subtext">Direct airline yield revenue</span>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 02: NATIONAL FARE COMPOSITION & ORIGINAL 4 BENCHMARKS        -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      02 — NATIONAL FARE COMPOSITION BENCHMARK
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">National Fare Anatomy &amp; Core Component Shares</h2>
+                    <div class="chart-subtitle">
+                      Preserving the foundational AeroIndex component benchmarks. Click any card or anatomy bar segment to isolate and filter the entire observatory by that component.
+                    </div>
+                  </div>
                 </div>
-                <div class="kpi-card">
-                  <span class="kpi-label">Fuel Surcharge (ATF)</span>
-                  <div class="kpi-value" style="font-size: 1.8rem;">14.2%</div>
-                  <span class="kpi-subtext">Volatile pass-through component</span>
+
+                <!-- 100% Horizontal Anatomy Bar -->
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.78rem;">
+                    <span style="font-weight: 700; color: #0F172A;">100% National Airfare Composition (Composite Index Basis)</span>
+                    <span style="color: #64748B; font-family: monospace;">Avg Ticket: ₹5,281</span>
+                  </div>
+                  <div class="dual-progress-track" style="height: 28px; display: flex; border-radius: 6px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;">
+                    <div style="width: 68.4%; background: #2563EB; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 0.75rem; font-weight: 700; font-family: monospace;" 
+                      onclick="filterByComponentFocus('BASE')" title="Base Fare: 68.4% (₹3,612)">
+                      BASE FARE 68.4%
+                    </div>
+                    <div style="width: 14.2%; background: #8B5CF6; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 0.72rem; font-weight: 700; font-family: monospace;" 
+                      onclick="filterByComponentFocus('ATF')" title="Fuel Surcharge (ATF): 14.2% (₹750)">
+                      ATF 14.2%
+                    </div>
+                    <div style="width: 11.8%; background: #F59E0B; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 0.72rem; font-weight: 700; font-family: monospace;" 
+                      onclick="filterByComponentFocus('UDF')" title="Airport Fees (UDF/PSF): 11.8% (₹623)">
+                      FEES 11.8%
+                    </div>
+                    <div style="width: 5.6%; background: #06B6D4; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 0.68rem; font-weight: 700; font-family: monospace;" 
+                      onclick="filterByComponentFocus('GST')" title="GST Tax: 5.6% (₹296)">
+                      GST 5.6%
+                    </div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.65rem; font-size: 0.72rem; color: #64748B;">
+                    <span>● Click any segment to filter entire workspace</span>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #059669; font-size: 0.65rem;">METHODOLOGY: DGCA-BV.2026</span>
+                  </div>
                 </div>
-                <div class="kpi-card">
-                  <span class="kpi-label">Airport Fees (UDF/PSF)</span>
-                  <div class="kpi-value" style="font-size: 1.8rem;">11.8%</div>
-                  <span class="kpi-subtext">Airport infrastructure tariff</span>
-                </div>
-                <div class="kpi-card">
-                  <span class="kpi-label">GST / Government Tax</span>
-                  <div class="kpi-value" style="font-size: 1.8rem;">5.6%</div>
-                  <span class="kpi-subtext">Statutory economy/business tax</span>
+
+                <!-- The Original 4 Benchmarks (Preserved & Elevated as Interactive Entry Points) -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                  
+                  <!-- Tile 1: Base Fare Share -->
+                  <div class="kpi-card" style="border-left: 4px solid #2563EB; cursor: pointer; transition: transform 0.15s ease;" onclick="filterByComponentFocus('BASE')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                      <span class="kpi-label">Base Fare Share</span>
+                      <span class="badge" style="background: rgba(37,99,235,0.1); color: #2563EB; font-size: 0.65rem;">AIRLINE YIELD</span>
+                    </div>
+                    <div class="kpi-value" style="font-size: 1.85rem; font-family: monospace; font-weight: 800; color: #2563EB;">68.4%</div>
+                    <span class="kpi-subtext" style="color: #475569; font-size: 0.78rem; line-height: 1.4;">Direct airline yield revenue</span>
+                    <div style="font-size: 0.68rem; color: #64748B; margin-top: 0.4rem; border-top: 1px solid #F1F5F9; padding-top: 0.35rem;">
+                      Avg: <strong>₹3,612</strong> · Yield-managed by RM
+                    </div>
+                  </div>
+
+                  <!-- Tile 2: Fuel Surcharge (ATF) -->
+                  <div class="kpi-card" style="border-left: 4px solid #8B5CF6; cursor: pointer; transition: transform 0.15s ease;" onclick="filterByComponentFocus('ATF')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                      <span class="kpi-label">Fuel Surcharge (ATF)</span>
+                      <span class="badge" style="background: rgba(139,92,246,0.1); color: #8B5CF6; font-size: 0.65rem;">VOLATILE</span>
+                    </div>
+                    <div class="kpi-value" style="font-size: 1.85rem; font-family: monospace; font-weight: 800; color: #8B5CF6;">14.2%</div>
+                    <span class="kpi-subtext" style="color: #475569; font-size: 0.78rem; line-height: 1.4;">Volatile pass-through component</span>
+                    <div style="font-size: 0.68rem; color: #64748B; margin-top: 0.4rem; border-top: 1px solid #F1F5F9; padding-top: 0.35rem;">
+                      Avg: <strong>₹750</strong> · Banded by distance
+                    </div>
+                  </div>
+
+                  <!-- Tile 3: Airport Fees (UDF/PSF) -->
+                  <div class="kpi-card" style="border-left: 4px solid #F59E0B; cursor: pointer; transition: transform 0.15s ease;" onclick="filterByComponentFocus('UDF')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                      <span class="kpi-label">Airport Fees (UDF/PSF)</span>
+                      <span class="badge" style="background: rgba(245,158,11,0.1); color: #D97706; font-size: 0.65rem;">INFRASTRUCTURE</span>
+                    </div>
+                    <div class="kpi-value" style="font-size: 1.85rem; font-family: monospace; font-weight: 800; color: #D97706;">11.8%</div>
+                    <span class="kpi-subtext" style="color: #475569; font-size: 0.78rem; line-height: 1.4;">Airport infrastructure tariff</span>
+                    <div style="font-size: 0.68rem; color: #64748B; margin-top: 0.4rem; border-top: 1px solid #F1F5F9; padding-top: 0.35rem;">
+                      Avg: <strong>₹623</strong> · AERA regulated tariff
+                    </div>
+                  </div>
+
+                  <!-- Tile 4: GST / Government Tax -->
+                  <div class="kpi-card" style="border-left: 4px solid #06B6D4; cursor: pointer; transition: transform 0.15s ease;" onclick="filterByComponentFocus('GST')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                      <span class="kpi-label">GST / Government Tax</span>
+                      <span class="badge" style="background: rgba(6,182,212,0.1); color: #0891B2; font-size: 0.65rem;">STATUTORY</span>
+                    </div>
+                    <div class="kpi-value" style="font-size: 1.85rem; font-family: monospace; font-weight: 800; color: #0891B2;">5.6%</div>
+                    <span class="kpi-subtext" style="color: #475569; font-size: 0.78rem; line-height: 1.4;">Statutory economy/business tax</span>
+                    <div style="font-size: 0.68rem; color: #64748B; margin-top: 0.4rem; border-top: 1px solid #F1F5F9; padding-top: 0.35rem;">
+                      Avg: <strong>₹296</strong> · 5% Economy / 12% Biz
+                    </div>
+                  </div>
+
                 </div>
               </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 03: PASSENGER FARE ANATOMY (HERO TREE)                       -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      03 — FLIGHT-LEVEL FARE CONSTRUCTION
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Passenger Fare Anatomy &amp; Ticket Breakdown</h2>
+                    <div class="chart-subtitle">
+                      Hierarchical structural tree showing how a single observed ticket is constructed from carrier yield to airport tariffs and statutory taxes.
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #475569;">Select Observed Ticket:</span>
+                    <select id="anatomy-flight-selector" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; font-weight: 600;" onchange="switchAnatomyFlight(this.value)">
+                      <option value="6E-2047">6E 2047 · DEL → BOM · 18:40 · Economy Saver</option>
+                      <option value="AI-865">AI 865 · DEL → BLR · 08:30 · Economy Flex</option>
+                      <option value="QP-1102">QP 1102 · BOM → BLR · 14:15 · Economy Saver</option>
+                      <option value="SG-8169">SG 8169 · DEL → GOI · 11:20 · SpiceSaver</option>
+                      <option value="IX-1742">IX 1742 · DEL → HYD · 20:05 · Xpress Lite</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Interactive Anatomy Visualizer Container -->
+                <div id="passenger-fare-anatomy-container">
+                  <!-- Rendered dynamically by renderPassengerFareAnatomy() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 04: COMPONENT CONTRIBUTION OBSERVATORY (THE WOW MOMENT)      -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem; border-top: 4px solid #2563EB;">
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      04 — THE SIGNATURE "WOW" EXPERIENCE
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Component Contribution Observatory (Fare Movement Engine)</h2>
+                    <div class="chart-subtitle">
+                      Fare Construction → Fare Movement → Pass-Through. Unbundling exactly which components moved when an airfare shifts across booking windows or market cycles.
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #475569;">Scenario:</span>
+                    <select id="movement-scenario-selector" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; font-weight: 600;" onchange="switchMovementScenario(this.value)">
+                      <option value="DEL-BOM-L07-L03">DEL-BOM (6E 2047): L07 → L03 (+₹350 Move)</option>
+                      <option value="DEL-BLR-ATF-SURGE">DEL-BLR (AI 865): Monthly ATF Revision (+₹280 Move)</option>
+                      <option value="BOM-GOI-WEEKEND">BOM-GOI (QP 1102): Friday Demand Knee (+₹620 Move)</option>
+                      <option value="BLR-HYD-TARIFF">BLR-HYD (IX 1742): AERA Tariff Update (+₹140 Move)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div id="component-contribution-engine-container">
+                  <!-- Rendered dynamically by renderComponentContributionEngine() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 05: ROUTE FARE DECOMPOSITION                                 -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      05 — GEOGRAPHIC CORRIDOR ECONOMICS
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Route Fare Decomposition Matrix</h2>
+                    <div class="chart-subtitle">
+                      Cross-corridor component breakdown across India's top domestic routes. Evaluating how Base Yield, Fuel, Airport Tariffs, and Taxes vary by sector length.
+                    </div>
+                  </div>
+                  <div class="filter-group">
+                    <button class="filter-btn active" id="btn-rc-abs" onclick="switchRouteComponentMetric('ABS')">Absolute (₹)</button>
+                    <button class="filter-btn" id="btn-rc-share" onclick="switchRouteComponentMetric('SHARE')">Share (%)</button>
+                    <button class="filter-btn" id="btn-rc-delta" onclick="switchRouteComponentMetric('DELTA')">30D Δ (₹)</button>
+                  </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                  <table class="heatmap-table" id="route-component-matrix-table" style="width: 100%;">
+                    <!-- Rendered dynamically by renderRouteFareDecomposition() -->
+                  </table>
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 06: CARRIER FARE COMPOSITION                                 -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      06 — AIRLINE PRODUCT COST STRUCTURES
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Carrier Fare Composition &amp; Structural Profiles</h2>
+                    <div class="chart-subtitle">
+                      Objective cross-carrier decomposition without ranking. Comparing IndiGo, Air India, Akasa Air, Air India Express, and SpiceJet component distributions.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="carrier-fare-composition-container">
+                  <!-- Rendered dynamically by renderCarrierFareComposition() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 07: AIRPORT FEE OBSERVATORY                                  -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      07 — AIRPORT INFRASTRUCTURE TARIFFS
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Airport Fee Observatory (UDF &amp; PSF)</h2>
+                    <div class="chart-subtitle">
+                      De-averaging the 11.8% airport fee component. Analyzing User Development Fees (UDF) and Passenger Service Fees (PSF) approved by AERA across major Indian gateways.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="airport-fee-observatory-container">
+                  <!-- Rendered dynamically by renderAirportFeeObservatory() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 08: FUEL / ATF COMPONENT OBSERVATORY                         -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      08 — FUEL-LINKED PASS-THROUGH
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Fuel / ATF Component Observatory</h2>
+                    <div class="chart-subtitle">
+                      Rigorous econometric analysis of the 14.2% fuel surcharge component. Distinguishing observed passenger surcharge from underlying airline jet fuel expenditure.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="atf-component-observatory-container">
+                  <!-- Rendered dynamically by renderAtfComponentObservatory() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 09: TAX & GST OBSERVATORY                                    -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      09 — STATUTORY FISCAL IMPACT
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Tax &amp; GST Observatory</h2>
+                    <div class="chart-subtitle">
+                      Decomposing statutory taxation under Indian GST regulations. Economy 5% vs Business 12% statutory slabs, taxable base determination, and exemption rules.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="tax-gst-observatory-container">
+                  <!-- Rendered dynamically by renderTaxGstObservatory() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 10: COMPONENT VOLATILITY SURFACE                             -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      10 — MULTI-DIMENSIONAL VOLATILITY HEATMAP
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Component Volatility Surface</h2>
+                    <div class="chart-subtitle">
+                      Proving which parts of the fare fluctuate and which remain fixed. Base Fare accounts for 84.2% of ticket variance, while UDF/PSF are regulatory constants.
+                    </div>
+                  </div>
+                  <div class="filter-group">
+                    <button class="filter-btn active" id="btn-vol-mad" onclick="switchVolatilityMetric('MAD')">MAD σ (%)</button>
+                    <button class="filter-btn" id="btn-vol-iqr" onclick="switchVolatilityMetric('IQR')">IQR (₹)</button>
+                    <button class="filter-btn" id="btn-vol-cv" onclick="switchVolatilityMetric('CV')">CV (%)</button>
+                  </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                  <table class="heatmap-table" id="component-volatility-surface-table" style="width: 100%;">
+                    <!-- Rendered dynamically by renderComponentVolatilitySurface() -->
+                  </table>
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 11: COST PASS-THROUGH ANALYSIS                               -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem; border-left: 4px solid #10B981;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #10B981; font-weight: 700;">
+                      11 — INTELLECTUAL CENTERPIECE
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Cost Pass-Through Observatory</h2>
+                    <div class="chart-subtitle">
+                      Measuring empirical pass-through ratios (ΔComponent / ΔTotal Fare) with strict non-causal epistemology. Exposing econometric models, confidence intervals, and sample sizes.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="cost-pass-through-observatory-container">
+                  <!-- Rendered dynamically by renderCostPassThroughObservatory() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 12: FARE MOVEMENT ATTRIBUTION (WATERFALL)                    -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      12 — MACRO ATTRIBUTION
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Fare Movement Attribution Waterfall</h2>
+                    <div class="chart-subtitle">
+                      Connecting component dynamics directly to the headline index move (+145 bps / +₹350). Step-by-step unbundling of national price movement.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="fare-movement-waterfall-container">
+                  <!-- Rendered dynamically by renderFareMovementAttributionWaterfall() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 13: FIXED VS VARIABLE COMPONENT ANALYSIS                     -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      13 — FARE STRUCTURE STABILITY PROFILES
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Fixed vs. Variable Component Analysis</h2>
+                    <div class="chart-subtitle">
+                      Classifying components based on observed statistical variability and regulatory tariff frameworks.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="fixed-vs-variable-container">
+                  <!-- Rendered dynamically by renderFixedVsVariableAnalysis() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 14: COMPONENT BEHAVIOR ACROSS LEAD TIME                      -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      14 — TEMPORAL COMPONENT MIGRATION
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Component Behavior Across Lead Times (L60 → L01)</h2>
+                    <div class="chart-subtitle">
+                      Analyzing structural component share migration. As departure approaches, Base Fare expands from 61.2% to 74.8% due to revenue management yield curves.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="leadtime-component-behavior-container">
+                  <!-- Rendered dynamically by renderComponentBehaviorAcrossLeadTime() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 15: FARE COMPOSITION REGIMES                                 -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      15 — EMPIRICAL MARKET CLUSTERING
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Fare Composition Regimes</h2>
+                    <div class="chart-subtitle">
+                      Segmenting domestic routes into 4 structural economic regimes based on component concentration ratios.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="fare-composition-regimes-container">
+                  <!-- Rendered dynamically by renderFareCompositionRegimes() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 16: COMPONENT ANOMALY CENTER & RECONCILIATION                -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      16 — DATA INTEGRITY &amp; RECONCILIATION
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Component Anomaly Center &amp; Reconciliation Engine</h2>
+                    <div class="chart-subtitle">
+                      Algorithmic verification that Base + ATF + UDF + PSF + GST = Total Fare. Flagging reconciliation mismatches and tariff anomalies.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="component-anomaly-center-container">
+                  <!-- Rendered dynamically by renderComponentAnomalyCenter() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 17: HISTORICAL COMPONENT TIMELINE                            -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      17 — LONGITUDINAL MULTI-SERIES TIMELINE
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Historical Component Timeline</h2>
+                    <div class="chart-subtitle">
+                      Tracking component shifts over 30D, 90D, 6M, and 1Y horizons with annotated regulatory change events.
+                    </div>
+                  </div>
+                  <div class="filter-group">
+                    <button class="filter-btn active" id="btn-comp-hist-30d" onclick="switchHistoricalComponentPeriod('30D')">30D</button>
+                    <button class="filter-btn" id="btn-comp-hist-90d" onclick="switchHistoricalComponentPeriod('90D')">90D</button>
+                    <button class="filter-btn" id="btn-comp-hist-6m" onclick="switchHistoricalComponentPeriod('6M')">6M</button>
+                    <button class="filter-btn" id="btn-comp-hist-1y" onclick="switchHistoricalComponentPeriod('1Y')">1Y</button>
+                  </div>
+                </div>
+
+                <div id="historical-component-timeline-container">
+                  <!-- Rendered dynamically by renderHistoricalComponentTimeline() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 18: FARE CONSTRUCTION DEEP DIVE WORKSPACE                    -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #2563EB; font-weight: 700;">
+                      18 — INTERACTIVE FARE DOSSIER
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Fare Construction Deep Dive Workspace</h2>
+                    <div class="chart-subtitle">
+                      Comprehensive 6-tab audit dossier for any selected airfare observation: Composition, History, Attribution, Comparables, Reconciliation, and Provenance.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="fare-construction-deep-dive-container">
+                  <!-- Rendered dynamically by renderFareConstructionDeepDive() -->
+                </div>
+              </div>
+
+              <!-- ==================================================================== -->
+              <!-- CHAPTER 19: PROVENANCE, REPRODUCE & ASK AEROINDEX                    -->
+              <!-- ==================================================================== -->
+              <div class="glass-panel" style="padding: 1.5rem 1.75rem; border-left: 4px solid #10B981;">
+                <div class="chart-header" style="margin-bottom: 1.25rem;">
+                  <div>
+                    <div style="font-size: 0.72rem; font-family: monospace; letter-spacing: 0.1em; color: #10B981; font-weight: 700;">
+                      19 — CRYPTOGRAPHIC AUDIT &amp; NATURAL LANGUAGE AGENT
+                    </div>
+                    <h2 class="chart-title" style="margin: 0.2rem 0;">Fare Economics Provenance &amp; Ask AeroIndex</h2>
+                    <div class="chart-subtitle">
+                      Trace every rupee back to source parser extraction rules and interrogate the fare economics dataset using natural language.
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                  <!-- Left: Provenance & Reproduce This Number -->
+                  <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                      <span style="font-size: 0.8rem; font-weight: 700; color: #0F172A;">Cryptographic Provenance Card</span>
+                      <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #059669; font-size: 0.68rem;">SHA-256 VERIFIED</span>
+                    </div>
+                    <div style="font-size: 0.78rem; color: #475569; line-height: 1.6; margin-bottom: 1rem;">
+                      <p style="margin: 0 0 0.5rem 0;"><strong>Active Metric:</strong> National Base Fare Share (68.4%)</p>
+                      <p style="margin: 0 0 0.5rem 0;"><strong>Digest:</strong> <code style="font-size: 0.72rem; background: #E2E8F0; padding: 2px 4px; border-radius: 3px;">sha256:7f49c0e2a8931bd560ef7b8192a54ce081d4a8f3</code></p>
+                      <p style="margin: 0 0 0.5rem 0;"><strong>Extraction Parser:</strong> Rule R03 Tax &amp; Fare Component Normalizer</p>
+                      <p style="margin: 0 0 0.5rem 0;"><strong>Sample Size:</strong> n = 458,820 fully decomposable quotes across 1,284 corridors</p>
+                      <p style="margin: 0 0 0.5rem 0;"><strong>Mathematical Proof:</strong> Base (₹3,612) / Total (₹5,281) = 68.396%</p>
+                    </div>
+                    <div style="display: flex; gap: 0.6rem;">
+                      <button class="btn btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="reproduceFareEconomicsNumber()">
+                        Reproduce This Number (Sandbox) →
+                      </button>
+                      <button class="btn btn-ghost" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="downloadFareEconomicsCertificate()">
+                        Download JSON Audit Cert
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Right: Ask AeroIndex Fare Economics Agent -->
+                  <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 1.25rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                      <span style="font-size: 1rem;">🤖</span>
+                      <span style="font-size: 0.8rem; font-weight: 700; color: #0F172A;">Ask AeroIndex: Fare Economics Agent</span>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                      <input type="text" id="components-agent-input" placeholder="Ask about ATF pass-through, UDF fees, GST rates..." 
+                        style="width: 100%; font-size: 0.8rem; padding: 0.45rem 0.75rem; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF;"
+                        onkeydown="if(event.key==='Enter') handleFareEconomicsQuery()">
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.85rem;">
+                      <button class="btn btn-ghost" style="font-size: 0.68rem; padding: 0.2rem 0.5rem;" onclick="executeFareEconomicsQuickPrompt('atf')">How is ATF pass-through calculated?</button>
+                      <button class="btn btn-ghost" style="font-size: 0.68rem; padding: 0.2rem 0.5rem;" onclick="executeFareEconomicsQuickPrompt('udf')">Which airport charges the highest UDF?</button>
+                      <button class="btn btn-ghost" style="font-size: 0.68rem; padding: 0.2rem 0.5rem;" onclick="executeFareEconomicsQuickPrompt('gst')">Does GST apply to airport development fees?</button>
+                    </div>
+                    <div id="components-agent-answer-box" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 0.75rem; font-size: 0.78rem; color: #334155; line-height: 1.5; min-height: 70px;">
+                      Enter a question above or select a quick prompt to interrogate the fare component and cost pass-through dataset with econometric citations.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
+
 
           <!-- TAB 10: WHAT-MOVED WATERFALL -->
           <section class="tab-pane" id="pane-waterfall">
