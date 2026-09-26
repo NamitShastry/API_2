@@ -2391,48 +2391,679 @@
             </div>
           </div>
 
-          <!-- TAB 06: LEAD-TIME INTELLIGENCE -->
+          <!-- TAB 06: LEAD-TIME INTELLIGENCE — THE BOOKING WINDOW OBSERVATORY -->
           <section class="tab-pane" id="pane-elasticity">
-            <div class="grid-2-col">
-              <div class="glass-panel chart-container">
-                <div class="chart-header">
-                  <div>
-                    <h3 class="chart-title">Lead-Time Advance Purchase Price Curve</h3>
-                    <div class="chart-subtitle">Empirical booking curve decay from L01 to L60</div>
-                  </div>
-                  <span class="brand-badge">Non-Linear Elasticity</span>
+            <div class="observatory-story-wrapper">
+
+              <!-- =========================================================================
+                   CHAPTER 01: BOOKING WINDOW OBSERVATORY COMMAND HEADER
+                   ========================================================================= -->
+              <div class="command-header-box">
+                <div class="story-eyebrow">
+                  <span class="eyebrow-dot"></span>
+                  <span>LEAD-TIME INTELLIGENCE / BOOKING WINDOW ANALYTICS · TEMPORAL MARKET OBSERVATORY</span>
                 </div>
-                <svg class="svg-chart" id="elasticity-svg" viewBox="0 0 500 280"></svg>
+                <h1 class="story-title">The Booking Window Observatory</h1>
+                <p class="story-subtitle">
+                  Understand how Indian domestic airfare markets behave across the full period between booking and departure — beyond a single price curve. An empirical investigation into market regimes, fare family lifecycles, route fingerprints, and observation depth.
+                </p>
+
+                <!-- High-Level Real-Time Metrics Strip -->
+                <div class="command-metrics-grid">
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="bstat-routes-count">1,284</span>
+                    <span class="command-stat-lbl">Routes Analyzed</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="bstat-instances-count">42,918</span>
+                    <span class="command-stat-lbl">Flight Instances</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="bstat-obs-count">486,201</span>
+                    <span class="command-stat-lbl">Fare Observations</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">L01–L60</span>
+                    <span class="command-stat-lbl">Horizon Coverage</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">6</span>
+                    <span class="command-stat-lbl">Carriers Monitored</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">18</span>
+                    <span class="command-stat-lbl">Fare Families</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="bstat-last-sync">UPDATED 42s AGO</span>
+                    <span class="command-stat-lbl">Telemetry Clock</span>
+                  </div>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" style="color: #6B21A8; font-size: 1.05rem;">SIMULATED_LIVE</span>
+                    <span class="command-stat-lbl">Data State</span>
+                  </div>
+                </div>
+
+                <!-- Global Analytical Filter Ribbon -->
+                <div class="observatory-filter-ribbon">
+                  <div class="filter-control-item">
+                    <label>Corridor Focus</label>
+                    <select class="filter-select-sleek" id="obs-filter-route" onchange="applyObservatoryFilters()">
+                      <option value="ALL" selected>All Major Corridors (National)</option>
+                      <option value="DEL-BOM">DEL-BOM (Commercial Trunk)</option>
+                      <option value="DEL-BLR">DEL-BLR (Tech Corridor)</option>
+                      <option value="DEL-HYD">DEL-HYD (Hyderabad Metro)</option>
+                      <option value="DEL-GOI">DEL-GOI (Goa Leisure)</option>
+                      <option value="DEL-CCU">DEL-CCU (Kolkata Trunk)</option>
+                      <option value="DEL-AMD">DEL-AMD (Ahmedabad Industrial)</option>
+                      <option value="DEL-PNQ">DEL-PNQ (Pune Connector)</option>
+                      <option value="DEL-SXR">DEL-SXR (Srinagar Transit)</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-control-item">
+                    <label>Lead Horizon</label>
+                    <select class="filter-select-sleek" id="obs-filter-window" onchange="applyObservatoryFilters()">
+                      <option value="ALL" selected>All Windows (L01–L60)</option>
+                      <option value="L01">L01 (0–1 Day / Same-Day)</option>
+                      <option value="L03">L03 (2–3 Days / Distress)</option>
+                      <option value="L07">L07 (4–7 Days / Surge Knee)</option>
+                      <option value="L14">L14 (8–14 Days / Baseline)</option>
+                      <option value="L21">L21 (15–21 Days / Advance)</option>
+                      <option value="L30">L30 (22–30 Days / Planned)</option>
+                      <option value="L60">L60 (31–60 Days / Early)</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-control-item">
+                    <label>Operating Carrier</label>
+                    <select class="filter-select-sleek" id="obs-filter-carrier" onchange="applyObservatoryFilters()">
+                      <option value="ALL" selected>All Operating Airlines</option>
+                      <option value="6E">IndiGo (6E)</option>
+                      <option value="AI">Air India (AI)</option>
+                      <option value="QP">Akasa Air (QP)</option>
+                      <option value="SG">SpiceJet (SG)</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-control-item">
+                    <label>Cabin Tier</label>
+                    <select class="filter-select-sleek" id="obs-filter-cabin" onchange="applyObservatoryFilters()">
+                      <option value="ALL" selected>All Cabins</option>
+                      <option value="ECONOMY">Economy</option>
+                      <option value="PREMIUM">Premium Economy</option>
+                      <option value="BUSINESS">Business Class</option>
+                    </select>
+                  </div>
+
+                  <button class="btn btn-ghost" style="margin-left: auto; font-size: 0.75rem; padding: 0.35rem 0.75rem;" onclick="resetObservatoryFilters()">Reset Filters</button>
+                </div>
               </div>
 
-              <div class="glass-panel table-card">
-                <div class="chart-header">
-                  <div>
-                    <h3 class="chart-title">Lead-Time Scarcity Inflection Windows</h3>
-                    <div class="chart-subtitle">Where pricing accelerates prior to departure</div>
+              <!-- =========================================================================
+                   CHAPTER 02: THE LEAD-TIME LANDSCAPE (SIGNATURE VISUAL WOW #1)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">01</span>
+                    <span>MULTI-DIMENSIONAL TEMPORAL STRUCTURE · BEYOND A SINGLE PRICE CURVE</span>
+                  </div>
+                  <h2 class="story-title">The Market Lead-Time Landscape</h2>
+                  <p class="story-subtitle">
+                    A multi-dimensional analytical surface revealing how the internal dynamics of India's domestic aviation market evolve from 60 days prior to departure down to departure day. Select a structural metric below to observe how the market reorganizes across booking windows.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <!-- Dimension Selector Ribbon -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                      <span style="font-size: 0.78rem; font-weight: 700; color: var(--navy-900); text-transform: uppercase;">Landscape Dimension:</span>
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-land-dispersion" onclick="switchLandscapeDimension('DISPERSION')">Fare Dispersion (IQR)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-land-volatility" onclick="switchLandscapeDimension('VOLATILITY')">Volatility (MAD σ)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-land-density" onclick="switchLandscapeDimension('DENSITY')">Observation Density</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-land-diversity" onclick="switchLandscapeDimension('DIVERSITY')">Fare Family Diversity</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-land-carrier" onclick="switchLandscapeDimension('CARRIER')">Carrier Diversity</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;" id="btn-land-avail" onclick="switchLandscapeDimension('AVAILABILITY')">Availability Signals</button>
+                    </div>
+                    <span class="data-state-pill state-calculated" id="landscape-dim-badge">METRIC: INTERQUARTILE RANGE (INR)</span>
+                  </div>
+
+                  <!-- 2D Landscape Visual Surface -->
+                  <svg class="svg-chart" id="leadtime-landscape-svg" viewBox="0 0 950 320" style="width: 100%; height: auto; max-height: 340px;">
+                    <!-- Rendered dynamically via JS renderLeadTimeLandscape() -->
+                  </svg>
+
+                  <!-- Supporting Lead-Time × Metric Matrix -->
+                  <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-hairline); padding-top: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                      <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--navy-900);">Lead-Time Horizon Structural Matrix</h4>
+                      <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">n = 486,201 observations across 1,284 routes</span>
+                    </div>
+                    <div class="table-scroll-container">
+                      <table class="heatmap-table" id="leadtime-matrix-table">
+                        <thead>
+                          <tr>
+                            <th>Horizon</th>
+                            <th>Window Span</th>
+                            <th style="text-align: right;">Fare Dispersion</th>
+                            <th style="text-align: right;">Observation Density</th>
+                            <th style="text-align: center;">Fare Family Count</th>
+                            <th style="text-align: center;">Active Carriers</th>
+                            <th style="text-align: center;">Route Coverage</th>
+                            <th style="text-align: center;">Availability Signal</th>
+                            <th style="text-align: center;">Confidence</th>
+                          </tr>
+                        </thead>
+                        <tbody id="leadtime-matrix-tbody">
+                          <!-- Populated dynamically via JS -->
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-                <table class="heatmap-table">
-                  <thead>
-                    <tr>
-                      <th>Window</th>
-                      <th>Target Lead</th>
-                      <th>Avg Fare</th>
-                      <th>Price Acceleration</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td><strong>L01</strong></td><td>0-1 Day</td><td>₹8,240</td><td><span class="heat-cell heat-extreme">+23.5% / day</span></td></tr>
-                    <tr><td><strong>L03</strong></td><td>2-3 Days</td><td>₹6,670</td><td><span class="heat-cell heat-high">+14.2% / day</span></td></tr>
-                    <tr><td><strong>L07</strong></td><td>4-7 Days</td><td>₹5,550</td><td><span class="heat-cell heat-mid">+6.8% / day</span></td></tr>
-                    <tr><td><strong>L14</strong></td><td>8-14 Days</td><td>₹4,700</td><td><span class="heat-cell heat-low">Baseline (1.00x)</span></td></tr>
-                    <tr><td><strong>L30</strong></td><td>22-30 Days</td><td>₹3,810</td><td><span class="heat-cell heat-low">-19.0% vs Base</span></td></tr>
-                    <tr><td><strong>L60</strong></td><td>31-60 Days</td><td>₹3,430</td><td><span class="heat-cell heat-low">-27.0% vs Base</span></td></tr>
-                  </tbody>
-                </table>
               </div>
+
+              <!-- =========================================================================
+                   CHAPTER 03: ROUTE LEAD-TIME FINGERPRINTS
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">02</span>
+                    <span>MULTI-DIMENSIONAL BEHAVIORAL SIGNATURES</span>
+                  </div>
+                  <h2 class="story-title">Route Lead-Time Fingerprints</h2>
+                  <p class="story-subtitle">
+                    Every aviation corridor exhibits a unique temporal behavior pattern. Rather than reducing a route to an arbitrary score, AeroIndex constructs a 6-axis descriptive behavioral fingerprint based on normalized empirical measurements.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <!-- Selector for Comparison -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Corridor Behavioral Signature Benchmark</h4>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Comparing structural lead-time fingerprints across contrasting domestic corridors</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem;">
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.55rem; font-size: 0.72rem;" onclick="benchmarkFingerprintCorridor('DEL-BOM')">DEL-BOM (Commercial)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.72rem;" onclick="benchmarkFingerprintCorridor('DEL-BLR')">DEL-BLR (Tech)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.72rem;" onclick="benchmarkFingerprintCorridor('DEL-GOI')">DEL-GOI (Leisure)</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.55rem; font-size: 0.72rem;" onclick="benchmarkFingerprintCorridor('DEL-SXR')">DEL-SXR (Transit)</button>
+                    </div>
+                  </div>
+
+                  <div id="route-fingerprints-container">
+                    <!-- Populated dynamically via JS renderRouteFingerprints() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 04: BOOKING WINDOW REGIME MAP
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">03</span>
+                    <span>STRUCTURAL MARKET STATE CLASSIFICATION</span>
+                  </div>
+                  <h2 class="story-title">Booking Window Regime Map</h2>
+                  <p class="story-subtitle">
+                    A route × lead-time regime classification matrix. Instead of merely plotting average fares, this surface classifies the observed market state into documented structural regimes: Stable, Expanding Dispersion, Contracting Inventory, High Diversity, or Limited Coverage.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 1rem; align-items: center; font-size: 0.75rem;">
+                      <span style="font-weight: 700; color: var(--navy-900);">Regime Legend:</span>
+                      <span><span class="regime-dot dot-stable"></span> Stable Baseline</span>
+                      <span><span class="regime-dot dot-expanding"></span> Expanding Dispersion</span>
+                      <span><span class="regime-dot dot-contracting"></span> Contracting Inventory</span>
+                      <span><span class="regime-dot dot-highdisp"></span> High Dispersion</span>
+                      <span><span class="regime-dot dot-diversity"></span> High Diversity</span>
+                      <span><span class="regime-dot dot-limited"></span> Limited Coverage</span>
+                    </div>
+                    <span class="data-state-pill state-calculated">ALGORITHMIC CLASSIFICATION</span>
+                  </div>
+
+                  <div class="table-scroll-container">
+                    <table class="heatmap-table regime-matrix-table" id="regime-matrix-table">
+                      <thead>
+                        <tr>
+                          <th>Corridor</th>
+                          <th>Corridor Archetype</th>
+                          <th style="text-align: center;">L60 (Early)</th>
+                          <th style="text-align: center;">L30 (Planned)</th>
+                          <th style="text-align: center;">L21 (Advance)</th>
+                          <th style="text-align: center;">L14 (Base)</th>
+                          <th style="text-align: center;">L07 (Surge Knee)</th>
+                          <th style="text-align: center;">L03 (Distress)</th>
+                          <th style="text-align: center;">L01 (Last-Min)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="regime-matrix-tbody">
+                        <!-- Populated dynamically via JS renderRegimeMap() -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 05: FARE FAMILY MIGRATION & LIFECYCLE (WOW #3)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">04</span>
+                    <span>PRODUCT PACKAGING &amp; SHELF-LIFE DYNAMICS</span>
+                  </div>
+                  <h2 class="story-title">Fare Family Migration &amp; Lifecycle</h2>
+                  <p class="story-subtitle">
+                    How does the composition of what is actually being sold change as departure approaches? Observe how promotional Saver fares dominate early booking horizons before yielding to Flex and Corporate tiers in the final two weeks.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Commercial Fare Family Quoted Share by Horizon</h4>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Tracking transition from low-fare unbundled seats to flexible corporate inventory</span>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; font-size: 0.75rem; align-items: center;">
+                      <span><span class="decomp-dot" style="background: #2563EB;"></span> Saver Tier</span>
+                      <span><span class="decomp-dot" style="background: #10B981;"></span> Standard Economy</span>
+                      <span><span class="decomp-dot" style="background: #F59E0B;"></span> Flexi Plus</span>
+                      <span><span class="decomp-dot" style="background: #8B5CF6;"></span> Corporate / Business</span>
+                    </div>
+                  </div>
+
+                  <div id="fare-family-migration-container">
+                    <!-- Populated dynamically via JS renderFareFamilyMigration() -->
+                  </div>
+
+                  <div class="formula-callout" style="margin-top: 1.25rem;">
+                    <span style="color: #38BDF8; font-weight: 700;">// METHODOLOGICAL DATA HONESTY NOTE (FARE FAMILY DISAPPEARANCE)</span><br>
+                    When a fare family ceases to appear in quote observations (e.g. Saver at L01), AeroIndex strictly reports <strong>“Fare family no longer observed in active feed”</strong> rather than asserting a physical <em>“Sold Out”</em> status. Actual seat inventory depletion cannot be established from fare quotes alone without internal carrier PSS access.
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 06: INVENTORY OBSERVABILITY & DATA DEPTH
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">05</span>
+                    <span>OBSERVATION COVERAGE AS AN ANALYTICAL DIMENSION</span>
+                  </div>
+                  <h2 class="story-title">Inventory Observability Across Horizons</h2>
+                  <p class="story-subtitle">
+                    How much can AeroIndex actually see at each point in the booking lifecycle? Lead time is not only a pricing parameter; it is a data-quality dimension where early horizons feature thinner schedule coverage compared to dense near-departure windows.
+                  </p>
+                </div>
+
+                <div class="grid-2-col">
+                  <!-- Observability Funnel Visual -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Eligible Route Coverage Ratio by Horizon</h4>
+                      <span class="brand-badge">COVERAGE DEPTH</span>
+                    </div>
+                    <svg class="svg-chart" id="observability-funnel-svg" viewBox="0 0 450 260" style="width: 100%; height: auto;">
+                      <!-- Rendered dynamically via JS -->
+                    </svg>
+                  </div>
+
+                  <!-- Observability Breakdown Table -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Observation Quality &amp; Feed Completeness</h4>
+                      <span class="data-state-pill state-calculated">AUDIT DATA</span>
+                    </div>
+                    <table class="heatmap-table" id="observability-audit-table">
+                      <thead>
+                        <tr>
+                          <th>Horizon</th>
+                          <th>Coverage %</th>
+                          <th>Observed Routes</th>
+                          <th>Quote Volume</th>
+                          <th>Feed Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="observability-audit-tbody">
+                        <!-- Populated dynamically via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 07: LEAD-TIME VOLATILITY SURFACE
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">06</span>
+                    <span>CROSS-CORRIDOR INTRADAY UNPREDICTABILITY</span>
+                  </div>
+                  <h2 class="story-title">Lead-Time Volatility Surface</h2>
+                  <p class="story-subtitle">
+                    This surface answers: which booking windows are structurally stable versus highly volatile? Using Median Absolute Deviation (MAD), it evaluates price dispersion across competing quotes to distinguish predictable advance markets from volatile last-minute windows.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Normalized Price Volatility Index (MAD / Median Fare %)</h4>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Darker shades indicate higher pricing unpredictability; hover cells for atomic metrics</span>
+                    </div>
+                    <span class="data-state-pill state-calculated">VARIANCE SURFACE</span>
+                  </div>
+
+                  <div class="table-scroll-container">
+                    <table class="heatmap-table" id="volatility-surface-table">
+                      <thead>
+                        <tr>
+                          <th>Route Corridor</th>
+                          <th>Corridor Type</th>
+                          <th style="text-align: right;">L60</th>
+                          <th style="text-align: right;">L30</th>
+                          <th style="text-align: right;">L21</th>
+                          <th style="text-align: right;">L14</th>
+                          <th style="text-align: right;">L07</th>
+                          <th style="text-align: right;">L03</th>
+                          <th style="text-align: right;">L01</th>
+                        </tr>
+                      </thead>
+                      <tbody id="volatility-surface-tbody">
+                        <!-- Populated dynamically via JS renderVolatilitySurface() -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 08: ROUTE BEHAVIOR SEGMENTATION
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">07</span>
+                    <span>EMPIRICAL FEATURE CLUSTERING</span>
+                  </div>
+                  <h2 class="story-title">Route Behavior Segmentation</h2>
+                  <p class="story-subtitle">
+                    Algorithmic clustering of 1,284 domestic routes into distinct behavioral segments based on early-window dependence, late-window volatility, fare family diversity, and observation coverage. Click any cluster to inspect its representative routes.
+                  </p>
+                </div>
+
+                <div class="grid-2-col">
+                  <!-- 2D Cluster Space Scatter Chart -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">2D Route Behavioral Feature Space</h4>
+                      <span class="brand-badge">K-MEANS (k=5)</span>
+                    </div>
+                    <svg class="svg-chart" id="segmentation-scatter-svg" viewBox="0 0 450 260" style="width: 100%; height: auto;">
+                      <!-- Rendered dynamically via JS -->
+                    </svg>
+                  </div>
+
+                  <!-- Cluster Details Explorer Card -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;" id="cluster-detail-card">
+                    <!-- Populated dynamically on cluster click -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 09: CARRIER LEAD-TIME SIGNATURES
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">08</span>
+                    <span>AIRLINE COMMERCIAL STRATEGY PROFILES</span>
+                  </div>
+                  <h2 class="story-title">Carrier Lead-Time Signatures</h2>
+                  <p class="story-subtitle">
+                    How does each operating carrier behave across booking windows? This analysis measures how airlines manage horizon presence, fare-family persistence, observation depth, and price dispersion across their operating schedules.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Carrier Horizon Presence &amp; Product Persistence</h4>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Comparing IndiGo, Air India, Akasa Air, and SpiceJet across L01–L60 windows</span>
+                    </div>
+                    <span class="data-state-pill state-observed">FACTUAL BENCHMARK</span>
+                  </div>
+
+                  <div class="carrier-sig-grid" id="carrier-signatures-grid">
+                    <!-- Populated dynamically via JS renderCarrierSignatures() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 10: ADVANCE-PURCHASE COHORTS
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">09</span>
+                    <span>BOOKING POPULATION COMPOSITION</span>
+                  </div>
+                  <h2 class="story-title">Advance-Purchase Cohorts</h2>
+                  <p class="story-subtitle">
+                    Grouping flight quotes into 4 distinct booking cohorts: Early Planners (31–60d), Mid-Window (15–30d), Near-Departure (4–14d), and Last-Minute (0–3d). Shows how market composition fundamentally shifts from leisure trunks to high-yield corporate seats.
+                  </p>
+                </div>
+
+                <div class="cohort-cards-grid" id="cohort-cards-grid">
+                  <!-- Injected dynamically via JS renderAdvancePurchaseCohorts() -->
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 11: LEAD-TIME DATA CONFIDENCE
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">10</span>
+                    <span>EMPIRICAL EVIDENCE DEPTH &amp; INTEGRITY</span>
+                  </div>
+                  <h2 class="story-title">How Strong Is the Evidence?</h2>
+                  <p class="story-subtitle">
+                    Every lead-time conclusion is grounded in explicit observation sample sizes. This scorecard details the evidence basis across each booking window to ensure analysts understand statistical confidence thresholds.
+                  </p>
+                </div>
+
+                <div class="confidence-scorecard-grid" id="confidence-scorecard-grid">
+                  <!-- Populated dynamically via JS renderLeadTimeConfidence() -->
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 12: ROUTE LEAD-TIME CASE STUDY & "LEAD-TIME DNA" (WOW #2)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">11</span>
+                    <span>CORRIDOR TEMPORAL BARCODE IDENTIFIER</span>
+                  </div>
+                  <h2 class="story-title">Route Lead-Time DNA</h2>
+                  <p class="story-subtitle">
+                    Select any Indian aviation corridor to generate its unique multi-track Lead-Time DNA. A multi-layered visual signature illustrating observation density, fare-family diversity, volatility regimes, coverage depth, and carrier mix from L60 to L01.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                      <span style="font-size: 0.82rem; font-weight: 700; color: var(--navy-900);">Select Corridor:</span>
+                      <select class="control-select-sleek" id="dna-route-selector" onchange="renderRouteLeadTimeDNA(this.value); renderLeadTimeMarketEvents(this.value);">
+                        <option value="DEL-BOM" selected>DEL-BOM (Delhi ↔ Mumbai / Commercial Trunk)</option>
+                        <option value="DEL-BLR">DEL-BLR (Delhi ↔ Bengaluru / Tech Hub)</option>
+                        <option value="DEL-HYD">DEL-HYD (Delhi ↔ Hyderabad / Corporate)</option>
+                        <option value="DEL-GOI">DEL-GOI (Delhi ↔ Goa / Leisure Peak)</option>
+                        <option value="DEL-CCU">DEL-CCU (Delhi ↔ Kolkata / Eastern Metro)</option>
+                        <option value="DEL-SXR">DEL-SXR (Delhi ↔ Srinagar / Tourism Transit)</option>
+                      </select>
+                    </div>
+                    <span class="brand-badge">LEAD-TIME DNA ARCHITECTURE</span>
+                  </div>
+
+                  <div id="route-leadtime-dna-container">
+                    <!-- Populated dynamically via JS renderRouteLeadTimeDNA() -->
+                  </div>
+
+                  <!-- Market State Transitions Timeline -->
+                  <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-hairline); padding-top: 1.25rem;">
+                    <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--navy-900); margin-bottom: 0.75rem;">Structural Market-State Transitions Timeline</h4>
+                    <div class="drilldown-path-bar" id="dna-transitions-timeline">
+                      <!-- Injected dynamically via JS -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 13: LEAD-TIME STRUCTURAL EVENTS
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">12</span>
+                    <span>ALGORITHMIC TEMPORAL INFLECTIONS</span>
+                  </div>
+                  <h2 class="story-title">Lead-Time Structural Market Events</h2>
+                  <p class="story-subtitle">
+                    Algorithmic detection of structural shifts across booking horizons, such as fare family entries/disappearances, coverage expansions, carrier entries, or volatility spikes.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div id="leadtime-market-events-container">
+                    <!-- Populated dynamically via JS renderLeadTimeMarketEvents() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 14: CRYPTOGRAPHIC PROVENANCE & DATA EXPORT
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">13</span>
+                    <span>AUDITABLE METHODOLOGY &amp; RESEARCH REPRODUCIBILITY</span>
+                  </div>
+                  <h2 class="story-title">Lead-Time Methodology &amp; Provenance</h2>
+                  <p class="story-subtitle">
+                    Every lead-time calculation is backed by the AeroIndex DGCA-compliant methodology standard BV-2026.1 and cryptographically verifiable with a SHA-256 fingerprint hash.
+                  </p>
+                </div>
+
+                <div class="drilldown-terminal-card" style="margin-bottom: 2rem;">
+                  <div class="drilldown-path-bar">
+                    <span class="drilldown-step-badge">1. Raw Lead Quotes</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">2. Day-Matched Normalizer</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">3. R01-R12 Hygiene Guard</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">4. Horizon Discretizer (L01-L60)</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">5. Jevons Geometric Relative</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">6. Published Observatory Feed</span>
+                  </div>
+
+                  <div class="drilldown-level-grid">
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Lead-Time Methodology Governance</span>
+                        <span class="data-state-pill state-calculated">BV-2026.1 COMPLIANT</span>
+                      </div>
+                      <div style="font-size: 0.8rem; line-height: 1.8;">
+                        <div><strong>Governing Standard:</strong> AeroIndex Aviation Lead-Time Matrix BV-2026.1</div>
+                        <div><strong>Horizon Definition:</strong> Advance purchase in integer days before flight scheduled local departure.</div>
+                        <div><strong>Dispersion Formula:</strong> Interquartile Range (IQR = P75 − P25) &amp; MAD.</div>
+                        <div><strong>Sample Size Audited:</strong> 486,201 validated quotes across 1,284 routes.</div>
+                        <div><strong>Verified By:</strong> AeroIndex Institutional Compliance Engine @ 10:42:18 IST</div>
+                      </div>
+                    </div>
+
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Cryptographic Signature &amp; Export</span>
+                        <span class="data-state-pill state-observed">SHA-256 SIGNED</span>
+                      </div>
+                      <div style="font-family: var(--font-mono); font-size: 0.74rem; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; word-break: break-all; line-height: 1.6; margin-bottom: 0.75rem;">
+                        Audit Signature:<br>
+                        <span style="color: #2563EB; font-weight: 700;">b7f21a48c991e0374e5029c884b23df519a86e72c0419e913a48e72c918ef312</span>
+                      </div>
+                      <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-ghost" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="exportLeadTimeDataset('CSV')">Export CSV Dataset</button>
+                        <button class="btn btn-ghost" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="exportLeadTimeDataset('JSON')">Export JSON Schema</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   CHAPTER 15: ASK AEROINDEX (BOOKING WINDOW AGENT)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">14</span>
+                    <span>NATURAL LANGUAGE BOOKING LIFECYCLE REASONING</span>
+                  </div>
+                  <h2 class="story-title">Ask AeroIndex: Booking Window Intelligence</h2>
+                  <p class="story-subtitle">
+                    Interrogate India's domestic booking window market structure in plain language. Answers are strictly formulated with non-causal econometric evidence and sample-size citations.
+                  </p>
+                </div>
+
+                <div class="ask-network-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 1rem; color: #FFFFFF;">✦ AeroIndex Booking Window Agent</div>
+                    <span class="data-state-pill state-calculated" style="background: rgba(255,255,255,0.1); color: #38BDF8; border-color: rgba(56,189,248,0.3);">GROUNDED TEMPORAL REASONING</span>
+                  </div>
+
+                  <form class="ask-network-input-box" id="ask-booking-form" onsubmit="handleBookingWindowQuery(event)">
+                    <span style="color: #94A3B8; font-size: 1.1rem; line-height: 1.8;">✦</span>
+                    <input type="text" class="ask-network-input" id="ask-booking-input" placeholder="Ask any lead-time intelligence question (e.g. Which routes exhibit the highest late-window volatility?)..." autocomplete="off" />
+                    <button type="submit" class="btn btn-primary" style="padding: 0.4rem 1rem;">Query →</button>
+                  </form>
+
+                  <div class="ask-prompt-pills">
+                    <span style="font-size: 0.72rem; color: #64748B; align-self: center;">Suggested:</span>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickBookingPrompt('Which routes exhibit the highest late-window volatility?')">Which routes exhibit highest late-window volatility?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickBookingPrompt('How does fare family composition change between L14 and L03 on DEL-BOM?')">Fare family transition L14 to L03 on DEL-BOM</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickBookingPrompt('Why does L60 have lower route observability than L14?')">Why does L60 have lower observability than L14?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickBookingPrompt('Compare the Lead-Time DNA of DEL-BOM and DEL-GOI')">Compare Lead-Time DNA of DEL-BOM vs DEL-GOI</button>
+                  </div>
+
+                  <div class="ask-answer-box" id="ask-booking-answer" style="display: none;">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
+
 
           <!-- TAB 07: CARRIER INTELLIGENCE -->
           <section class="tab-pane" id="pane-carriers">
