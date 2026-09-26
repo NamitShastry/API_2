@@ -2674,3 +2674,501 @@ html, body {
   color: var(--text-muted);
 }
 
+/* ==========================================================================
+   ROUTE INTELLIGENCE REDESIGN: VERTICAL ANALYTICAL STORY EXPERIENCE
+   ========================================================================== */
+
+.route-intel-story-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  width: 100%;
+}
+
+.story-section {
+  position: relative;
+  width: 100%;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 2.25rem;
+}
+
+.story-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.story-header {
+  margin-bottom: 1.5rem;
+}
+
+.story-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--blue-primary);
+  margin-bottom: 0.35rem;
+}
+
+.story-num-badge {
+  background: var(--navy-900);
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+}
+
+.story-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--navy-900);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+
+.story-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  max-width: 820px;
+  line-height: 1.5;
+}
+
+/* Command Header Metrics & Controls */
+.command-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.command-stat-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.command-stat-num {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--navy-900);
+}
+
+.command-stat-lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.command-controls-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+}
+
+.control-pill-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.control-select-sleek {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--navy-900);
+  outline: none;
+  cursor: pointer;
+}
+
+.control-select-sleek:focus {
+  border-color: var(--navy-900);
+}
+
+/* Section 01: India Corridor Flow Map */
+.india-map-container {
+  position: relative;
+  width: 100%;
+  background: radial-gradient(circle at 45% 30%, #FFFFFF 0%, #F8FAFC 80%, #F1F5F9 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.india-flow-svg {
+  width: 100%;
+  height: auto;
+  max-height: 720px;
+  display: block;
+}
+
+.map-route-arc {
+  fill: none;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.map-route-arc:hover {
+  stroke-width: 5px !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.4));
+}
+
+.map-dest-node {
+  cursor: pointer;
+  transition: transform 0.2s ease, r 0.2s ease;
+}
+
+.map-dest-node:hover {
+  r: 8px !important;
+  filter: drop-shadow(0 0 8px rgba(15, 23, 42, 0.5));
+}
+
+.map-floating-panel {
+  position: absolute;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow-popover);
+}
+
+.map-floating-controls {
+  top: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.map-floating-legend {
+  bottom: 1.25rem;
+  left: 1.25rem;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.map-interactive-tooltip {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  background: #0F172A;
+  color: #F8FAFC;
+  border-radius: 8px;
+  padding: 0.85rem 1.15rem;
+  font-size: 0.78rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+  display: none;
+  min-width: 220px;
+  line-height: 1.6;
+}
+
+/* Section 02: What is Moving Right Now */
+.network-pulse-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .network-pulse-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.velocity-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.velocity-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.65rem 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.velocity-bar-row:hover {
+  border-color: var(--navy-900);
+  transform: translateX(3px);
+}
+
+.velocity-corridor-id {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  min-width: 80px;
+}
+
+.velocity-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #E2E8F0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.velocity-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.velocity-bar-fill.surge {
+  background: #F43F5E;
+}
+
+.velocity-bar-fill.easing {
+  background: #10B981;
+}
+
+.velocity-fare-info {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 140px;
+  text-align: right;
+}
+
+/* Section 03: Full-Width Lead-Time Matrix */
+.full-matrix-container {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: var(--shadow-card);
+}
+
+.matrix-metric-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: #FAFAFC;
+}
+
+/* Section 04: Fare Curves */
+.curve-chart-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.curve-corridor-pills {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.curve-corridor-pill {
+  border: 1px solid var(--border-subtle);
+  background: #FFFFFF;
+  border-radius: 4px;
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.curve-corridor-pill:hover,
+.curve-corridor-pill.active {
+  background: var(--navy-900);
+  color: #FFFFFF;
+  border-color: var(--navy-900);
+}
+
+/* Section 05: Route Comparison & Airline Competition */
+.comparison-corridors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.corridor-profile-box {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.corridor-profile-box:hover,
+.corridor-profile-box.active {
+  border-color: var(--blue-primary);
+  box-shadow: 0 0 0 2px var(--blue-subtle);
+}
+
+.airline-share-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.airline-share-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.airline-code-col {
+  width: 75px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.airline-progress-col {
+  flex: 1;
+  height: 10px;
+  background: #F1F5F9;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.airline-progress-fill {
+  height: 100%;
+  border-radius: 5px;
+}
+
+.airline-stats-col {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  width: 140px;
+  text-align: right;
+}
+
+/* Section 06: What Moved Waterfall */
+.waterfall-analytical-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.evidence-narrative-callout {
+  background: #F8FAFC;
+  border-left: 4px solid var(--blue-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 1rem 1.25rem;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--navy-900);
+}
+
+/* Section 08: History Timeline */
+.history-timeline-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+/* Section 12: Ask AeroIndex */
+.ask-network-card {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  color: #F8FAFC;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+}
+
+.ask-network-input-box {
+  display: flex;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.ask-network-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+}
+
+.ask-prompt-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ask-prompt-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94A3B8;
+  border-radius: 4px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ask-prompt-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+
+.ask-answer-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+

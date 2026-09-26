@@ -962,212 +962,682 @@
             </div>
           </section>
 
-          <!-- TAB 04: ROUTE INTELLIGENCE & HEATMAP -->
+          <!-- TAB 04: ROUTE INTELLIGENCE & HEATMAP (RETHOUGHT MASTER ANALYTICAL STORY) -->
           <section class="tab-pane" id="pane-routes">
-            <div class="grid-2-col">
-              <!-- Route Flow Map -->
-              <div class="glass-panel flow-map-container">
-                <div class="chart-header">
-                  <div>
-                    <h3 class="chart-title">India Domestic Aviation Corridor Flow Map</h3>
-                    <div class="chart-subtitle">20 Directional pairs with animated flight paths</div>
-                  </div>
-                  <span class="brand-badge">20 Directional Pairs</span>
+            <div class="route-intel-story-wrapper">
+
+              <!-- =========================================================================
+                   COMMAND HEADER
+                   ========================================================================= -->
+              <div class="command-header-box">
+                <div class="story-eyebrow">
+                  <span class="eyebrow-dot"></span>
+                  <span>CIVIL AVIATION PRICE INTELLIGENCE · DGCA BASKET BV-2026.1</span>
                 </div>
-                <svg class="india-map-svg" viewBox="0 0 500 550" id="india-flow-svg">
-                  <!-- Paths and airport nodes -->
-                </svg>
-              </div>
+                <h1 class="story-title">ROUTE INTELLIGENCE</h1>
+                <p class="story-subtitle">
+                  India Domestic Fare Network — Real-time visibility into where domestic airfare is moving, how fast it is moving, and what is driving the change across Delhi departure corridors.
+                </p>
 
-              <!-- Lead-Time Heatmap Matrix -->
-              <div class="glass-panel table-card" style="overflow-x: auto;">
-                <div class="chart-header">
-                  <div>
-                    <h3 class="chart-title">Lead-Time Elasticity Matrix <span class="data-state-pill state-calculated">CALCULATED</span></h3>
-                    <div class="chart-subtitle">Route × Advance Purchase Bucket (L01-L60)</div>
+                <!-- High-Level Real-Time Metrics Strip -->
+                <div class="command-metrics-grid">
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">42</span>
+                    <span class="command-stat-lbl">Domestic Destinations</span>
                   </div>
-                  <span class="brand-badge">Elementary Jevons Price (₹)</span>
-                </div>
-                <table class="heatmap-table" id="heatmap-full-table">
-                  <thead>
-                    <tr>
-                      <th>Corridor</th>
-                      <th>L01 (0-1d)</th>
-                      <th>L03 (2-3d)</th>
-                      <th>L07 (4-7d)</th>
-                      <th>L14 (8-14d)</th>
-                      <th>L21 (15-21d)</th>
-                      <th>L30 (22-30d)</th>
-                      <th>L60 (31-60d)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="heatmap-matrix-tbody">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- DEL Domestic Network Registry (42 Destinations) & Honest Coverage Split -->
-            <div class="glass-panel table-card" style="margin-top: 1.5rem;">
-              <div class="chart-header">
-                <div>
-                  <h3 class="chart-title">DEL Domestic Network Registry (42 Destinations)</h3>
-                  <div class="chart-subtitle">Direct domestic passenger corridors from Indira Gandhi International Airport (DEL / VIDP)</div>
-                </div>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                  <span class="data-state-pill state-calculated">CALCULATED</span>
-                  <span class="data-state-pill state-simulated">SIMULATED_LIVE</span>
-                </div>
-              </div>
-
-              <!-- Methodology & Honest Coverage Separation Banner -->
-              <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-left: 4px solid var(--blue-primary); padding: 0.85rem 1.15rem; border-radius: 6px; font-size: 0.82rem; margin: 0.5rem 0 1rem 0;">
-                <strong>Methodology & Scope Distinction:</strong>
-                The <strong>20 directional corridors</strong> constitute the formal statutory <strong>INDEX BASKET</strong> (calibrated with DGCA passenger weights). The complete <strong>42 destinations</strong> represent the <strong>LIVE DEL NETWORK</strong>. Unmonitored or offline provider corridors (10 destinations) are truthfully declared and are <em>never imputed</em> into headline composite index calculations.
-              </div>
-
-              <!-- Visual Coverage Multi-Progress Bar -->
-              <div class="coverage-bar-wrapper">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">
-                  <span>Network Monitoring Coverage Audit</span>
-                  <span id="del-net-coverage-pct">57.1% Full · 19.0% Partial · 23.8% Unavailable</span>
-                </div>
-                <div class="coverage-multi-bar">
-                  <div class="coverage-seg coverage-seg-covered" style="width: 57.1%;" title="Covered: 24 destinations (57.1%)"></div>
-                  <div class="coverage-seg coverage-seg-partial" style="width: 19.0%;" title="Partial: 8 destinations (19.0%)"></div>
-                  <div class="coverage-seg coverage-seg-unavailable" style="width: 23.9%;" title="Unavailable Provider: 10 destinations (23.8%)"></div>
-                </div>
-                <div class="coverage-legend">
-                  <div class="coverage-legend-item">
-                    <span class="legend-color-dot" style="background: #10B981;"></span>
-                    <span><strong>Covered (24)</strong>: 100% active sampling</span>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">20</span>
+                    <span class="command-stat-lbl">Basket Corridors</span>
                   </div>
-                  <div class="coverage-legend-item">
-                    <span class="legend-color-dot" style="background: #F59E0B;"></span>
-                    <span><strong>Partial (8)</strong>: Reduced frequency sampling</span>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="stat-tracked-flights">84</span>
+                    <span class="command-stat-lbl">Flights Tracked</span>
                   </div>
-                  <div class="coverage-legend-item">
-                    <span class="legend-color-dot" style="background: #94A3B8;"></span>
-                    <span><strong>Unavailable Provider (10)</strong>: Direct API adapter offline</span>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="stat-quote-count">18,450</span>
+                    <span class="command-stat-lbl">Quote Observations</span>
                   </div>
-                </div>
-              </div>
-
-              <!-- Filter Pills for Destinations -->
-              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                <button class="btn btn-ghost active" id="btn-filter-dest-all" onclick="filterDestinations('ALL')">All 42 Corridors</button>
-                <button class="btn btn-ghost" id="btn-filter-dest-covered" onclick="filterDestinations('COVERED')">Covered (24)</button>
-                <button class="btn btn-ghost" id="btn-filter-dest-partial" onclick="filterDestinations('PARTIAL')">Partial (8)</button>
-                <button class="btn btn-ghost" id="btn-filter-dest-unavail" onclick="filterDestinations('UNAVAILABLE_PROVIDER')">Unavailable Provider (10)</button>
-              </div>
-
-              <!-- 42 Destinations Grid -->
-              <div class="dest-grid" id="del-dest-grid">
-                <!-- Injected via JavaScript from /api/v1/index/del-network -->
-              </div>
-            </div>
-
-            <!-- 11-Level Hierarchical Drill-Down Terminal -->
-            <div class="drilldown-terminal-card" id="drilldown-terminal">
-              <div class="chart-header">
-                <div>
-                  <h3 class="chart-title">11-Level Hierarchical Drill-Down Terminal</h3>
-                  <div class="chart-subtitle">End-to-end transparent lineage from National Macro Composite down to Individual Quote Observations</div>
-                </div>
-                <span class="brand-badge" id="drilldown-status-badge">11 LEVELS LINKED</span>
-              </div>
-
-              <!-- Active Breadcrumb Path Strip -->
-              <div class="drilldown-path-bar" id="drilldown-path-display">
-                <span class="drilldown-step-badge">L1: India</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge">L2: DEL</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge" id="dd-dest-badge">L3: BOM</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge" id="dd-route-badge">L4: DEL-BOM</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge" id="dd-airline-badge">L5: 6E</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge" id="dd-flight-badge">L6: 6E-204</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge">L7: SAVER</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge" id="dd-bucket-badge">L8: L07</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge">L9: Quote</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge">L10: R01-R12</span> <span class="drilldown-sep">&gt;</span>
-                <span class="drilldown-step-badge">L11: Jevons Bps</span>
-              </div>
-
-              <!-- Interactive Controls Bar -->
-              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: #F8FAFC; padding: 0.85rem 1rem; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
-                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
-                  Destination:
-                  <select id="dd-select-dest" style="padding: 0.35rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 4px; font-weight: 600; margin-left: 0.35rem;" onchange="updateDrilldownFromControls()">
-                    <!-- Options populated via JS -->
-                  </select>
-                </label>
-                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
-                  Lead Window:
-                  <select id="dd-select-bucket" style="padding: 0.35rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 4px; font-weight: 600; margin-left: 0.35rem;" onchange="updateDrilldownFromControls()">
-                    <option value="L01">L01 (0-1d Last Minute)</option>
-                    <option value="L03">L03 (2-3d Urgent)</option>
-                    <option value="L07" selected>L07 (4-7d Short Advance)</option>
-                    <option value="L14">L14 (8-14d Standard Baseline)</option>
-                    <option value="L21">L21 (15-21d Planned)</option>
-                    <option value="L30">L30 (22-30d Advance)</option>
-                    <option value="L60">L60 (31-60d Deep Advance)</option>
-                  </select>
-                </label>
-                <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.78rem;" onclick="updateDrilldownFromControls()">Inspect Elementary Lineage →</button>
-              </div>
-
-              <!-- Drilldown 2-Column Inspector Grid -->
-              <div class="drilldown-level-grid">
-                <!-- Left Column: Quote Observation & Route Metrics -->
-                <div class="drilldown-box">
-                  <div class="drilldown-box-title">
-                    <span>Level 8: Atomic Observed Quote Record</span>
-                    <span class="data-state-pill state-simulated" id="dd-quote-state">SIMULATED</span>
+                  <div class="command-stat-card">
+                    <span class="command-stat-num">4</span>
+                    <span class="command-stat-lbl">Operating Carriers</span>
                   </div>
-                  <div id="dd-quote-details" style="font-size: 0.8rem; line-height: 1.7;">
-                    <!-- Injected via JS -->
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" id="stat-latency-ms">142 ms</span>
+                    <span class="command-stat-lbl">Telemetry Latency</span>
                   </div>
-
-                  <div class="drilldown-box-title" style="margin-top: 1.25rem;">
-                    <span>Level 10: Elementary Cell Contribution</span>
-                    <span class="data-state-pill state-calculated">CALCULATED</span>
-                  </div>
-                  <div id="dd-index-contribution" style="font-size: 0.8rem; line-height: 1.7;">
-                    <!-- Injected via JS -->
-                  </div>
-
-                  <div class="drilldown-box-title" style="margin-top: 1.25rem;">
-                    <span>Level 11: Cryptographic Provenance Lineage</span>
-                    <span class="data-state-pill state-calculated">VERIFIED</span>
-                  </div>
-                  <div id="dd-provenance-info" style="font-family: var(--font-mono); font-size: 0.75rem; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; word-break: break-all;">
-                    <!-- Injected via JS -->
+                  <div class="command-stat-card">
+                    <span class="command-stat-num" style="color: #6B21A8; font-size: 1.05rem;" id="stat-data-mode">SIMULATED_LIVE</span>
+                    <span class="command-stat-lbl">Environment State</span>
                   </div>
                 </div>
 
-                <!-- Right Column: Level 9 Data Quality Decisions (R01 to R12) -->
-                <div class="drilldown-box">
-                  <div class="drilldown-box-title">
-                    <span>Level 9: Quality Quarantine Decisions (R01–R12)</span>
-                    <span class="kpi-badge">12/12 ACCEPTED</span>
+                <!-- Global Analytical Controls Bar -->
+                <div class="command-controls-strip">
+                  <div class="control-pill-group">
+                    <span>Origin Hub:</span>
+                    <select class="control-select-sleek" id="ctrl-origin-hub" disabled>
+                      <option value="DEL" selected>DEL (Indira Gandhi Int'l, New Delhi)</option>
+                    </select>
                   </div>
-                  <div style="overflow-x: auto;">
-                    <table class="cleaning-rules-table">
-                      <thead>
-                        <tr>
-                          <th>Rule</th>
-                          <th>Evaluation</th>
-                          <th>Threshold</th>
-                          <th>Decision</th>
-                        </tr>
-                      </thead>
-                      <tbody id="dd-rules-tbody">
-                        <!-- Populated via JS -->
-                      </tbody>
-                    </table>
+                  <div class="control-pill-group">
+                    <span>Network:</span>
+                    <select class="control-select-sleek" id="ctrl-network-type">
+                      <option value="DOM" selected>India Domestic Network</option>
+                      <option value="BASKET">Formal DGCA 20-Route Basket Only</option>
+                    </select>
+                  </div>
+                  <div class="control-pill-group">
+                    <span>Time Window:</span>
+                    <select class="control-select-sleek" id="ctrl-time-window">
+                      <option value="LIVE" selected>Live Rolling 4-Hour Window</option>
+                      <option value="24H">Last 24 Hours</option>
+                      <option value="7D">Trailing 7 Days</option>
+                      <option value="30D">Trailing 30 Days</option>
+                    </select>
+                  </div>
+                  <div class="control-pill-group">
+                    <span>Carrier:</span>
+                    <select class="control-select-sleek" id="ctrl-carrier-filter">
+                      <option value="ALL" selected>All Carriers (6E, AI, SG, QP)</option>
+                      <option value="6E">IndiGo (6E)</option>
+                      <option value="AI">Air India (AI)</option>
+                      <option value="SG">SpiceJet (SG)</option>
+                      <option value="QP">Akasa Air (QP)</option>
+                    </select>
+                  </div>
+                  <div class="control-pill-group">
+                    <span>Metric:</span>
+                    <select class="control-select-sleek" id="ctrl-metric-select" onchange="updateStoryMetrics(this.value)">
+                      <option value="JEVONS" selected>Elementary Jevons Price (₹)</option>
+                      <option value="DELTA">24-Hour Price Movement (%)</option>
+                      <option value="VOLATILITY">Corridor Volatility (σ)</option>
+                    </select>
+                  </div>
+                  <span class="data-state-pill state-calculated" style="margin-left: auto;">CALCULATED & VERIFIED</span>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 01: INDIA DOMESTIC AVIATION CORRIDOR FLOW MAP (VISUAL HERO)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">01</span>
+                    <span>GEOSPATIAL CORRIDOR FLOW & PRICE PRESSURES</span>
+                  </div>
+                  <h2 class="story-title">India Domestic Aviation Corridor Flow Map</h2>
+                  <p class="story-subtitle">
+                    Live spatial representation of direct departures from Delhi (DEL). Arc thickness corresponds to scheduled daily departure frequencies; arc intensity reflects real-time price acceleration. Click any corridor or airport to focus the downstream analytical story.
+                  </p>
+                </div>
+
+                <div class="india-map-container" id="india-map-hero-wrapper">
+                  <!-- Floating Map Top-Right Controls -->
+                  <div class="map-floating-panel map-floating-controls">
+                    <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy-900); text-transform: uppercase;">Map View Mode</div>
+                    <div style="display: flex; gap: 0.35rem;">
+                      <button class="btn btn-ghost active" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;" id="btn-map-metric-fare" onclick="setMapMetric('FARE')">Spot Fare</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;" id="btn-map-metric-pct" onclick="setMapMetric('PCT')">% Move</button>
+                      <button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.72rem;" id="btn-map-metric-freq" onclick="setMapMetric('FREQ')">Frequency</button>
+                    </div>
+                    <div style="display: flex; gap: 0.35rem; margin-top: 0.25rem;">
+                      <button class="btn btn-ghost active" style="padding: 0.2rem 0.45rem; font-size: 0.68rem;" onclick="filterMapAirports('ALL')">All 42 Hubs</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.45rem; font-size: 0.68rem;" onclick="filterMapAirports('METRO')">Top 6 Metros</button>
+                      <button class="btn btn-ghost" style="padding: 0.2rem 0.45rem; font-size: 0.68rem;" onclick="filterMapAirports('REGIONAL')">Regional</button>
+                    </div>
+                  </div>
+
+                  <!-- Floating Map Bottom-Left Legend -->
+                  <div class="map-floating-panel map-floating-legend">
+                    <div style="font-weight: 700; color: var(--navy-900); margin-bottom: 0.2rem;">Map Legend</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 22px; height: 3px; background: #F43F5E;"></span>
+                      <span>Price Surge (&gt;+5%)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 22px; height: 3px; background: #10B981;"></span>
+                      <span>Price Easing (&lt;−3%)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 22px; height: 2px; background: #2563EB;"></span>
+                      <span>Stable Flow (±3%)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #0F172A; border: 2px solid #F59E0B;"></span>
+                      <span>DEL Primary Hub</span>
+                    </div>
+                  </div>
+
+                  <!-- SVG Map with True Geodetic Projections & Flight Arcs -->
+                  <svg class="india-flow-svg" viewBox="0 0 950 680" id="india-corridor-flow-svg">
+                    <!-- Populated dynamically via JS renderIndiaFlowMap() -->
+                  </svg>
+
+                  <!-- Dynamic Map Hover Tooltip -->
+                  <div class="map-interactive-tooltip" id="map-route-tooltip">
+                    <!-- Populated dynamically on hover -->
                   </div>
                 </div>
               </div>
+
+              <!-- =========================================================================
+                   SECTION 02: WHAT IS MOVING RIGHT NOW? (LIVE NETWORK PULSE)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">02</span>
+                    <span>HIGH-FREQUENCY TELEMETRY & VELOCITY</span>
+                  </div>
+                  <h2 class="story-title">What is Moving Right Now?</h2>
+                  <p class="story-subtitle">
+                    Live price velocity across the Delhi domestic network. Ranked corridor velocity reflects price drift over rolling observation cycles, paired with atomic incoming quote telemetry.
+                  </p>
+                </div>
+
+                <div class="network-pulse-grid">
+                  <!-- Left: Ranked Corridor Price Velocity Bars -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <div>
+                        <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--navy-900);">Ranked Corridor Movement (24h Price Shift)</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Comparing current rolling elementary prices against baseline close</span>
+                      </div>
+                      <span class="data-state-pill state-calculated">CALCULATED</span>
+                    </div>
+                    <div class="velocity-bar-list" id="ranked-velocity-bars">
+                      <!-- Rendered dynamically via JS -->
+                    </div>
+                  </div>
+
+                  <!-- Right: Real-Time Quote Telemetry Feed -->
+                  <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <div>
+                        <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--navy-900);">Live Quote Ingestion Stream</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Atomic fare quotes processed by R01-R12</span>
+                      </div>
+                      <span class="brand-badge">STREAMING</span>
+                    </div>
+                    <div class="live-movements-stream" id="live-route-stream-feed" style="max-height: 440px; overflow-y: auto;">
+                      <!-- Real-time quote cards injected via JS -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 03: LEAD-TIME PRICE INTELLIGENCE (FULL-WIDTH MATRIX)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">03</span>
+                    <span>ADVANCE PURCHASE DYNAMICS & YIELD TIERS</span>
+                  </div>
+                  <h2 class="story-title">How Early You Book Changes What You Pay</h2>
+                  <p class="story-subtitle">
+                    Fare behavior across advance-purchase windows for the Delhi domestic network. Moving from L60 (31–60 days advance) to L01 (same-day distress) reveals carrier yield urgency and volatility premiums.
+                  </p>
+                </div>
+
+                <div class="full-matrix-container">
+                  <div class="matrix-metric-toolbar">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                      <span style="font-size: 0.8rem; font-weight: 700; color: var(--navy-900);">Metric Display:</span>
+                      <button class="btn btn-ghost active" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" id="btn-matrix-jevons" onclick="switchMatrixMetric('JEVONS')">Elementary Jevons Price (₹)</button>
+                      <button class="btn btn-ghost" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" id="btn-matrix-premium" onclick="switchMatrixMetric('PREMIUM')">Premium vs L14 Baseline (%)</button>
+                      <button class="btn btn-ghost" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" id="btn-matrix-volatility" onclick="switchMatrixMetric('VOL')">Volatility (σ)</button>
+                    </div>
+                    <span class="data-state-pill state-calculated">CALCULATED (JEVONS)</span>
+                  </div>
+
+                  <table class="heatmap-table" id="heatmap-full-table">
+                    <thead>
+                      <tr>
+                        <th>Corridor</th>
+                        <th>Distance</th>
+                        <th>Daily Flights</th>
+                        <th>L01 (0-1d)</th>
+                        <th>L03 (2-3d)</th>
+                        <th>L07 (4-7d)</th>
+                        <th>L14 (8-14d)</th>
+                        <th>L21 (15-21d)</th>
+                        <th>L30 (22-30d)</th>
+                        <th>L60 (31-60d)</th>
+                        <th>Surge Multiple</th>
+                      </tr>
+                    </thead>
+                    <tbody id="heatmap-matrix-tbody">
+                      <!-- Populated dynamically via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 04: FARE CURVES (DISPERSION & SURGE KNEES)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">04</span>
+                    <span>EMPIRICAL ADVANCE PURCHASE YIELD CURVES</span>
+                  </div>
+                  <h2 class="story-title">The Price Curve Changes as Departure Approaches</h2>
+                  <p class="story-subtitle">
+                    Empirical advance-purchase yield curves showing percentile dispersion bands (P10, P25, Median, P75, P90). Observe the steep "Surge Knee" at T-7 and T-3 days where carrier yield management shifts from volume fill to distress pricing.
+                  </p>
+                </div>
+
+                <div class="curve-chart-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div class="curve-corridor-pills" id="curve-corridor-selectors">
+                      <button class="curve-corridor-pill active" onclick="selectCurveCorridor('DEL-BOM')">DEL → BOM (Mumbai)</button>
+                      <button class="curve-corridor-pill" onclick="selectCurveCorridor('DEL-BLR')">DEL → BLR (Bengaluru)</button>
+                      <button class="curve-corridor-pill" onclick="selectCurveCorridor('DEL-HYD')">DEL → HYD (Hyderabad)</button>
+                      <button class="curve-corridor-pill" onclick="selectCurveCorridor('DEL-CCU')">DEL → CCU (Kolkata)</button>
+                      <button class="curve-corridor-pill" onclick="selectCurveCorridor('DEL-GOI')">DEL → GOI (Goa)</button>
+                      <button class="curve-corridor-pill" onclick="selectCurveCorridor('DEL-SXR')">DEL → SXR (Srinagar)</button>
+                    </div>
+                    <span class="data-state-pill state-calculated">EMPIRICAL PERCENTILES</span>
+                  </div>
+
+                  <svg class="svg-chart" id="advance-decay-curve-svg" viewBox="0 0 950 360" style="width: 100%; height: auto; max-height: 400px;">
+                    <!-- Rendered dynamically via JS renderPriceCurves() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 05: ROUTE COMPARISON & AIRLINE COMPETITION
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">05</span>
+                    <span>TRUNK CORRIDOR BENCHMARKING & CARRIER YIELD</span>
+                  </div>
+                  <h2 class="story-title">How Do India's Major Corridors Differ?</h2>
+                  <p class="story-subtitle">
+                    Side-by-side comparative profiles of India's commercial, tech, and leisure trunk corridors, highlighting yield strategies, fare dispersion, and airline competition.
+                  </p>
+                </div>
+
+                <!-- 4 Corridor Profile Cards -->
+                <div class="comparison-corridors-grid">
+                  <div class="corridor-profile-box active" onclick="focusComparisonCorridor('DEL-BOM')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                      <strong style="font-family: var(--font-mono); font-size: 1.1rem;">DEL → BOM</strong>
+                      <span class="data-state-pill state-calculated">COMMERCIAL TRUNK</span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Mumbai · 1,148 km · 68 flights/day</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--font-mono); color: var(--navy-900);">₹4,890</div>
+                    <div style="font-size: 0.75rem; color: var(--emerald-ink); font-weight: 600;">Median: ₹4,850 · Volatility: ±8.2%</div>
+                  </div>
+
+                  <div class="corridor-profile-box" onclick="focusComparisonCorridor('DEL-BLR')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                      <strong style="font-family: var(--font-mono); font-size: 1.1rem;">DEL → BLR</strong>
+                      <span class="data-state-pill state-calculated">TECH CORRIDOR</span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Bengaluru · 1,740 km · 44 flights/day</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--font-mono); color: var(--navy-900);">₹6,240</div>
+                    <div style="font-size: 0.75rem; color: var(--emerald-ink); font-weight: 600;">Median: ₹6,190 · Volatility: ±9.4%</div>
+                  </div>
+
+                  <div class="corridor-profile-box" onclick="focusComparisonCorridor('DEL-GOI')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                      <strong style="font-family: var(--font-mono); font-size: 1.1rem;">DEL → GOI</strong>
+                      <span class="data-state-pill state-calculated">LEISURE TRUNK</span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Goa · 1,500 km · 24 flights/day</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--font-mono); color: var(--navy-900);">₹5,450</div>
+                    <div style="font-size: 0.75rem; color: #B45309; font-weight: 600;">Median: ₹5,120 · Volatility: ±14.8%</div>
+                  </div>
+
+                  <div class="corridor-profile-box" onclick="focusComparisonCorridor('DEL-HYD')">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                      <strong style="font-family: var(--font-mono); font-size: 1.1rem;">DEL → HYD</strong>
+                      <span class="data-state-pill state-calculated">METRO CONNECTOR</span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Hyderabad · 1,253 km · 32 flights/day</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--font-mono); color: var(--navy-900);">₹4,560</div>
+                    <div style="font-size: 0.75rem; color: var(--emerald-ink); font-weight: 600;">Median: ₹4,510 · Volatility: ±7.1%</div>
+                  </div>
+                </div>
+
+                <!-- Carrier Market Share & Yield Dispersion Box -->
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--navy-900);">Who is Moving the Market? Carrier Pricing Distribution on DEL-BOM</h4>
+                      <span style="font-size: 0.78rem; color: var(--text-muted);">Capacity share, average yield, and cross-carrier price agreement</span>
+                    </div>
+                    <span class="brand-badge" id="carrier-dispersion-badge">CROSS-CARRIER: MODERATE DISPERSION (CV 8.4%)</span>
+                  </div>
+
+                  <div class="airline-share-bar-container" id="airline-share-bars">
+                    <!-- Rendered dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 06: WHAT MOVED THE NETWORK? (WATERFALL & ATTRIBUTION)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">06</span>
+                    <span>AXIOMATIC INDEX DECOMPOSITION & PROVENANCE</span>
+                  </div>
+                  <h2 class="story-title">What Moved the Network?</h2>
+                  <p class="story-subtitle">
+                    Mathematical basis-point attribution decomposing the +1.45 index point (+145 bps) movement into constituent corridor, carrier, and advance-booking drivers.
+                  </p>
+                </div>
+
+                <div class="waterfall-analytical-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--navy-900);">
+                      24-Hour Net Movement: <span style="color: #047857; font-family: var(--font-mono);">+145 bps (+1.45 pts)</span>
+                    </div>
+                    <span class="data-state-pill state-calculated">JEVONS WATERFALL</span>
+                  </div>
+
+                  <!-- Waterfall Bars Container -->
+                  <div id="waterfall-container" style="display: flex; flex-direction: column; gap: 0.65rem;">
+                    <!-- Injected via renderWaterfall() -->
+                  </div>
+
+                  <!-- Traceable Non-Causal Evidence Statement -->
+                  <div class="evidence-narrative-callout" id="waterfall-evidence-narrative">
+                    <strong>Evidence-Based Attribution:</strong> The AeroIndex National Composite increased by 1.45 index points (+145 basis points) over the last 24-hour cycle. The largest upward movement was observed on the DEL-BOM corridor across short lead-time buckets L01 and L03. Elevated price levels were observed alongside the Diwali Festive Season travel window (coincident correlation r=0.82; formal causal inference not asserted).
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 07: WHERE DOES TODAY LOOK UNUSUAL? (ROUTE ANOMALIES)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">07</span>
+                    <span>STATISTICAL ANOMALY & REGIME SHIFT DETECTION</span>
+                  </div>
+                  <h2 class="story-title">Where Does Today Look Unusual?</h2>
+                  <p class="story-subtitle">
+                    Reproducible outlier detection using Modified Z-Score with Median Absolute Deviation (MAD ≥ 3.0σ). Never asserting causality without structural econometrics.
+                  </p>
+                </div>
+
+                <div class="glass-panel" style="background: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+                  <div class="formula-callout" style="margin-top: 0;">
+                    <span style="color: #38BDF8; font-weight: 700;">// REPRODUCIBLE ANOMALY METHODOLOGY (Iglewicz & Hoaglin 1993)</span><br>
+                    Modified Z = 0.6745 × |observed_median − baseline_median| / MAD<br>
+                    Threshold: Z ≥ 3.0 indicates statistically anomalous pricing regime shift.
+                  </div>
+
+                  <div id="reproducible-anomalies-container">
+                    <!-- Populated dynamically via JS fetchAndRenderAnomalies() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 08: TODAY VS HISTORY (MULTI-TIMELINE CONTEXT)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">08</span>
+                    <span>LONGITUDINAL BASELINE COMPARISON</span>
+                  </div>
+                  <h2 class="story-title">Today vs History</h2>
+                  <p class="story-subtitle">
+                    Benchmarking current corridor pricing against rolling 7-day, 30-day, and 90-day seasonal baselines to determine whether observed price shifts represent recurring calendar seasonality or novel market drift.
+                  </p>
+                </div>
+
+                <div class="history-timeline-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-ghost active" onclick="switchTimelineSpan(7)">Trailing 7 Days</button>
+                      <button class="btn btn-ghost" onclick="switchTimelineSpan(30)">Trailing 30 Days</button>
+                      <button class="btn btn-ghost" onclick="switchTimelineSpan(90)">Trailing 90 Days</button>
+                    </div>
+                    <span class="data-state-pill state-calculated">SEASONALLY BENCHMARKED</span>
+                  </div>
+
+                  <svg class="svg-chart" id="timeline-comparison-svg" viewBox="0 0 950 320" style="width: 100%; height: auto; max-height: 350px;">
+                    <!-- Rendered dynamically via JS renderTimelineHistory() -->
+                  </svg>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 09: DEL DOMESTIC NETWORK COVERAGE AUDIT (42 DESTINATIONS)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">09</span>
+                    <span>NETWORK UNIVERSE AUDIT & PROVIDER STATUS</span>
+                  </div>
+                  <h2 class="story-title">DEL Domestic Network Coverage Audit (42 Destinations)</h2>
+                  <p class="story-subtitle">
+                    Complete operational inventory of direct domestic passenger corridors from Indira Gandhi International Airport. Unmonitored or offline provider corridors are truthfully declared and never imputed into headline basket indices.
+                  </p>
+                </div>
+
+                <div class="glass-panel table-card">
+                  <!-- Scope Banner -->
+                  <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-left: 4px solid var(--blue-primary); padding: 0.85rem 1.15rem; border-radius: 6px; font-size: 0.82rem; margin-bottom: 1rem;">
+                    <strong>Methodology & Scope Distinction:</strong>
+                    The <strong>20 directional corridors</strong> constitute the formal statutory <strong>INDEX BASKET</strong> (calibrated with DGCA passenger weights). The complete <strong>42 destinations</strong> represent the <strong>LIVE DEL NETWORK</strong>. Unmonitored or offline provider corridors (10 destinations) are truthfully declared and are <em>never imputed</em> into headline composite index calculations.
+                  </div>
+
+                  <!-- Visual Coverage Bar -->
+                  <div class="coverage-bar-wrapper">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">
+                      <span>Network Monitoring Coverage Audit</span>
+                      <span id="del-net-coverage-pct">57.1% Full · 19.0% Partial · 23.8% Unavailable</span>
+                    </div>
+                    <div class="coverage-multi-bar">
+                      <div class="coverage-seg coverage-seg-covered" style="width: 57.1%;" title="Covered: 24 destinations (57.1%)"></div>
+                      <div class="coverage-seg coverage-seg-partial" style="width: 19.0%;" title="Partial: 8 destinations (19.0%)"></div>
+                      <div class="coverage-seg coverage-seg-unavailable" style="width: 23.9%;" title="Unavailable Provider: 10 destinations (23.8%)"></div>
+                    </div>
+                    <div class="coverage-legend">
+                      <div class="coverage-legend-item">
+                        <span class="legend-color-dot" style="background: #10B981;"></span>
+                        <span><strong>Covered (24)</strong>: 100% active sampling</span>
+                      </div>
+                      <div class="coverage-legend-item">
+                        <span class="legend-color-dot" style="background: #F59E0B;"></span>
+                        <span><strong>Partial (8)</strong>: Reduced frequency sampling</span>
+                      </div>
+                      <div class="coverage-legend-item">
+                        <span class="legend-color-dot" style="background: #94A3B8;"></span>
+                        <span><strong>Unavailable Provider (10)</strong>: Direct API adapter offline</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Filter Pills -->
+                  <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <button class="btn btn-ghost active" id="btn-filter-dest-all" onclick="filterDestinations('ALL')">All 42 Corridors</button>
+                    <button class="btn btn-ghost" id="btn-filter-dest-covered" onclick="filterDestinations('COVERED')">Covered (24)</button>
+                    <button class="btn btn-ghost" id="btn-filter-dest-partial" onclick="filterDestinations('PARTIAL')">Partial (8)</button>
+                    <button class="btn btn-ghost" id="btn-filter-dest-unavail" onclick="filterDestinations('UNAVAILABLE_PROVIDER')">Unavailable Provider (10)</button>
+                  </div>
+
+                  <!-- 42 Destination Cards Grid -->
+                  <div class="dest-grid" id="del-dest-grid">
+                    <!-- Populated dynamically via JS fetchAndRenderDelNetwork() -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 10: DATA TRUST & 11-LEVEL DEEP DRILL-DOWN TERMINAL
+                   ========================================================================= -->
+              <div class="story-section" id="drilldown-terminal-anchor">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">10</span>
+                    <span>END-TO-END CRYPTOGRAPHIC PROVENANCE</span>
+                  </div>
+                  <h2 class="story-title">Every Number Has a Traceable Origin</h2>
+                  <p class="story-subtitle">
+                    Institutional-grade audit trail linking National Macro Index values down to individual quote timestamps, R01–R12 cleaning decisions, and cryptographic SHA-256 signatures.
+                  </p>
+                </div>
+
+                <div class="drilldown-terminal-card" id="drilldown-terminal">
+                  <div class="chart-header">
+                    <div>
+                      <h3 class="chart-title">11-Level Hierarchical Drill-Down Terminal</h3>
+                      <div class="chart-subtitle">Direct interactive lineage from Macro Basket down to Atomic Quote Observation</div>
+                    </div>
+                    <span class="brand-badge" id="drilldown-status-badge">11 LEVELS LINKED</span>
+                  </div>
+
+                  <!-- Active Breadcrumb Path Strip -->
+                  <div class="drilldown-path-bar" id="drilldown-path-display">
+                    <span class="drilldown-step-badge">L1: India</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">L2: DEL</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge" id="dd-dest-badge">L3: BOM</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge" id="dd-route-badge">L4: DEL-BOM</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge" id="dd-airline-badge">L5: 6E</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge" id="dd-flight-badge">L6: 6E-204</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">L7: SAVER</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge" id="dd-bucket-badge">L8: L07</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">L9: Quote</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">L10: R01-R12</span> <span class="drilldown-sep">&gt;</span>
+                    <span class="drilldown-step-badge">L11: Jevons Bps</span>
+                  </div>
+
+                  <!-- Interactive Controls Bar -->
+                  <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; background: #F8FAFC; padding: 0.85rem 1rem; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+                      Destination:
+                      <select id="dd-select-dest" style="padding: 0.35rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 4px; font-weight: 600; margin-left: 0.35rem;" onchange="updateDrilldownFromControls()">
+                        <!-- Options populated via JS -->
+                      </select>
+                    </label>
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+                      Lead Window:
+                      <select id="dd-select-bucket" style="padding: 0.35rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: 4px; font-weight: 600; margin-left: 0.35rem;" onchange="updateDrilldownFromControls()">
+                        <option value="L01">L01 (0-1d Last Minute)</option>
+                        <option value="L03">L03 (2-3d Urgent)</option>
+                        <option value="L07" selected>L07 (4-7d Short Advance)</option>
+                        <option value="L14">L14 (8-14d Standard Baseline)</option>
+                        <option value="L21">L21 (15-21d Planned)</option>
+                        <option value="L30">L30 (22-30d Advance)</option>
+                        <option value="L60">L60 (31-60d Deep Advance)</option>
+                      </select>
+                    </label>
+                    <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.78rem;" onclick="updateDrilldownFromControls()">Inspect Elementary Lineage →</button>
+                  </div>
+
+                  <!-- Drilldown 2-Column Inspector Grid -->
+                  <div class="drilldown-level-grid">
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Level 8: Atomic Observed Quote Record</span>
+                        <span class="data-state-pill state-simulated" id="dd-quote-state">SIMULATED</span>
+                      </div>
+                      <div id="dd-quote-details" style="font-size: 0.8rem; line-height: 1.7;">
+                        <!-- Injected via JS -->
+                      </div>
+
+                      <div class="drilldown-box-title" style="margin-top: 1.25rem;">
+                        <span>Level 10: Elementary Cell Contribution</span>
+                        <span class="data-state-pill state-calculated">CALCULATED</span>
+                      </div>
+                      <div id="dd-index-contribution" style="font-size: 0.8rem; line-height: 1.7;">
+                        <!-- Injected via JS -->
+                      </div>
+
+                      <div class="drilldown-box-title" style="margin-top: 1.25rem;">
+                        <span>Level 11: Cryptographic Provenance Lineage</span>
+                        <span class="data-state-pill state-calculated">VERIFIED</span>
+                      </div>
+                      <div id="dd-provenance-info" style="font-family: var(--font-mono); font-size: 0.75rem; background: #FFFFFF; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; word-break: break-all;">
+                        <!-- Injected via JS -->
+                      </div>
+                    </div>
+
+                    <div class="drilldown-box">
+                      <div class="drilldown-box-title">
+                        <span>Level 9: Quality Quarantine Decisions (R01–R12)</span>
+                        <span class="kpi-badge">12/12 ACCEPTED</span>
+                      </div>
+                      <div style="overflow-x: auto;">
+                        <table class="cleaning-rules-table">
+                          <thead>
+                            <tr>
+                              <th>Rule</th>
+                              <th>Evaluation</th>
+                              <th>Threshold</th>
+                              <th>Decision</th>
+                            </tr>
+                          </thead>
+                          <tbody id="dd-rules-tbody">
+                            <!-- Populated via JS -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- =========================================================================
+                   SECTION 11: ASK THE NETWORK (AEROINDEX INTELLIGENCE CONSOLE)
+                   ========================================================================= -->
+              <div class="story-section">
+                <div class="story-header">
+                  <div class="story-eyebrow">
+                    <span class="story-num-badge">11</span>
+                    <span>NATURAL LANGUAGE INTELLIGENCE</span>
+                  </div>
+                  <h2 class="story-title">Ask the Network</h2>
+                  <p class="story-subtitle">
+                    Interact with AeroIndex analytical models in plain language. Answers are strictly grounded in live platform observations and econometric evidence.
+                  </p>
+                </div>
+
+                <div class="ask-network-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 1rem; color: #FFFFFF;">✦ AeroIndex Route Intelligence Agent</div>
+                    <span class="data-state-pill state-calculated" style="background: rgba(255,255,255,0.1); color: #38BDF8; border-color: rgba(56,189,248,0.3);">GROUNDED TOOL EXECUTION</span>
+                  </div>
+
+                  <form class="ask-network-input-box" id="ask-network-form" onsubmit="handleNetworkQuery(event)">
+                    <span style="color: #94A3B8; font-size: 1.1rem; line-height: 1.8;">✦</span>
+                    <input type="text" class="ask-network-input" id="ask-network-input" placeholder="Ask any route intelligence question (e.g. Which DEL routes saw the largest fare increase today?)..." autocomplete="off" />
+                    <button type="submit" class="btn btn-primary" style="padding: 0.4rem 1rem;">Query →</button>
+                  </form>
+
+                  <div class="ask-prompt-pills">
+                    <span style="font-size: 0.72rem; color: #64748B; align-self: center;">Suggested:</span>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickPrompt('Which DEL routes saw the largest fare increase today?')">Which DEL routes saw the largest fare increase today?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickPrompt('Where is last-minute pricing most aggressive?')">Where is last-minute pricing most aggressive?</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickPrompt('Compare DEL-BOM and DEL-BLR yield curves.')">Compare DEL-BOM and DEL-BLR yield curves</button>
+                    <button type="button" class="ask-prompt-pill" onclick="executeQuickPrompt('Why did the network composite index move today?')">Why did the network composite index move today?</button>
+                  </div>
+
+                  <div class="ask-answer-box" id="ask-network-answer" style="display: none;">
+                    <!-- AI response populated dynamically -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
 
