@@ -311,5 +311,31 @@ test('API Key Lifecycle: generates key, authenticates, lists, and revokes cleanl
   assert.strictEqual(rejectedRes.statusCode, 401);
 });
 
+// 15. Reserve Bank of India (RBI) Key Verification
+test('Reserve Bank of India (RBI) API Key authenticates and queries attribution with 300 RPM quota', () => {
+  const { execute } = createMockReqRes({
+    pathname: '/api/v1/attribution/latest',
+    headers: { 'x-api-key': 'aero_inst_rbi_research_2026' }
+  });
+  const result = execute();
+  assert.strictEqual(result.statusCode, 200);
+  assert.strictEqual(result.body.success, true);
+  assert.strictEqual(result.headers['x-ratelimit-limit'], 300);
+  assert.strictEqual(result.body.data.reconciliation.reconciliation_status, 'EXACT_MATCH');
+});
+
+// 16. National Statistical Office (NSO) Key Verification
+test('National Statistical Office (NSO) API Key authenticates and queries coverage with 300 RPM quota', () => {
+  const { execute } = createMockReqRes({
+    pathname: '/api/v1/coverage',
+    headers: { 'x-api-key': 'aero_inst_nso_stat_2026' }
+  });
+  const result = execute();
+  assert.strictEqual(result.statusCode, 200);
+  assert.strictEqual(result.body.success, true);
+  assert.strictEqual(result.headers['x-ratelimit-limit'], 300);
+  assert.strictEqual(result.body.data.basket_route_coverage.guard_status, 'PASSED');
+});
+
 console.log(`\nResults: ${passed} passed, ${failed} failed.\n`);
 if (failed > 0) process.exit(1);

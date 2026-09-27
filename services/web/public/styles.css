@@ -10469,3 +10469,231 @@ body.forensic-active .attr-stat-sub {
   padding-top: 0.4rem;
   border-top: 1px dashed #1E293B;
 }
+
+
+
+/* ==========================================================================
+   INSTITUTIONAL KEYS SHOWCASE (RBI, NSO, EVALUATION)
+   ========================================================================== */
+
+.institutional-keys-showcase {
+  background: linear-gradient(135deg, #090D16 0%, #0F172A 100%);
+  border: 2px solid #2563EB;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  color: #F8FAFC;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2), 0 0 20px rgba(56, 189, 248, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.institutional-keys-showcase::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #38BDF8, #2563EB, #10B981);
+}
+
+.showcase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.showcase-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+.showcase-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+  margin: 0 0 0.35rem 0;
+}
+
+.showcase-subtitle {
+  font-size: 0.86rem;
+  color: #94A3B8;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 740px;
+}
+
+.inst-keys-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.inst-key-card {
+  background: rgba(2, 6, 23, 0.75);
+  border: 1px solid #1E293B;
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.inst-key-card:hover {
+  border-color: #38BDF8;
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.15);
+  transform: translateY(-2px);
+}
+
+.inst-key-card-rbi { border-top: 3px solid #38BDF8; }
+.inst-key-card-nso { border-top: 3px solid #818CF8; }
+.inst-key-card-eval { border-top: 3px solid #34D399; }
+
+.card-inst-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.inst-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.inst-emblem {
+  font-size: 1.5rem;
+}
+
+.inst-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.inst-dept {
+  font-size: 0.72rem;
+  color: #94A3B8;
+  margin-top: 0.15rem;
+}
+
+.inst-purpose-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid #1E293B;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.76rem;
+  color: #CBD5E1;
+  line-height: 1.45;
+}
+
+.inst-purpose-box strong { color: #38BDF8; }
+
+.inst-key-input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.key-input-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #64748B;
+  letter-spacing: 0.06em;
+}
+
+.key-field-with-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+}
+
+.active-key-string {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  color: #34D399;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inst-curl-snippet {
+  background: #020617;
+  border: 1px solid #1E293B;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}
+
+.curl-snippet-label {
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: #64748B;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.curl-snippet-code {
+  margin: 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  color: #38BDF8;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 60px;
+  overflow-y: auto;
+}
+
+.card-inst-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: auto;
+}
+
+.inst-live-execution-banner {
+  margin-top: 1.25rem;
+  background: rgba(6, 78, 59, 0.35);
+  border: 1px solid #059669;
+  border-radius: 8px;
+  padding: 0.85rem 1.15rem;
+  animation: fadeInFast 0.2s ease;
+}
+
+.execution-feedback-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.execution-feedback-body {
+  font-size: 0.82rem;
+  color: #E2E8F0;
+  line-height: 1.45;
+}

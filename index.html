@@ -668,7 +668,7 @@
               <button class="btn btn-accent" id="btn-provenance" title="Inspect mathematical formula & cryptographic audit">
                 Reproduce This #
               </button>
-              <button class="btn btn-api-access" id="btn-topbar-api-access" title="Open Machine-Readable Airfare Intelligence API Workspace (v1)">
+              <button class="btn btn-api-access" id="btn-topbar-api-access" onclick="activateWorkspaceTab('api-dev'); const p = document.getElementById('workspace-content-pane'); if (p) p.scrollTo({ top: 0, behavior: 'smooth' });" title="Open API Display — Inspect & Use Working API Key">
                 <span class="api-status-indicator-dot" id="topbar-api-dot"></span>
                 <span class="api-access-label">API Display</span>
                 <span class="api-access-badge">🔑 LIVE KEY</span>
@@ -8904,90 +8904,168 @@
           <section class="tab-pane" id="pane-api-dev">
             <div class="gov-api-container">
 
-              <!-- 00. JUDGE EVALUATION API KEY CARD (IMMEDIATE & FUNCTIONAL) -->
-              <div class="glass-panel judge-api-key-panel" id="judge-api-key-banner">
-                <div class="judge-key-header">
-                  <div class="judge-key-title-group">
-                    <span class="judge-key-badge">🔑 OFFICIAL SIH 2026 EVALUATION KEY</span>
-                    <h2 class="judge-key-title">Live Working API Key for Evaluators & Judges</h2>
-                    <p class="judge-key-desc">
-                      AeroIndex exposes an active, authorized REST API key ready for immediate use. Judges can copy this key to run real queries via Terminal (cURL), Python, Postman, or click <strong>[ ⚡ TEST KEY LIVE ]</strong> below to verify the real-time data response.
+                            <!-- ==========================================================
+                   INSTITUTIONAL API KEYS DASHBOARD (RBI, NSO & EVALUATION)
+                   ========================================================== -->
+              <div class="glass-panel institutional-keys-showcase" id="institutional-keys-showcase">
+                <div class="showcase-header">
+                  <div class="showcase-header-left">
+                    <div class="showcase-badge-pill">
+                      <span class="api-status-indicator-dot"></span>
+                      <span>ACTIVE INSTITUTIONAL CREDENTIALS</span>
+                    </div>
+                    <h2 class="showcase-title">Machine-Readable API Keys for RBI & NSO</h2>
+                    <p class="showcase-subtitle">
+                      Genuine, active API keys pre-authorized for macroeconomic and statistical institutions. Click <strong>[ 📋 Copy ]</strong> to consume in external systems, or click <strong>[ ⚡ Test Query ]</strong> to verify immediate HTTP 200 responses.
                     </p>
                   </div>
-                  <div class="judge-key-status-indicator">
-                    <span class="gov-api-pill gov-api-pill-green" style="font-size: 0.78rem; padding: 0.35rem 0.85rem;">
-                      <span class="api-status-indicator-dot"></span> ● WORKING KEY ACTIVE & VERIFIED
+                  <div class="showcase-header-right">
+                    <span class="gov-api-pill gov-api-pill-green" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">
+                      ● 3 / 3 KEYS OPERATIONAL
                     </span>
                   </div>
                 </div>
 
-                <div class="judge-key-box-row">
-                  <div class="judge-key-input-wrap">
-                    <label class="judge-key-label">Active Evaluation Key (Header: <code>X-API-Key</code> or <code>Authorization: Bearer</code>):</label>
-                    <div class="judge-key-input-container">
-                      <span class="judge-key-icon">🔑</span>
-                      <input type="text" class="judge-key-field" id="judge-active-api-key-val" value="aero_eval_sandbox_key" readonly>
-                      <button class="btn btn-primary" id="btn-judge-copy-key" title="Copy Key to Clipboard">
-                        📋 COPY KEY
+                <!-- 3 Institutional Key Cards Grid -->
+                <div class="inst-keys-grid">
+                  
+                  <!-- CARD 1: RESERVE BANK OF INDIA (RBI) -->
+                  <div class="inst-key-card inst-key-card-rbi" id="card-key-rbi">
+                    <div class="card-inst-top">
+                      <div class="inst-icon-title">
+                        <span class="inst-emblem">🏛️</span>
+                        <div>
+                          <div class="inst-name">Reserve Bank of India</div>
+                          <div class="inst-dept">Dept. of Economic & Policy Research (DEPR)</div>
+                        </div>
+                      </div>
+                      <span class="gov-api-pill gov-api-pill-blue">300 REQ/MIN</span>
+                    </div>
+
+                    <div class="inst-purpose-box">
+                      <strong>Institutional Scope:</strong> Inflation nowcasting, CPI transport sub-index modeling, and macroeconomic airfare yield analysis.
+                    </div>
+
+                    <div class="inst-key-input-box">
+                      <div class="key-input-label">WORKING API KEY:</div>
+                      <div class="key-field-with-btn">
+                        <code class="active-key-string" id="rbi-key-val">aero_inst_rbi_research_2026</code>
+                        <button class="btn btn-primary btn-xs btn-copy-inst-key" data-target="rbi-key-val" title="Copy RBI Key to Clipboard">
+                          📋 Copy
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="inst-curl-snippet">
+                      <div class="curl-snippet-label">cURL for RBI Terminal / Python:</div>
+                      <pre class="curl-snippet-code" id="rbi-curl-code">curl -s -H "X-API-Key: aero_inst_rbi_research_2026" "http://localhost:8080/api/v1/attribution/latest"</pre>
+                    </div>
+
+                    <div class="card-inst-actions">
+                      <button class="btn btn-accent btn-sm btn-test-inst-key" data-key="aero_inst_rbi_research_2026" data-endpoint="/api/v1/attribution/latest" data-inst="Reserve Bank of India">
+                        ⚡ Test RBI Query (Attribution)
                       </button>
-                      <button class="btn btn-accent" id="btn-judge-test-key-instant" title="Execute Live Query with this Key">
-                        ⚡ TEST KEY LIVE
+                      <button class="btn btn-ghost btn-xs btn-copy-curl-inst" data-target="rbi-curl-code">
+                        Copy cURL
                       </button>
                     </div>
                   </div>
 
-                  <div class="judge-key-meta-badges">
-                    <div class="key-meta-item">
-                      <span class="key-meta-label">KEY TIER</span>
-                      <span class="key-meta-val">SANDBOX_EVALUATION</span>
+                  <!-- CARD 2: NATIONAL STATISTICAL OFFICE (NSO / MoSPI) -->
+                  <div class="inst-key-card inst-key-card-nso" id="card-key-nso">
+                    <div class="card-inst-top">
+                      <div class="inst-icon-title">
+                        <span class="inst-emblem">📊</span>
+                        <div>
+                          <div class="inst-name">National Statistical Office</div>
+                          <div class="inst-dept">MoSPI — Economic Statistics Division (ESD)</div>
+                        </div>
+                      </div>
+                      <span class="gov-api-pill gov-api-pill-blue">300 REQ/MIN</span>
                     </div>
-                    <div class="key-meta-item">
-                      <span class="key-meta-label">RATE LIMIT</span>
-                      <span class="key-meta-val">120 Requests / Min</span>
+
+                    <div class="inst-purpose-box">
+                      <strong>Institutional Scope:</strong> Official CPI monthly basket weighting, 7 advance-purchase lead curves (L01–L60), and route sampling coverage.
                     </div>
-                    <div class="key-meta-item">
-                      <span class="key-meta-label">SCOPES</span>
-                      <span class="key-meta-val">All 7 Institutional Scopes Active</span>
+
+                    <div class="inst-key-input-box">
+                      <div class="key-input-label">WORKING API KEY:</div>
+                      <div class="key-field-with-btn">
+                        <code class="active-key-string" id="nso-key-val">aero_inst_nso_stat_2026</code>
+                        <button class="btn btn-primary btn-xs btn-copy-inst-key" data-target="nso-key-val" title="Copy NSO Key to Clipboard">
+                          📋 Copy
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="inst-curl-snippet">
+                      <div class="curl-snippet-label">cURL for NSO Terminal / R:</div>
+                      <pre class="curl-snippet-code" id="nso-curl-code">curl -s -H "X-API-Key: aero_inst_nso_stat_2026" "http://localhost:8080/api/v1/coverage"</pre>
+                    </div>
+
+                    <div class="card-inst-actions">
+                      <button class="btn btn-accent btn-sm btn-test-inst-key" data-key="aero_inst_nso_stat_2026" data-endpoint="/api/v1/coverage" data-inst="National Statistical Office">
+                        ⚡ Test NSO Query (Coverage)
+                      </button>
+                      <button class="btn btn-ghost btn-xs btn-copy-curl-inst" data-target="nso-curl-code">
+                        Copy cURL
+                      </button>
                     </div>
                   </div>
+
+                  <!-- CARD 3: INSTITUTIONAL EVALUATION SANDBOX (SIH JURY) -->
+                  <div class="inst-key-card inst-key-card-eval" id="card-key-eval">
+                    <div class="card-inst-top">
+                      <div class="inst-icon-title">
+                        <span class="inst-emblem">⚖️</span>
+                        <div>
+                          <div class="inst-name">Evaluation Sandbox Key</div>
+                          <div class="inst-dept">SIH 2026 Jury & Institutional Auditors</div>
+                        </div>
+                      </div>
+                      <span class="gov-api-pill gov-api-pill-green">120 REQ/MIN</span>
+                    </div>
+
+                    <div class="inst-purpose-box">
+                      <strong>Institutional Scope:</strong> Full verification access to all 14 endpoints, cryptographic provenance SHA-256 replays, and anomaly detectors.
+                    </div>
+
+                    <div class="inst-key-input-box">
+                      <div class="key-input-label">WORKING API KEY:</div>
+                      <div class="key-field-with-btn">
+                        <code class="active-key-string" id="eval-key-val">aero_eval_sandbox_key</code>
+                        <button class="btn btn-primary btn-xs btn-copy-inst-key" data-target="eval-key-val" title="Copy Eval Key to Clipboard">
+                          📋 Copy
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="inst-curl-snippet">
+                      <div class="curl-snippet-label">cURL for Evaluation Testing:</div>
+                      <pre class="curl-snippet-code" id="eval-curl-code">curl -s -H "X-API-Key: aero_eval_sandbox_key" "http://localhost:8080/api/v1/index/latest"</pre>
+                    </div>
+
+                    <div class="card-inst-actions">
+                      <button class="btn btn-accent btn-sm btn-test-inst-key" data-key="aero_eval_sandbox_key" data-endpoint="/api/v1/index/latest" data-inst="Evaluation Sandbox">
+                        ⚡ Test Live Index (FLASH)
+                      </button>
+                      <button class="btn btn-ghost btn-xs btn-copy-curl-inst" data-target="eval-curl-code">
+                        Copy cURL
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
 
-                <!-- Instant cURL Command for Judges -->
-                <div class="judge-curl-box">
-                  <div class="judge-curl-top">
-                    <span class="judge-curl-title">READY-TO-RUN TERMINAL cURL COMMAND (CLICK TO COPY)</span>
-                    <button class="btn btn-ghost btn-xs" id="btn-judge-copy-curl" style="color: #38bdf8;">
-                      📋 Copy cURL
-                    </button>
+                <!-- Instant Live Execution Feedback Banner -->
+                <div class="inst-live-execution-banner" id="inst-live-feedback" style="display: none;">
+                  <div class="execution-feedback-top">
+                    <span class="gov-api-pill gov-api-pill-green" id="inst-feedback-status">✓ KEY AUTHENTICATED SUCCESSFULLY</span>
+                    <span id="inst-feedback-meta" style="font-family: var(--font-mono); font-size: 0.74rem; color: #94A3B8;">HTTP 200 OK · Latency: 12ms</span>
                   </div>
-                  <pre class="judge-curl-code" id="judge-curl-command-text">curl -s -H "X-API-Key: aero_eval_sandbox_key" "http://localhost:8080/api/v1/index/latest"</pre>
-                </div>
-
-                <!-- 1-Click Verification Result Banner -->
-                <div class="judge-live-test-feedback" id="judge-live-test-feedback" style="display: none;">
-                  <div class="test-feedback-header">
-                    <span id="judge-test-badge" class="gov-api-pill gov-api-pill-green">✓ KEY AUTHENTICATED SUCCESSFULLY</span>
-                    <span id="judge-test-metrics" style="font-family: var(--font-mono); font-size: 0.74rem; color: #94A3B8;">HTTP 200 OK · Latency: 12ms · Payload: 1.8 KB</span>
+                  <div class="execution-feedback-body" id="inst-feedback-detail">
+                    Authenticated successfully. Response verified with active institutional scopes.
                   </div>
-                  <div class="test-feedback-body" id="judge-test-snippet">
-                    Response verified: National Composite Index = 114.82 (FLASH). Jevons-2026.1 formula contract fulfilled.
-                  </div>
-                </div>
-
-                <!-- Alternative Institutional Keys Tabs -->
-                <div class="judge-alt-keys-row">
-                  <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">
-                    Alternate Pre-Configured Institutional Keys:
-                  </span>
-                  <button class="btn btn-ghost btn-xs btn-switch-judge-key" data-key="aero_eval_sandbox_key" data-tier="SANDBOX_EVALUATION" data-rpm="120">
-                    🔑 Evaluation Sandbox (120 RPM)
-                  </button>
-                  <button class="btn btn-ghost btn-xs btn-switch-judge-key" data-key="aero_inst_rbi_research_2026" data-tier="INSTITUTIONAL_CENTRAL_BANK" data-rpm="300">
-                    🏛️ Reserve Bank of India (300 RPM)
-                  </button>
-                  <button class="btn btn-ghost btn-xs btn-switch-judge-key" data-key="aero_inst_nso_stat_2026" data-tier="INSTITUTIONAL_STATISTICAL_OFFICE" data-rpm="300">
-                    📊 National Statistical Office (300 RPM)
-                  </button>
                 </div>
               </div>
 

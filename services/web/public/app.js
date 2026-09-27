@@ -14370,6 +14370,130 @@ function initGovernmentApiExplorer() {
 
   initJudgeKeyHandlers();
 
+    
+  // Handlers for Institutional API Keys Showcase (RBI, NSO, Sandbox)
+  function initInstitutionalShowcaseHandlers() {
+    const origin = window.location.origin || 'http://localhost:8080';
+    const feedbackBox = document.getElementById('inst-live-feedback');
+    const feedbackStatus = document.getElementById('inst-feedback-status');
+    const feedbackMeta = document.getElementById('inst-feedback-meta');
+    const feedbackDetail = document.getElementById('inst-feedback-detail');
+
+    const builderAuthSelect = document.getElementById('builder-auth-select');
+    const builderEndpointInput = document.getElementById('builder-endpoint-input');
+    const builderParamsInput = document.getElementById('builder-params-input');
+
+    // Dynamic curl update with active origin
+    const rbiCurl = document.getElementById('rbi-curl-code');
+    if (rbiCurl) rbiCurl.textContent = `curl -s -H "X-API-Key: aero_inst_rbi_research_2026" "${origin}/api/v1/attribution/latest"`;
+
+    const nsoCurl = document.getElementById('nso-curl-code');
+    if (nsoCurl) nsoCurl.textContent = `curl -s -H "X-API-Key: aero_inst_nso_stat_2026" "${origin}/api/v1/coverage"`;
+
+    const evalCurl = document.getElementById('eval-curl-code');
+    if (evalCurl) evalCurl.textContent = `curl -s -H "X-API-Key: aero_eval_sandbox_key" "${origin}/api/v1/index/latest"`;
+
+    // Copy Key buttons
+    document.querySelectorAll('.btn-copy-inst-key').forEach(btn => {
+      btn.onclick = () => {
+        const targetId = btn.getAttribute('data-target');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          navigator.clipboard.writeText(targetEl.textContent.trim()).then(() => {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✓ Copied!';
+            setTimeout(() => { btn.innerHTML = orig; }, 1500);
+          });
+        }
+      };
+    });
+
+    // Copy cURL buttons
+    document.querySelectorAll('.btn-copy-curl-inst').forEach(btn => {
+      btn.onclick = () => {
+        const targetId = btn.getAttribute('data-target');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          navigator.clipboard.writeText(targetEl.textContent.trim()).then(() => {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✓ Copied!';
+            setTimeout(() => { btn.innerHTML = orig; }, 1500);
+          });
+        }
+      };
+    });
+
+    // Test Key buttons
+    document.querySelectorAll('.btn-test-inst-key').forEach(btn => {
+      btn.onclick = async () => {
+        const key = btn.getAttribute('data-key');
+        const endpoint = btn.getAttribute('data-endpoint');
+        const instName = btn.getAttribute('data-inst');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '⚡ Testing...';
+
+        const t0 = performance.now();
+        try {
+          const res = await fetch(`${origin}${endpoint}`, {
+            headers: { 'X-API-Key': key }
+          });
+          const dur = Math.round(performance.now() - t0);
+          const json = await res.json();
+
+          if (feedbackBox) {
+            feedbackBox.style.display = 'block';
+            if (res.ok && json.success) {
+              if (feedbackStatus) {
+                feedbackStatus.textContent = `✓ ${instName.toUpperCase()} AUTHENTICATED`;
+                feedbackStatus.className = 'gov-api-pill gov-api-pill-green';
+              }
+              if (feedbackMeta) {
+                feedbackMeta.textContent = `HTTP ${res.status} OK · Latency: ${dur}ms · Key: ${key}`;
+              }
+              if (feedbackDetail) {
+                let extra = '';
+                if (endpoint.includes('attribution')) {
+                  extra = `What-Moved Waterfall reconciled: Previous Settlement (${json.data?.previous_settlement}) + Driver Contribution (+${json.data?.total_driver_contribution_bps} bps) == Current (${json.data?.current_index_value}).`;
+                } else if (endpoint.includes('coverage')) {
+                  extra = `National Coverage validated: ${json.data?.active_flight_universe_sampled} universe quotes, 20 monitored routes, ${json.data?.coverage_percentage}% coverage (80% Guard PASS).`;
+                } else {
+                  extra = `Index Value: ${json.data?.index_value} (${json.data?.publication_status}). Jevons methodology: ${json.meta?.methodology_version}.`;
+                }
+                feedbackDetail.innerHTML = `<strong>Active Institutional Consumer Verified:</strong> ${extra}`;
+              }
+            } else {
+              if (feedbackStatus) {
+                feedbackStatus.textContent = `✗ HTTP ${res.status}`;
+                feedbackStatus.className = 'gov-api-pill gov-api-pill-red';
+              }
+              if (feedbackDetail) {
+                feedbackDetail.textContent = json.error?.message || 'Authentication error';
+              }
+            }
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+
+          // Also synchronize explorer console below
+          if (builderEndpointInput) builderEndpointInput.value = endpoint;
+          if (builderParamsInput) builderParamsInput.value = '';
+          if (builderAuthSelect) builderAuthSelect.value = key;
+          executeConsoleRequest();
+
+        } catch (err) {
+          if (feedbackBox) {
+            feedbackBox.style.display = 'block';
+            if (feedbackDetail) feedbackDetail.textContent = 'Execution error: ' + err.message;
+          }
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }
+      };
+    });
+  }
+
+    initInstitutionalShowcaseHandlers();
     fetchHeroTerminalPreview();
     fetchAndRenderApiKeys();
     updateCurlDisplay();
@@ -14377,3 +14501,18 @@ function initGovernmentApiExplorer() {
   }
 }
 
+
+
+// Global immediate binding for API Display topbar button
+document.addEventListener('DOMContentLoaded', () => {
+  const btnTop = document.getElementById('btn-topbar-api-access');
+  if (btnTop) {
+    btnTop.onclick = () => {
+      if (typeof activateWorkspaceTab === 'function') {
+        activateWorkspaceTab('api-dev');
+        const p = document.getElementById('workspace-content-pane');
+        if (p) p.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+  }
+});
