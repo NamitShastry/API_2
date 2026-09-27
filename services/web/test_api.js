@@ -255,7 +255,7 @@ test('GET /api/v1/provenance/APIX-2026-09-27 returns deterministic replay proof 
 
 // 13. Rate Limiter Enforcement
 test('Rate Limiter blocks excessive requests with 429 RATE_LIMIT_EXCEEDED', () => {
-  // Exhaust sandbox key quota (limit 120) by testing with mock high count
+  // Exhaust sandbox key quota (limit 60) by testing with mock high count
   const testId = 'exhaust_test_ip';
   for (let i = 0; i < 60; i++) {
     govApi.applyRateLimit(testId, 60);
@@ -263,6 +263,52 @@ test('Rate Limiter blocks excessive requests with 429 RATE_LIMIT_EXCEEDED', () =
   const overflow = govApi.applyRateLimit(testId, 60);
   assert.strictEqual(overflow.allowed, false);
   assert.strictEqual(overflow.remaining, 0);
+});
+
+// 14. API Key Lifecycle: List, Generate, Authenticate, Revoke
+test('API Key Lifecycle: generates key, authenticates, lists, and revokes cleanly', () => {
+  // 1. Generate key
+  const genRes = createMockReqRes({
+    pathname: '/api/v1/auth/keys/generate',
+    query: { name: 'Audit Team Test Key', org: 'SIH 2026 Jury' }
+  }).execute();
+  assert.strictEqual(genRes.statusCode, 201);
+  assert.ok(genRes.body.data.raw_key.startsWith('aero_inst_'));
+  assert.ok(genRes.body.data.key_id);
+  assert.ok(genRes.body.data.security_warning);
+
+  const newKey = genRes.body.data.raw_key;
+  const newKeyId = genRes.body.data.key_id;
+
+  // 2. Use newly generated key to fetch protected endpoint
+  const authRes = createMockReqRes({
+    pathname: '/api/v1/index/history',
+    headers: { 'x-api-key': newKey }
+  }).execute();
+  assert.strictEqual(authRes.statusCode, 200);
+
+  // 3. List keys and confirm presence
+  const listRes = createMockReqRes({ pathname: '/api/v1/auth/keys' }).execute();
+  assert.strictEqual(listRes.statusCode, 200);
+  const foundKey = listRes.body.data.keys.find(k => k.key_id === newKeyId);
+  assert.ok(foundKey);
+  assert.strictEqual(foundKey.status, 'ACTIVE');
+  assert.ok(foundKey.last_used);
+
+  // 4. Revoke key
+  const revokeRes = createMockReqRes({
+    pathname: '/api/v1/auth/keys/revoke',
+    query: { key_id: newKeyId }
+  }).execute();
+  assert.strictEqual(revokeRes.statusCode, 200);
+  assert.strictEqual(revokeRes.body.data.status, 'REVOKED');
+
+  // 5. Verify revoked key is rejected
+  const rejectedRes = createMockReqRes({
+    pathname: '/api/v1/index/history',
+    headers: { 'x-api-key': newKey }
+  }).execute();
+  assert.strictEqual(rejectedRes.statusCode, 401);
 });
 
 console.log(`\nResults: ${passed} passed, ${failed} failed.\n`);

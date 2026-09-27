@@ -102,6 +102,7 @@ function authenticateRequest(req) {
   if (!record || record.status !== 'ACTIVE') {
     return { authenticated: false, error: 'INVALID_API_KEY', keyRecord: null };
   }
+  record.lastUsed = new Date().toISOString();
   return { authenticated: true, error: null, keyRecord: record };
 }
 
@@ -286,12 +287,16 @@ function isGovEndpoint(pathname) {
     '/api/v1/attribution/latest',
     '/api/v1/attribution/history',
     '/api/v1/coverage',
-    '/api/v1/anomalies'
+    '/api/v1/anomalies',
+    '/api/v1/auth/keys',
+    '/api/v1/auth/keys/generate',
+    '/api/v1/auth/keys/revoke'
   ];
   if (exact.includes(pathname)) return true;
   if (pathname.startsWith('/api/v1/routes/')) return true;
   if (pathname.startsWith('/api/v1/carriers/')) return true;
   if (pathname.startsWith('/api/v1/provenance/')) return true;
+  if (pathname.startsWith('/api/v1/auth/')) return true;
   return false;
 }
 
@@ -500,6 +505,89 @@ function handleGovApiRequest(req, res, pathname, query = {}) {
       }
     };
     return sendGovEnvelope(res, 200, latest, { dataStatus: 'SIMULATED_LIVE' }, null, rate);
+  }
+
+  // --------------------------------------------------------------------------
+  // AUTHENTICATION & KEY MANAGEMENT ENDPOINTS (DEVELOPER / SANDBOX INTERFACE)
+  // --------------------------------------------------------------------------
+
+  // List Keys (Returns institutional metadata only, no raw secrets)
+  if (pathname === '/api/v1/auth/keys') {
+    const rate = applyRateLimit('pub:' + clientIp, 60);
+    const keyList = Object.entries(INSTITUTIONAL_API_KEYS).map(([hash, rec]) => ({
+      key_id: rec.id,
+      name: rec.name,
+      org: rec.org,
+      tier: rec.tier,
+      scopes: rec.scopes,
+      rate_limit_rpm: rec.rateLimitRpm,
+      created: rec.created,
+      last_used: rec.lastUsed || null,
+      status: rec.status,
+      hash_preview: hash.substring(0, 10) + '...'
+    }));
+    return sendGovEnvelope(res, 200, { keys: keyList, total: keyList.length }, { dataStatus: 'SIMULATED_LIVE' }, null, rate);
+  }
+
+  // Generate Key (Returns raw plaintext key ONLY ONCE at creation)
+  if (pathname === '/api/v1/auth/keys/generate') {
+    const rate = applyRateLimit('pub:' + clientIp, 30);
+    if (!rate.allowed) {
+      return sendGovError(res, 429, 'RATE_LIMIT_EXCEEDED', 'Rate limit exceeded: 30 key generations per minute.', null, rate);
+    }
+    const name = query.name || 'Institutional Consumer Sandbox Key';
+    const org = query.org || 'Authorized Research Institution';
+    const rawKey = 'aero_inst_' + crypto.randomBytes(16).toString('hex');
+    const hash = crypto.createHash('sha256').update(rawKey).digest('hex');
+    const keyId = `KEY-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const record = {
+      id: keyId,
+      name: name,
+      org: org,
+      tier: 'INSTITUTIONAL_SANDBOX',
+      scopes: ['read:index', 'read:routes', 'read:carriers', 'read:attribution', 'read:coverage', 'read:anomalies', 'read:provenance'],
+      rateLimitRpm: 120,
+      created: new Date().toISOString(),
+      lastUsed: null,
+      status: 'ACTIVE'
+    };
+    INSTITUTIONAL_API_KEYS[hash] = record;
+
+    const responsePayload = {
+      key_id: keyId,
+      raw_key: rawKey,
+      hash_preview: hash.substring(0, 10) + '...',
+      name: record.name,
+      org: record.org,
+      tier: record.tier,
+      scopes: record.scopes,
+      rate_limit_rpm: record.rateLimitRpm,
+      created: record.created,
+      security_warning: 'Save this key now. It will not be displayed again. Only the SHA-256 digest is stored server-side.'
+    };
+    return sendGovEnvelope(res, 201, responsePayload, { dataStatus: 'SIMULATED_LIVE' }, null, rate);
+  }
+
+  // Revoke Key
+  if (pathname === '/api/v1/auth/keys/revoke') {
+    const rate = applyRateLimit('pub:' + clientIp, 30);
+    const keyId = query.key_id;
+    if (!keyId) {
+      return sendGovError(res, 400, 'MISSING_KEY_ID', 'Missing required parameter key_id.', null, rate);
+    }
+    let found = false;
+    for (const [hash, rec] of Object.entries(INSTITUTIONAL_API_KEYS)) {
+      if (rec.id === keyId) {
+        rec.status = 'REVOKED';
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      return sendGovError(res, 404, 'KEY_NOT_FOUND', `Key ID '${keyId}' was not found in registered keys.`, null, rate);
+    }
+    return sendGovEnvelope(res, 200, { key_id: keyId, status: 'REVOKED', revoked_at: new Date().toISOString() }, { dataStatus: 'SIMULATED_LIVE' }, null, rate);
   }
 
   // ==========================================================================
@@ -1163,6 +1251,34 @@ function getOpenApiSpec() {
           security: [{ ApiKeyAuth: [] }],
           parameters: [{ name: 'record_id', in: 'path', required: true, schema: { type: 'string' } }],
           responses: { '200': { description: 'Cryptographic reproducibility proof' } }
+        }
+      },
+      '/auth/keys': {
+        get: {
+          summary: 'List Institutional API Key Registrations',
+          description: 'Returns safe metadata (key ID, tier, scopes, timestamps) for institutional evaluation keys. Never returns plaintext secrets.',
+          responses: { '200': { description: 'Array of active and revoked institutional keys' } }
+        }
+      },
+      '/auth/keys/generate': {
+        post: {
+          summary: 'Generate New Institutional Sandbox API Key',
+          description: 'Issues a cryptographically secure random API key. Returns plaintext secret ONCE at issuance.',
+          parameters: [
+            { name: 'name', in: 'query', schema: { type: 'string' }, description: 'Institution or research project name' },
+            { name: 'org', in: 'query', schema: { type: 'string' }, description: 'Organization' }
+          ],
+          responses: { '201': { description: 'Key generated successfully with one-time raw key' } }
+        }
+      },
+      '/auth/keys/revoke': {
+        post: {
+          summary: 'Revoke Institutional API Key',
+          description: 'Permanently revokes an institutional API key by its Key ID.',
+          parameters: [
+            { name: 'key_id', in: 'query', required: true, schema: { type: 'string' } }
+          ],
+          responses: { '200': { description: 'Key successfully revoked' }, '404': { description: 'Key not found' } }
         }
       }
     }
