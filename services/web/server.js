@@ -12,6 +12,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const govApi = require('./api_v1_gov');
 
 const PORT = parseInt(process.env.PORT || '8080', 10);
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -481,6 +482,11 @@ function handleApiRequest(req, res, pathname, query) {
     return res.end();
   }
 
+  // Institutional Government Data API Routes
+  if (govApi.isGovEndpoint(pathname)) {
+    return govApi.handleGovApiRequest(req, res, pathname, query);
+  }
+
   // SSE Real-Time Stream Endpoint
   if (pathname === '/api/v1/stream') {
     res.writeHead(200, {
@@ -810,6 +816,12 @@ const server = http.createServer((req, res) => {
   const pathname = parsedUrl.pathname;
   const query = Object.fromEntries(parsedUrl.searchParams.entries());
 
+  // Interactive API Documentation
+  if (pathname === '/api/docs' || pathname === '/docs') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(govApi.getHtmlDocs());
+  }
+
   // API Requests
   if (pathname.startsWith('/api/v1/')) {
     return handleApiRequest(req, res, pathname, query);
@@ -877,4 +889,12 @@ function startServer(port) {
   });
 }
 
-startServer(PORT);
+if (require.main === module) {
+  startServer(PORT);
+}
+
+module.exports = {
+  server,
+  handleApiRequest,
+  govApi
+};

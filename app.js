@@ -416,6 +416,7 @@ function activateWorkspaceTab(tabId) {
   if (tabId === 'coverage') initCoverageObservatory();
   if (tabId === 'reproduce') executeReproduceCalculation();
   if (tabId === 'sources') fetchHealthData();
+  if (tabId === 'api-dev') initGovernmentApiExplorer();
 }
 
 function initSidebarTabs() {
@@ -13597,5 +13598,244 @@ function inspectCoverageMetric(metricKey) {
   const reproduceBox = document.getElementById('cov-formula-calc-box');
   if (reproduceBox) {
     reproduceBox.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// ============================================================================
+// GOVERNMENT & INSTITUTIONAL DATA API EXPLORER
+// ============================================================================
+
+let govApiExplorerInitialized = false;
+
+function initGovernmentApiExplorer() {
+  const endpointSelect = document.getElementById('gov-explorer-endpoint-select');
+  const paramsInput = document.getElementById('gov-explorer-params-input');
+  const authSelect = document.getElementById('gov-explorer-auth-select');
+  const customKeyInput = document.getElementById('gov-explorer-custom-key');
+  const authBadge = document.getElementById('gov-auth-badge');
+  const btnExecute = document.getElementById('btn-gov-execute-request');
+  const btnReset = document.getElementById('btn-gov-reset-request');
+  const btnCopyCurl = document.getElementById('btn-gov-copy-curl');
+  const btnCopyJson = document.getElementById('btn-gov-copy-json');
+  const btnPing = document.getElementById('btn-quick-health-check');
+  const resPre = document.getElementById('gov-explorer-response-pre');
+  const statusPill = document.getElementById('gov-res-status-pill');
+  const timeEl = document.getElementById('gov-res-time');
+  const sizeEl = document.getElementById('gov-res-size');
+  const curlPreview = document.getElementById('gov-explorer-curl-preview');
+
+  if (!endpointSelect || !btnExecute) return;
+
+  const defaultParamsMap = {
+    '/api/v1/health': '',
+    '/api/v1/metadata': '',
+    '/api/v1/index/latest': 'series_id=APIX-NAT-COMP&publication_status=FLASH',
+    '/api/v1/index/history': 'limit=10&page=1',
+    '/api/v1/routes': 'limit=10&page=1',
+    '/api/v1/routes/DEL-BOM': '',
+    '/api/v1/carriers': '',
+    '/api/v1/attribution/latest': '',
+    '/api/v1/coverage': '',
+    '/api/v1/anomalies': 'route_id=DEL-BOM',
+    '/api/v1/provenance/APIX-2026-09-27': ''
+  };
+
+  function getActiveApiKey() {
+    const val = authSelect ? authSelect.value : 'aero_eval_sandbox_key';
+    if (val === 'UNAUTHENTICATED') return null;
+    if (val === 'CUSTOM') return customKeyInput ? customKeyInput.value.trim() : null;
+    return val;
+  }
+
+  function updateCurlPreview() {
+    const endpoint = endpointSelect.value;
+    const params = paramsInput ? paramsInput.value.trim() : '';
+    const key = getActiveApiKey();
+    const fullUrl = params ? `${endpoint}?${params}` : endpoint;
+    let cmd = `curl -s`;
+    if (key) {
+      cmd += ` -H "X-API-Key: ${key}"`;
+    }
+    cmd += ` "${fullUrl}"`;
+    if (curlPreview) curlPreview.textContent = cmd;
+  }
+
+  async function executeRequest() {
+    const endpoint = endpointSelect.value;
+    const params = paramsInput ? paramsInput.value.trim() : '';
+    const key = getActiveApiKey();
+    let url = endpoint;
+    if (params) {
+      url += (url.includes('?') ? '&' : '?') + params;
+    }
+
+    updateCurlPreview();
+
+    if (resPre) resPre.textContent = '⏳ Executing authenticated request against ' + url + '...';
+    if (btnExecute) {
+      btnExecute.disabled = true;
+      btnExecute.innerHTML = 'Executing...';
+    }
+
+    const startTime = performance.now();
+    try {
+      const headers = { 'Accept': 'application/json' };
+      if (key) {
+        headers['X-API-Key'] = key;
+      }
+
+      const res = await fetch(url, { headers });
+      const endTime = performance.now();
+      const durationMs = Math.round(endTime - startTime);
+      const text = await res.text();
+      const sizeBytes = new Blob([text]).size;
+      const sizeKb = (sizeBytes / 1024).toFixed(1);
+
+      if (timeEl) timeEl.textContent = `${durationMs} ms`;
+      if (sizeEl) sizeEl.textContent = `${sizeKb} KB`;
+
+      if (statusPill) {
+        statusPill.textContent = `${res.status} ${res.statusText || (res.ok ? 'OK' : 'ERROR')}`;
+        statusPill.className = `gov-api-pill ${res.ok ? 'gov-api-pill-green' : 'gov-api-pill-red'}`;
+      }
+
+      let parsed = null;
+      try {
+        parsed = JSON.parse(text);
+        if (resPre) resPre.textContent = JSON.stringify(parsed, null, 2);
+      } catch (e) {
+        if (resPre) resPre.textContent = text;
+      }
+
+    } catch (err) {
+      const endTime = performance.now();
+      const durationMs = Math.round(endTime - startTime);
+      if (timeEl) timeEl.textContent = `${durationMs} ms`;
+      if (statusPill) {
+        statusPill.textContent = 'NETWORK_ERROR';
+        statusPill.className = 'gov-api-pill gov-api-pill-red';
+      }
+      if (resPre) {
+        resPre.textContent = JSON.stringify({
+          success: false,
+          error: {
+            code: 'FETCH_FAILURE',
+            message: err.message,
+            hint: 'Ensure server is running on port 8080 or port 3000.'
+          }
+        }, null, 2);
+      }
+    } finally {
+      if (btnExecute) {
+        btnExecute.disabled = false;
+        btnExecute.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Execute Request';
+      }
+    }
+  }
+
+  if (!govApiExplorerInitialized) {
+    govApiExplorerInitialized = true;
+
+    endpointSelect.addEventListener('change', () => {
+      const ep = endpointSelect.value;
+      if (paramsInput && ep in defaultParamsMap) {
+        paramsInput.value = defaultParamsMap[ep];
+      }
+      updateCurlPreview();
+    });
+
+    if (paramsInput) {
+      paramsInput.addEventListener('input', updateCurlPreview);
+    }
+
+    if (authSelect) {
+      authSelect.addEventListener('change', () => {
+        const val = authSelect.value;
+        if (customKeyInput) {
+          customKeyInput.style.display = val === 'CUSTOM' ? 'block' : 'none';
+        }
+        if (authBadge) {
+          if (val === 'UNAUTHENTICATED') {
+            authBadge.textContent = 'UNAUTHENTICATED';
+            authBadge.className = 'gov-api-pill gov-api-pill-amber';
+          } else {
+            authBadge.textContent = 'AUTHORIZED';
+            authBadge.className = 'gov-api-pill gov-api-pill-blue';
+          }
+        }
+        updateCurlPreview();
+      });
+    }
+
+    if (customKeyInput) {
+      customKeyInput.addEventListener('input', updateCurlPreview);
+    }
+
+    btnExecute.addEventListener('click', executeRequest);
+
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        const ep = endpointSelect.value;
+        if (paramsInput && ep in defaultParamsMap) {
+          paramsInput.value = defaultParamsMap[ep];
+        }
+        if (authSelect) authSelect.value = 'aero_eval_sandbox_key';
+        if (customKeyInput) customKeyInput.style.display = 'none';
+        updateCurlPreview();
+        executeRequest();
+      });
+    }
+
+    if (btnPing) {
+      btnPing.addEventListener('click', () => {
+        endpointSelect.value = '/api/v1/health';
+        if (paramsInput) paramsInput.value = '';
+        updateCurlPreview();
+        executeRequest();
+      });
+    }
+
+    if (btnCopyCurl) {
+      btnCopyCurl.addEventListener('click', () => {
+        if (curlPreview) {
+          navigator.clipboard.writeText(curlPreview.textContent).then(() => {
+            const orig = btnCopyCurl.textContent;
+            btnCopyCurl.textContent = 'Copied!';
+            setTimeout(() => { btnCopyCurl.textContent = orig; }, 1500);
+          });
+        }
+      });
+    }
+
+    if (btnCopyJson) {
+      btnCopyJson.addEventListener('click', () => {
+        if (resPre) {
+          navigator.clipboard.writeText(resPre.textContent).then(() => {
+            const orig = btnCopyJson.textContent;
+            btnCopyJson.textContent = 'Copied!';
+            setTimeout(() => { btnCopyJson.textContent = orig; }, 1500);
+          });
+        }
+      });
+    }
+
+    // Connect Dataset table buttons to explorer
+    document.querySelectorAll('.gov-load-explorer-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ep = btn.getAttribute('data-endpoint');
+        const p = btn.getAttribute('data-params') || '';
+        endpointSelect.value = ep;
+        if (paramsInput) paramsInput.value = p;
+        updateCurlPreview();
+        const explorerPanel = document.querySelector('.gov-api-explorer-grid');
+        if (explorerPanel) {
+          explorerPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+        executeRequest();
+      });
+    });
+
+    updateCurlPreview();
+    executeRequest();
   }
 }
