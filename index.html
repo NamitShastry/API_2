@@ -502,7 +502,7 @@
           <button class="sidebar-nav-item" data-tab="api-dev">
             <span class="nav-item-icon">🔑</span>
             <span class="nav-item-num">30</span>
-            <span class="nav-item-text">API Display (Live Keys)</span>
+            <span class="nav-item-text">API Key (RBI & NSO Dashboard)</span>
           </button>
 
           <button class="sidebar-nav-item" data-tab="datasets">
@@ -668,13 +668,13 @@
               <button class="btn btn-accent" id="btn-provenance" title="Inspect mathematical formula & cryptographic audit">
                 Reproduce This #
               </button>
-              <button class="btn btn-api-access" id="btn-topbar-api-access" onclick="activateWorkspaceTab('api-dev'); const p = document.getElementById('workspace-content-pane'); if (p) p.scrollTo({ top: 0, behavior: 'smooth' });" title="Open API Display — Inspect & Use Working API Key">
-                <span class="api-status-indicator-dot" id="topbar-api-dot"></span>
-                <span class="api-access-label">API Display</span>
-                <span class="api-access-badge">🔑 LIVE KEY</span>
-              </button>
               <button class="btn btn-primary" id="btn-open-ai-chat" title="Open Ask AeroIndex AI Analyst">
                 ✦ Ask AI
+              </button>
+              <button class="btn btn-api-access" id="btn-topbar-api-access" onclick="activateWorkspaceTab('api-dev'); const p = document.getElementById('workspace-content-pane'); if (p) p.scrollTo({ top: 0, behavior: 'smooth' });" title="Open API Key Dashboard — Real Working Machine-Readable Keys for RBI & NSO">
+                <span class="api-status-indicator-dot" id="topbar-api-dot"></span>
+                <span class="api-access-label">API Key Display</span>
+                <span class="api-access-badge">🔑 LIVE · RBI & NSO</span>
               </button>
             </div>
           </div>

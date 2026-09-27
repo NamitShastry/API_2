@@ -4,7 +4,15 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/((?!styles\\.css|app\\.js|favicon\\.ico).*)",
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!styles\\.css|app\\.js|favicon\\.ico|assets|docs).*)",
       "destination": "/index.html"
     }
   ]
