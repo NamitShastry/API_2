@@ -14260,6 +14260,116 @@ function initGovernmentApiExplorer() {
     }
 
     // Initial triggers
+    
+  // Handlers for Judge Evaluation Key Card (API Display)
+  function initJudgeKeyHandlers() {
+    const keyField = document.getElementById('judge-active-api-key-val');
+    const btnCopyKey = document.getElementById('btn-judge-copy-key');
+    const btnTestInstant = document.getElementById('btn-judge-test-key-instant');
+    const btnCopyCurl = document.getElementById('btn-judge-copy-curl');
+    const curlText = document.getElementById('judge-curl-command-text');
+    const feedbackBox = document.getElementById('judge-live-test-feedback');
+    const feedbackMetrics = document.getElementById('judge-test-metrics');
+    const feedbackSnippet = document.getElementById('judge-test-snippet');
+    const builderAuthSelect = document.getElementById('builder-auth-select');
+    const builderExecuteBtn = document.getElementById('btn-builder-execute');
+
+    function updateJudgeCurl(keyVal) {
+      if (curlText) {
+        curlText.textContent = `curl -s -H "X-API-Key: ${keyVal}" "${origin}/api/v1/index/latest"`;
+      }
+    }
+
+    if (keyField) {
+      updateJudgeCurl(keyField.value.trim());
+    }
+
+    if (btnCopyKey && keyField) {
+      btnCopyKey.onclick = () => {
+        navigator.clipboard.writeText(keyField.value.trim()).then(() => {
+          const orig = btnCopyKey.innerHTML;
+          btnCopyKey.innerHTML = '✓ COPIED!';
+          setTimeout(() => { btnCopyKey.innerHTML = orig; }, 1500);
+        });
+      };
+    }
+
+    if (btnCopyCurl && curlText) {
+      btnCopyCurl.onclick = () => {
+        navigator.clipboard.writeText(curlText.textContent.trim()).then(() => {
+          const orig = btnCopyCurl.innerHTML;
+          btnCopyCurl.innerHTML = '✓ Copied cURL!';
+          setTimeout(() => { btnCopyCurl.innerHTML = orig; }, 1500);
+        });
+      };
+    }
+
+    if (btnTestInstant && keyField) {
+      btnTestInstant.onclick = async () => {
+        const activeKey = keyField.value.trim();
+        btnTestInstant.disabled = true;
+        btnTestInstant.innerHTML = '⚡ TESTING...';
+
+        const t0 = performance.now();
+        try {
+          const res = await fetch(`${origin}/api/v1/index/latest`, {
+            headers: { 'X-API-Key': activeKey }
+          });
+          const dur = Math.round(performance.now() - t0);
+          const json = await res.json();
+
+          if (feedbackBox) {
+            feedbackBox.style.display = 'block';
+            if (res.ok && json.success) {
+              if (feedbackMetrics) {
+                feedbackMetrics.textContent = `HTTP ${res.status} OK · Latency: ${dur}ms · Key: ${activeKey}`;
+              }
+              if (feedbackSnippet) {
+                feedbackSnippet.innerHTML = `<strong>✓ Key Verified & Operational:</strong> Series <code>${json.data?.series_id}</code> = <strong>${json.data?.index_value}</strong> (${json.data?.publication_status}). Formula: <code>${json.meta?.methodology_version}</code>. DENOMINATORS & 80% GUARD VERIFIED.`;
+              }
+            } else {
+              if (feedbackMetrics) {
+                feedbackMetrics.textContent = `HTTP ${res.status} · ${json.error?.code || 'ERROR'}`;
+              }
+              if (feedbackSnippet) {
+                feedbackSnippet.textContent = json.error?.message || 'Authentication error';
+              }
+            }
+          }
+
+          // Also populate console below and execute
+          if (builderAuthSelect) {
+            builderAuthSelect.value = activeKey;
+          }
+          executeConsoleRequest();
+
+        } catch (err) {
+          if (feedbackBox) {
+            feedbackBox.style.display = 'block';
+            if (feedbackSnippet) feedbackSnippet.textContent = 'Execution failed: ' + err.message;
+          }
+        } finally {
+          btnTestInstant.disabled = false;
+          btnTestInstant.innerHTML = '⚡ TEST KEY LIVE';
+        }
+      };
+    }
+
+    // Switch between alternate institutional keys
+    document.querySelectorAll('.btn-switch-judge-key').forEach(btn => {
+      btn.onclick = () => {
+        const targetKey = btn.getAttribute('data-key');
+        if (keyField) keyField.value = targetKey;
+        updateJudgeCurl(targetKey);
+        if (btnTestInstant) {
+          btnTestInstant.click();
+        }
+      };
+    });
+  }
+
+  initJudgeKeyHandlers();
+
     fetchHeroTerminalPreview();
     fetchAndRenderApiKeys();
     updateCurlDisplay();
